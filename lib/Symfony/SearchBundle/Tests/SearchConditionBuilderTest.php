@@ -55,7 +55,7 @@ final class SearchConditionBuilderTest extends TestCase
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage('Unable serialize a SearchConditionBuilder. Call getSearchCondition() and serialize the SearchCondition itself.');
 
-        \serialize($builder);
+        serialize($builder);
     }
 
     /** @test */
@@ -66,7 +66,8 @@ final class SearchConditionBuilderTest extends TestCase
         $fieldSetBuilder = $searchFactory->createFieldSetBuilder();
         $fieldSetBuilder
             ->add('id', IntegerType::class)
-            ->add('@id', OrderFieldType::class);
+            ->add('@id', OrderFieldType::class)
+        ;
         $fieldSet = $fieldSetBuilder->getFieldSet('users');
         $condBuilder = SearchConditionBuilder::create($fieldSet);
 
@@ -74,7 +75,8 @@ final class SearchConditionBuilderTest extends TestCase
         $this->expectExceptionMessage('Cannot add ordering at nested levels.');
 
         $condBuilder->group()
-            ->order('@id');
+            ->order('@id')
+        ;
     }
 
     /**
@@ -94,7 +96,8 @@ final class SearchConditionBuilderTest extends TestCase
 
             ->add('_user', IntegerType::class)
             ->add('@id', OrderFieldType::class)
-            ->add('@date', OrderFieldType::class);
+            ->add('@date', OrderFieldType::class)
+        ;
         $fieldSet = $fieldSetBuilder->getFieldSet('users');
         $condBuilder = SearchConditionBuilder::create($fieldSet);
 
@@ -109,7 +112,8 @@ final class SearchConditionBuilderTest extends TestCase
             static function (FieldSet $fieldSet): SearchCondition {
                 $idValues = (new ValuesBag())
                     ->addSimpleValue(10)
-                    ->addSimpleValue(30);
+                    ->addSimpleValue(30)
+                ;
 
                 $root = new ValuesGroup();
                 $root->addField('id', $idValues);
@@ -121,7 +125,8 @@ final class SearchConditionBuilderTest extends TestCase
                     ->field('id')
                         ->addSimpleValue(10)
                         ->addSimpleValue(30)
-                    ->end();
+                    ->end()
+                ;
             },
         ];
 
@@ -129,7 +134,8 @@ final class SearchConditionBuilderTest extends TestCase
             static function (FieldSet $fieldSet): SearchCondition {
                 $idValues = (new ValuesBag())
                     ->addSimpleValue(10)
-                    ->addSimpleValue(30);
+                    ->addSimpleValue(30)
+                ;
 
                 $root = new ValuesGroup(ValuesGroup::GROUP_LOGICAL_OR);
                 $root->addField('id', $idValues);
@@ -142,7 +148,8 @@ final class SearchConditionBuilderTest extends TestCase
                     ->field('id')
                         ->addSimpleValue(10)
                         ->addSimpleValue(30)
-                    ->end();
+                    ->end()
+                ;
             },
         ];
 
@@ -150,7 +157,8 @@ final class SearchConditionBuilderTest extends TestCase
             static function (FieldSet $fieldSet): SearchCondition {
                 $idValues = (new ValuesBag())
                     ->addSimpleValue(10)
-                    ->addSimpleValue(30);
+                    ->addSimpleValue(30)
+                ;
 
                 $root = new ValuesGroup();
                 $root->addGroup(
@@ -167,7 +175,8 @@ final class SearchConditionBuilderTest extends TestCase
                             ->addSimpleValue(10)
                             ->addSimpleValue(30)
                         ->end()
-                    ->end();
+                    ->end()
+                ;
             },
         ];
 
@@ -175,7 +184,8 @@ final class SearchConditionBuilderTest extends TestCase
             static function (FieldSet $fieldSet): SearchCondition {
                 $idValues = (new ValuesBag())
                     ->addSimpleValue(10)
-                    ->addSimpleValue(30);
+                    ->addSimpleValue(30)
+                ;
 
                 $root = new ValuesGroup();
                 $root->addGroup(
@@ -192,7 +202,8 @@ final class SearchConditionBuilderTest extends TestCase
                             ->addSimpleValue(10)
                             ->addSimpleValue(30)
                         ->end()
-                    ->end();
+                    ->end()
+                ;
             },
         ];
 
@@ -202,7 +213,8 @@ final class SearchConditionBuilderTest extends TestCase
                     ->addSimpleValue(10)
                     ->addSimpleValue(30)
                     ->addSimpleValue(20)
-                    ->addSimpleValue(50);
+                    ->addSimpleValue(50)
+                ;
 
                 $root = new ValuesGroup();
                 $root->addField('id', $idValues);
@@ -218,7 +230,8 @@ final class SearchConditionBuilderTest extends TestCase
                     ->field('id')
                         ->addSimpleValue(20)
                         ->addSimpleValue(50)
-                    ->end();
+                    ->end()
+                ;
             },
         ];
 
@@ -226,7 +239,8 @@ final class SearchConditionBuilderTest extends TestCase
             static function (FieldSet $fieldSet): SearchCondition {
                 $idValues = (new ValuesBag())
                     ->addSimpleValue(20)
-                    ->addSimpleValue(50);
+                    ->addSimpleValue(50)
+                ;
 
                 $root = new ValuesGroup();
                 $root->addField('id', $idValues);
@@ -242,7 +256,8 @@ final class SearchConditionBuilderTest extends TestCase
                     ->overwriteField('id')
                         ->addSimpleValue(20)
                         ->addSimpleValue(50)
-                    ->end();
+                    ->end()
+                ;
             },
         ];
 
@@ -250,7 +265,8 @@ final class SearchConditionBuilderTest extends TestCase
             static function (FieldSet $fieldSet): SearchCondition {
                 $idValues = (new ValuesBag())
                     ->addSimpleValue(10)
-                    ->addSimpleValue(30);
+                    ->addSimpleValue(30)
+                ;
 
                 $root = new ValuesGroup();
                 $root->addField('id', $idValues);
@@ -271,7 +287,8 @@ final class SearchConditionBuilderTest extends TestCase
                         ->addSimpleValue(30)
                     ->end()
                     ->order('@id', 'DESC')
-                    ->order('@date');
+                    ->order('@date')
+                ;
             },
         ];
 
@@ -279,7 +296,8 @@ final class SearchConditionBuilderTest extends TestCase
             static function (FieldSet $fieldSet): SearchCondition {
                 $idValues = (new ValuesBag())
                     ->addSimpleValue(10)
-                    ->addSimpleValue(30);
+                    ->addSimpleValue(30)
+                ;
 
                 $root = new ValuesGroup();
                 $root->addField('id', $idValues);
@@ -300,7 +318,8 @@ final class SearchConditionBuilderTest extends TestCase
                     ->end()
                     ->order('@id', 'DESC')
                     ->clearOrder()
-                    ->order('@date');
+                    ->order('@date')
+                ;
             },
         ];
 
@@ -308,7 +327,8 @@ final class SearchConditionBuilderTest extends TestCase
             static function (FieldSet $fieldSet): SearchCondition {
                 $idValuesPrimary = (new ValuesBag())
                     ->addSimpleValue(10)
-                    ->addSimpleValue(30);
+                    ->addSimpleValue(30)
+                ;
 
                 $rootPrimary = new ValuesGroup();
                 $rootPrimary->addField('id', $idValuesPrimary);
@@ -325,7 +345,8 @@ final class SearchConditionBuilderTest extends TestCase
                             ->addSimpleValue(10)
                             ->addSimpleValue(30)
                         ->end()
-                    ->end();
+                    ->end()
+                ;
             },
         ];
 
@@ -333,13 +354,15 @@ final class SearchConditionBuilderTest extends TestCase
             static function (FieldSet $fieldSet): SearchCondition {
                 $primaryIdValues = (new ValuesBag())
                     ->addSimpleValue(10)
-                    ->addSimpleValue(30);
+                    ->addSimpleValue(30)
+                ;
                 $primaryRoot = new ValuesGroup();
                 $primaryRoot->addField('id', $primaryIdValues);
 
                 $idValues = (new ValuesBag())
                     ->addSimpleValue(20)
-                    ->addSimpleValue(50);
+                    ->addSimpleValue(50)
+                ;
                 $root = new ValuesGroup();
                 $root->addField('id', $idValues);
 
@@ -359,7 +382,8 @@ final class SearchConditionBuilderTest extends TestCase
                     ->field('id')
                         ->addSimpleValue(20)
                         ->addSimpleValue(50)
-                    ->end();
+                    ->end()
+                ;
             },
         ];
 
@@ -367,13 +391,15 @@ final class SearchConditionBuilderTest extends TestCase
             static function (FieldSet $fieldSet): SearchCondition {
                 $primaryIdValues = (new ValuesBag())
                     ->addSimpleValue(10)
-                    ->addSimpleValue(30);
+                    ->addSimpleValue(30)
+                ;
                 $primaryRoot = new ValuesGroup();
                 $primaryRoot->addField('id', $primaryIdValues);
 
                 $idValues = (new ValuesBag())
                     ->addSimpleValue(20)
-                    ->addSimpleValue(50);
+                    ->addSimpleValue(50)
+                ;
                 $root = new ValuesGroup();
                 $root->addField('id', $idValues);
 
@@ -401,7 +427,8 @@ final class SearchConditionBuilderTest extends TestCase
                     ->field('id')
                         ->addSimpleValue(20)
                         ->addSimpleValue(50)
-                    ->end();
+                    ->end()
+                ;
             },
         ];
 
@@ -409,13 +436,15 @@ final class SearchConditionBuilderTest extends TestCase
             static function (FieldSet $fieldSet): SearchCondition {
                 $primaryIdValues = (new ValuesBag())
                     ->addSimpleValue(10)
-                    ->addSimpleValue(30);
+                    ->addSimpleValue(30)
+                ;
                 $primaryRoot = new ValuesGroup();
                 $primaryRoot->addField('_user', $primaryIdValues);
 
                 $idValues = (new ValuesBag())
                     ->addSimpleValue(20)
-                    ->addSimpleValue(50);
+                    ->addSimpleValue(50)
+                ;
                 $root = new ValuesGroup();
                 $root->addField('id', $idValues);
 
@@ -435,7 +464,8 @@ final class SearchConditionBuilderTest extends TestCase
                     ->field('id')
                         ->addSimpleValue(20)
                         ->addSimpleValue(50)
-                    ->end();
+                    ->end()
+                ;
             },
         ];
     }

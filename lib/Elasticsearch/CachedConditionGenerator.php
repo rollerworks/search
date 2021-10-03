@@ -100,13 +100,13 @@ class CachedConditionGenerator implements ConditionGenerator
     {
         if ($this->cacheKey === null) {
             $searchCondition = $this->getSearchCondition();
-            $this->cacheKey = \hash(
+            $this->cacheKey = hash(
                 'sha256',
                 $searchCondition->getFieldSet()->getSetName() .
                 "\n" .
-                \serialize($searchCondition->getValuesGroup()) .
+                serialize($searchCondition->getValuesGroup()) .
                 "\n" .
-                \serialize($this->conditionGenerator->getMappings()) .
+                serialize($this->conditionGenerator->getMappings()) .
                 "\n" .
                 $type
             );

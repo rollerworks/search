@@ -88,7 +88,7 @@ final class DateType extends BaseDateTimeType
         }
 
         $view->vars['html5'] = $options['html5'];
-        $view->vars['timezone'] = $options['view_timezone'] ?? \date_default_timezone_get();
+        $view->vars['timezone'] = $options['view_timezone'] ?? date_default_timezone_get();
         $view->vars['pattern'] = $pattern;
     }
 

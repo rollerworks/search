@@ -23,7 +23,7 @@ final class ElasticsearchTest extends FunctionalTestCase
     /** @test */
     public function elasticsearch_factory_is_accessible(): void
     {
-        if (! \class_exists(ElasticsearchFactory::class)) {
+        if (! class_exists(ElasticsearchFactory::class)) {
             self::markTestSkipped('rollerworks/search-elasticsearch is not installed');
         }
 

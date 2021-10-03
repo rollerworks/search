@@ -34,7 +34,7 @@ final class CastFunction extends FunctionNode
     {
         $expression = $sqlWalker->walkSimpleArithmeticExpression($this->stringPrimary);
 
-        return \sprintf('CAST(%s AS %s)', $expression, $this->type);
+        return sprintf('CAST(%s AS %s)', $expression, $this->type);
     }
 
     public function parse(Parser $parser): void

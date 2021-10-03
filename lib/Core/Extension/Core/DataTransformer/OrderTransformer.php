@@ -71,22 +71,22 @@ final class OrderTransformer implements DataTransformer
 
         switch ($this->case) {
             case self::CASE_LOWERCASE:
-                $value = \mb_strtolower($value);
+                $value = mb_strtolower($value);
 
                 break;
 
             case self::CASE_UPPERCASE:
-                $value = \mb_strtoupper($value);
+                $value = mb_strtoupper($value);
 
                 break;
         }
 
         if (! isset($this->alias[$value])) {
             throw new TransformationFailedException(
-                \sprintf(
+                sprintf(
                     'Invalid sort direction "%1$s" specified, expected one of: "%2$s"',
                     $value,
-                    \implode('", "', \array_keys($this->alias))
+                    implode('", "', array_keys($this->alias))
                 )
             );
         }

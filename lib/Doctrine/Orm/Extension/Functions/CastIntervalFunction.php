@@ -35,7 +35,7 @@ final class CastIntervalFunction extends FunctionNode
         $expression = $this->intervalExpression;
 
         if ($platform === 'postgresql' || $platform === 'mock') {
-            return \sprintf(
+            return sprintf(
                 'NOW() %s CAST(%s AS interval)',
                 $this->inverted ? '-' : '+',
                 $connection->quote($expression)
@@ -50,7 +50,7 @@ final class CastIntervalFunction extends FunctionNode
                 $value->invert();
             }
 
-            return \sprintf(
+            return sprintf(
                 'NOW() %s %s',
                 $this->inverted ? '-' : '+',
                 DateIntervalConversion::convertForMysql($value)
@@ -58,7 +58,7 @@ final class CastIntervalFunction extends FunctionNode
         }
 
         throw new \RuntimeException(
-            \sprintf('Unsupported platform "%s" for DateIntervalConversion.', $platform)
+            sprintf('Unsupported platform "%s" for DateIntervalConversion.', $platform)
         );
     }
 

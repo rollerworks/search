@@ -53,7 +53,7 @@ final class DateTimeToRfc3339TransformerTest extends TestCase
 
     public function reverseTransformProvider()
     {
-        return \array_merge($this->allProvider(), [
+        return array_merge($this->allProvider(), [
             // format without seconds, as appears in some browsers
             ['UTC', 'UTC', '2010-02-03 04:05:00 UTC', '2010-02-03T04:05Z'],
             ['America/New_York', 'Asia/Hong_Kong', '2010-02-03 04:05:00 America/New_York', '2010-02-03T17:05+08:00'],

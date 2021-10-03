@@ -123,7 +123,7 @@ final class DateTimeType extends BaseDateTimeType
             )->getPattern();
         }
 
-        $view->vars['timezone'] = $options['view_timezone'] ?: \date_default_timezone_get();
+        $view->vars['timezone'] = $options['view_timezone'] ?: date_default_timezone_get();
         $view->vars['allow_relative'] = $options['allow_relative'];
         $view->vars['pattern'] = $pattern;
     }

@@ -39,7 +39,7 @@ final class InputProcessorPass implements CompilerPassInterface
 
         foreach ($container->findTaggedServiceIds('rollerworks_search.input_processor') as $serviceId => $tag) {
             if (! isset($tag[0]['format'])) {
-                throw new InvalidArgumentException(\sprintf('"rollerworks_search.input_processor" tagged services must have the format configured using the format attribute, none was configured for the "%s" service.', $serviceId));
+                throw new InvalidArgumentException(sprintf('"rollerworks_search.input_processor" tagged services must have the format configured using the format attribute, none was configured for the "%s" service.', $serviceId));
             }
 
             $inputProcessorServices[$serviceId] = new ServiceClosureArgument(new Reference($serviceId));

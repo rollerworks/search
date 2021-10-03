@@ -98,9 +98,7 @@ final class SqlConditionGeneratorResultsTest extends FunctionalDbalTestCase
      */
     protected function getDbRecords()
     {
-        $date = static function (string $input) {
-            return new \DateTimeImmutable($input, new \DateTimeZone('UTC'));
-        };
+        $date = static fn (string $input) => new \DateTimeImmutable($input, new \DateTimeZone('UTC'));
 
         return [
             SchemaRecord::create(
@@ -189,17 +187,17 @@ final class SqlConditionGeneratorResultsTest extends FunctionalDbalTestCase
     protected function getQuery()
     {
         return <<<'SQL'
-SELECT
-    *, i.id AS id
-FROM
-    invoice AS i
-JOIN
-    customer AS c ON i.customer = c.id
-LEFT JOIN
-    invoice_details AS ir ON ir.invoice = i.id
-WHERE
+            SELECT
+                *, i.id AS id
+            FROM
+                invoice AS i
+            JOIN
+                customer AS c ON i.customer = c.id
+            LEFT JOIN
+                invoice_details AS ir ON ir.invoice = i.id
+            WHERE
 
-SQL;
+            SQL;
     }
 
     protected function configureConditionGenerator(ConditionGenerator $conditionGenerator): void
@@ -277,7 +275,7 @@ SQL;
     /** @test */
     public function it_finds_by_customer_birthday(): void
     {
-        $this->makeTest('customer-birthday: "2000-05-15";', \range(2, 4));
+        $this->makeTest('customer-birthday: "2000-05-15";', range(2, 4));
     }
 
     /** @test */

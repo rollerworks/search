@@ -48,7 +48,7 @@ final class CurrencyType extends AbstractFieldType implements ChoiceLoader
             return $this->choiceList;
         }
 
-        return $this->choiceList = new ArrayChoiceList(\array_flip(Currencies::getNames()), $value);
+        return $this->choiceList = new ArrayChoiceList(array_flip(Currencies::getNames()), $value);
     }
 
     public function isValuesConstant(): bool

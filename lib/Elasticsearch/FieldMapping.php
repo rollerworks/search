@@ -104,43 +104,43 @@ final class FieldMapping implements \Serializable
         $nested = false;
         $join = false;
 
-        if (\mb_strpos($property, '#') !== false) {
-            [$path, $propertyName] = \explode('#', $property);
+        if (mb_strpos($property, '#') !== false) {
+            [$path, $propertyName] = explode('#', $property);
 
-            $path = \trim($path, '/');
+            $path = trim($path, '/');
             $indexName = $path;
 
-            if (\mb_strpos($path, '/') !== false) {
-                [$indexName, $typeName] = \explode('/', $path);
+            if (mb_strpos($path, '/') !== false) {
+                [$indexName, $typeName] = explode('/', $path);
             }
         }
 
-        if (\mb_strpos($property, '>') !== false) {
-            $tokens = \explode('>', $propertyName);
+        if (mb_strpos($property, '>') !== false) {
+            $tokens = explode('>', $propertyName);
 
             // last token is the property name
-            $propertyName = \trim(\array_pop($tokens), '.');
+            $propertyName = trim(array_pop($tokens), '.');
 
             foreach ($tokens as $type) {
-                $type = \trim($type, '.');
-                $join = \compact('type', 'join');
+                $type = trim($type, '.');
+                $join = compact('type', 'join');
             }
         }
 
-        if (\mb_strpos($propertyName, '[]') !== false) {
-            $tokens = \explode('[]', $propertyName);
+        if (mb_strpos($propertyName, '[]') !== false) {
+            $tokens = explode('[]', $propertyName);
 
             // last token is the property name
-            $propertyName = \trim(\array_pop($tokens), '.');
-            $propertyName = \trim(\end($tokens), '.') . '.' . $propertyName;
+            $propertyName = trim(array_pop($tokens), '.');
+            $propertyName = trim(end($tokens), '.') . '.' . $propertyName;
 
             foreach ($tokens as $path) {
-                $path = \trim($path, '.');
-                $nested = \compact('path', 'nested');
+                $path = trim($path, '.');
+                $nested = compact('path', 'nested');
             }
         }
 
-        return \compact('indexName', 'typeName', 'propertyName', 'nested', 'join');
+        return compact('indexName', 'typeName', 'propertyName', 'nested', 'join');
     }
 
     private function expandConditions(array $conditions, FieldConfig $fieldConfig): array
@@ -149,13 +149,13 @@ final class FieldMapping implements \Serializable
             // sorting by has_child query is special
             // https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-has-child-query.html#_sorting
             $property = $this->indexName . ($this->typeName ? '/' . $this->typeName : '') . '#' . $this->join['type'] . '>';
-            $queryScript = \sprintf('doc["%s"].value', $this->propertyName);
+            $queryScript = sprintf('doc["%s"].value', $this->propertyName);
 
             if ($this->childOrderConversion !== null) {
                 $queryScript = $this->childOrderConversion->convert($property, $queryScript);
             }
 
-            $queryScript = \sprintf('%1$s * %2$s', QueryConditionGenerator::SORT_SCORE, $queryScript);
+            $queryScript = sprintf('%1$s * %2$s', QueryConditionGenerator::SORT_SCORE, $queryScript);
 
             $scoreQuery = new self('_', $property, $fieldConfig, [], ['score_mode' => 'max']);
             $scoreQuery->propertyQuery = [
@@ -173,7 +173,7 @@ final class FieldMapping implements \Serializable
 
     public function serialize()
     {
-        return \serialize(
+        return serialize(
             [
                 'field_name' => $this->fieldName,
                 'index_name' => $this->indexName,

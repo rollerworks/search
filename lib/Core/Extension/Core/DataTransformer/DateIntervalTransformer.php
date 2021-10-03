@@ -61,7 +61,7 @@ final class DateIntervalTransformer implements DataTransformer
      */
     public function reverseTransform($value): ?CarbonInterval
     {
-        if (! \is_scalar($value)) {
+        if (! is_scalar($value)) {
             throw new TransformationFailedException('Expected a scalar.');
         }
 
@@ -85,7 +85,7 @@ final class DateIntervalTransformer implements DataTransformer
 
     private function translateNumberWords(string $timeString): string
     {
-        $timeString = \strtr($timeString, ['’' => "'"]);
+        $timeString = strtr($timeString, ['’' => "'"]);
 
         $translator = Translator::get($this->fromLocale);
         $translations = $translator->getMessages();
@@ -97,17 +97,17 @@ final class DateIntervalTransformer implements DataTransformer
         $messages = $translations[$this->fromLocale];
 
         foreach (['year', 'month', 'week', 'day', 'hour', 'minute', 'second'] as $item) {
-            foreach (\explode('|', $messages[$item]) as $idx => $messagePart) {
-                if (\preg_match('/[:%](count|time)/', $messagePart)) {
+            foreach (explode('|', $messages[$item]) as $idx => $messagePart) {
+                if (preg_match('/[:%](count|time)/', $messagePart)) {
                     continue;
                 }
 
                 if ($messagePart[0] === '{') {
-                    $idx = (int) \mb_substr($messagePart, 1, \mb_strpos($messagePart, '}'));
+                    $idx = (int) mb_substr($messagePart, 1, mb_strpos($messagePart, '}'));
                 }
 
                 $messagePart = self::cleanWordFromTranslationString($messagePart);
-                $timeString = \str_replace($messagePart, $idx . ' ' . $item, $timeString);
+                $timeString = str_replace($messagePart, $idx . ' ' . $item, $timeString);
             }
         }
 
@@ -119,10 +119,10 @@ final class DateIntervalTransformer implements DataTransformer
      */
     private static function cleanWordFromTranslationString(string $word): string
     {
-        $word = \str_replace([':count', '%count', ':time'], '', $word);
-        $word = \strtr($word, ['’' => "'"]);
-        $word = \preg_replace('/({\d+(,(\d+|Inf))?}|[\[\]]\d+(,(\d+|Inf))?[\[\]])/', '', $word);
+        $word = str_replace([':count', '%count', ':time'], '', $word);
+        $word = strtr($word, ['’' => "'"]);
+        $word = preg_replace('/({\d+(,(\d+|Inf))?}|[\[\]]\d+(,(\d+|Inf))?[\[\]])/', '', $word);
 
-        return \trim($word);
+        return trim($word);
     }
 }

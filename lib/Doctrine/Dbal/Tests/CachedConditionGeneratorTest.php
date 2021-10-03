@@ -62,17 +62,20 @@ final class CachedConditionGeneratorTest extends DbalTestCase
                     return true;
                 })
             )
-            ->willReturn(null);
+            ->willReturn(null)
+        ;
 
         $this->conditionGenerator
             ->expects(self::once())
             ->method('getWhereClause')
-            ->willReturn("me = 'foo'");
+            ->willReturn("me = 'foo'")
+        ;
 
         $this->conditionGenerator
             ->expects(self::once())
             ->method('getParameters')
-            ->willReturn($parameters = new ArrayCollection([':search' => [1, Type::getType('integer')]]));
+            ->willReturn($parameters = new ArrayCollection([':search' => [1, Type::getType('integer')]]))
+        ;
 
         $this->cacheDriver
             ->expects(self::once())
@@ -85,7 +88,8 @@ final class CachedConditionGeneratorTest extends DbalTestCase
                 ),
                 ["me = 'foo'", [':search' => [1, 'integer']]],
                 60
-            );
+            )
+        ;
 
         self::assertEquals("me = 'foo'", $this->cachedConditionGenerator->getWhereClause());
         self::assertEquals($parameters, $this->cachedConditionGenerator->getParameters());
@@ -106,17 +110,20 @@ final class CachedConditionGeneratorTest extends DbalTestCase
                     return true;
                 })
             )
-            ->willReturn([]);
+            ->willReturn([])
+        ;
 
         $this->conditionGenerator
             ->expects(self::once())
             ->method('getWhereClause')
-            ->willReturn("me = 'foo'");
+            ->willReturn("me = 'foo'")
+        ;
 
         $this->conditionGenerator
             ->expects(self::once())
             ->method('getParameters')
-            ->willReturn($parameters = new ArrayCollection([':search' => [1, Type::getType('integer')]]));
+            ->willReturn($parameters = new ArrayCollection([':search' => [1, Type::getType('integer')]]))
+        ;
 
         $this->cacheDriver
             ->expects(self::once())
@@ -129,7 +136,8 @@ final class CachedConditionGeneratorTest extends DbalTestCase
                 ),
                 ["me = 'foo'", [':search' => [1, 'integer']]],
                 60
-            );
+            )
+        ;
 
         self::assertEquals("me = 'foo'", $this->cachedConditionGenerator->getWhereClause());
         self::assertEquals($parameters, $this->cachedConditionGenerator->getParameters());
@@ -142,19 +150,23 @@ final class CachedConditionGeneratorTest extends DbalTestCase
             ->expects(self::once())
             ->method('get')
             ->with('62e186fb1789cc8fd59315f3453808771910dae798440eee8b85d83889d5e88a')
-            ->willReturn(["me = 'foo'", [':search' => [1, 'integer']]]);
+            ->willReturn(["me = 'foo'", [':search' => [1, 'integer']]])
+        ;
 
         $this->conditionGenerator
             ->expects(self::never())
-            ->method('getWhereClause');
+            ->method('getWhereClause')
+        ;
 
         $this->conditionGenerator
             ->expects(self::never())
-            ->method('getParameters');
+            ->method('getParameters')
+        ;
 
         $this->cacheDriver
             ->expects(self::never())
-            ->method('set');
+            ->method('set')
+        ;
 
         self::assertEquals("me = 'foo'", $this->cachedConditionGenerator->getWhereClause());
         self::assertEquals(new ArrayCollection([':search' => [1, Type::getType('integer')]]), $this->cachedConditionGenerator->getParameters());
@@ -167,19 +179,23 @@ final class CachedConditionGeneratorTest extends DbalTestCase
             ->expects(self::once())
             ->method('get')
             ->with('62e186fb1789cc8fd59315f3453808771910dae798440eee8b85d83889d5e88a')
-            ->willReturn(["me = 'foo'", [':search' => [1, 'integer']]]);
+            ->willReturn(["me = 'foo'", [':search' => [1, 'integer']]])
+        ;
 
         $this->conditionGenerator
             ->expects(self::never())
-            ->method('getWhereClause');
+            ->method('getWhereClause')
+        ;
 
         $this->conditionGenerator
             ->expects(self::never())
-            ->method('getParameters');
+            ->method('getParameters')
+        ;
 
         $this->cacheDriver
             ->expects(self::never())
-            ->method('set');
+            ->method('set')
+        ;
 
         self::assertEquals("WHERE me = 'foo'", $this->cachedConditionGenerator->getWhereClause('WHERE '));
     }
@@ -191,19 +207,23 @@ final class CachedConditionGeneratorTest extends DbalTestCase
             ->expects(self::once())
             ->method('get')
             ->with('62e186fb1789cc8fd59315f3453808771910dae798440eee8b85d83889d5e88a')
-            ->willReturn(['', []]);
+            ->willReturn(['', []])
+        ;
 
         $this->conditionGenerator
             ->expects(self::never())
-            ->method('getWhereClause');
+            ->method('getWhereClause')
+        ;
 
         $this->conditionGenerator
             ->expects(self::never())
-            ->method('getParameters');
+            ->method('getParameters')
+        ;
 
         $this->cacheDriver
             ->expects(self::never())
-            ->method('set');
+            ->method('set')
+        ;
 
         self::assertEquals('', $this->cachedConditionGenerator->getWhereClause('WHERE '));
         self::assertEquals(new ArrayCollection(), $this->cachedConditionGenerator->getParameters());
@@ -224,7 +244,8 @@ final class CachedConditionGeneratorTest extends DbalTestCase
                     return true;
                 })
             )
-            ->willReturn(null);
+            ->willReturn(null)
+        ;
 
         $this->cacheDriver
             ->expects(self::once())
@@ -237,13 +258,15 @@ final class CachedConditionGeneratorTest extends DbalTestCase
                 ),
                 ['((I.id = :search_0))', [':search_0' => [18, 'integer']]],
                 60
-            );
+            )
+        ;
 
         $searchCondition = SearchConditionBuilder::create($this->getFieldSet())
             ->field('customer')
                 ->addSimpleValue(18)
             ->end()
-        ->getSearchCondition();
+        ->getSearchCondition()
+        ;
 
         $this->conditionGenerator = new SqlConditionGenerator($this->getConnectionMock(), $searchCondition);
 

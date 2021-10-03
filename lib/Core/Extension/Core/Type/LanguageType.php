@@ -47,7 +47,7 @@ final class LanguageType extends AbstractFieldType implements ChoiceLoader
             return $this->choiceList;
         }
 
-        return $this->choiceList = new ArrayChoiceList(\array_flip(Languages::getNames()), $value);
+        return $this->choiceList = new ArrayChoiceList(array_flip(Languages::getNames()), $value);
     }
 
     public function isValuesConstant(): bool

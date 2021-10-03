@@ -73,6 +73,6 @@ final class CachingInputProcessor implements InputProcessor
 
     private function getConditionCacheKey(ProcessorConfig $config, string $input): string
     {
-        return \hash('sha256', $config->getFieldSet()->getSetName() . '~' . $input . '~' . \get_class($this->inputProcessor));
+        return hash('sha256', $config->getFieldSet()->getSetName() . '~' . $input . '~' . \get_class($this->inputProcessor));
     }
 }

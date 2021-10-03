@@ -82,7 +82,8 @@ final class SqlConditionGeneratorTest extends FunctionalDbalTestCase
                 ->addSimpleValue(2)
                 ->addSimpleValue(5)
             ->end()
-        ->getSearchCondition();
+        ->getSearchCondition()
+        ;
 
         $this->assertQueryIsExecutable($condition);
     }
@@ -95,7 +96,8 @@ final class SqlConditionGeneratorTest extends FunctionalDbalTestCase
                 ->addSimpleValue(2)
                 ->addSimpleValue(5)
             ->end()
-        ->getSearchCondition();
+        ->getSearchCondition()
+        ;
 
         $this->assertQueryIsExecutable($condition);
     }
@@ -108,7 +110,8 @@ final class SqlConditionGeneratorTest extends FunctionalDbalTestCase
                 ->addExcludedSimpleValue(2)
                 ->addExcludedSimpleValue(5)
             ->end()
-        ->getSearchCondition();
+        ->getSearchCondition()
+        ;
 
         $this->assertQueryIsExecutable($condition);
     }
@@ -121,7 +124,8 @@ final class SqlConditionGeneratorTest extends FunctionalDbalTestCase
                 ->addSimpleValue(2)
                 ->addExcludedSimpleValue(5)
             ->end()
-        ->getSearchCondition();
+        ->getSearchCondition()
+        ;
 
         $this->assertQueryIsExecutable($condition);
     }
@@ -136,7 +140,8 @@ final class SqlConditionGeneratorTest extends FunctionalDbalTestCase
                 ->add(new Range(60, 70, false))
                 ->add(new Range(100, 150, true, false))
             ->end()
-        ->getSearchCondition();
+        ->getSearchCondition()
+        ;
 
         $this->assertQueryIsExecutable($condition);
     }
@@ -151,7 +156,8 @@ final class SqlConditionGeneratorTest extends FunctionalDbalTestCase
                 ->add(new ExcludedRange(60, 70, false))
                 ->add(new ExcludedRange(100, 150, true, false))
             ->end()
-        ->getSearchCondition();
+        ->getSearchCondition()
+        ;
 
         $this->assertQueryIsExecutable($condition);
     }
@@ -163,7 +169,8 @@ final class SqlConditionGeneratorTest extends FunctionalDbalTestCase
             ->field('customer')
                 ->add(new Compare(2, '>'))
             ->end()
-        ->getSearchCondition();
+        ->getSearchCondition()
+        ;
 
         $this->assertQueryIsExecutable($condition);
     }
@@ -176,7 +183,8 @@ final class SqlConditionGeneratorTest extends FunctionalDbalTestCase
                 ->add(new Compare(2, '>'))
                 ->add(new Compare(10, '<'))
             ->end()
-        ->getSearchCondition();
+        ->getSearchCondition()
+        ;
 
         $this->assertQueryIsExecutable($condition);
     }
@@ -198,7 +206,8 @@ final class SqlConditionGeneratorTest extends FunctionalDbalTestCase
                     ->add(new Compare(30, '>'))
                 ->end()
             ->end()
-        ->getSearchCondition();
+        ->getSearchCondition()
+        ;
 
         $this->assertQueryIsExecutable($condition);
     }
@@ -211,7 +220,8 @@ final class SqlConditionGeneratorTest extends FunctionalDbalTestCase
                 ->add(new Compare(2, '<>'))
                 ->add(new Compare(5, '<>'))
             ->end()
-        ->getSearchCondition();
+        ->getSearchCondition()
+        ;
 
         $this->assertQueryIsExecutable($condition);
     }
@@ -225,7 +235,8 @@ final class SqlConditionGeneratorTest extends FunctionalDbalTestCase
                 ->add(new Compare(5, '<>'))
                 ->add(new Compare(30, '>'))
             ->end()
-        ->getSearchCondition();
+        ->getSearchCondition()
+        ;
 
         $this->assertQueryIsExecutable($condition);
     }
@@ -239,7 +250,8 @@ final class SqlConditionGeneratorTest extends FunctionalDbalTestCase
                 ->add(new PatternMatch('fo\\\'o', PatternMatch::PATTERN_STARTS_WITH))
                 ->add(new PatternMatch('bar', PatternMatch::PATTERN_NOT_ENDS_WITH, true))
             ->end()
-        ->getSearchCondition();
+        ->getSearchCondition()
+        ;
 
         $this->assertQueryIsExecutable($condition);
     }
@@ -254,7 +266,8 @@ final class SqlConditionGeneratorTest extends FunctionalDbalTestCase
             ->group()
                 ->field('customer')->addSimpleValue(3)->end()
             ->end()
-        ->getSearchCondition();
+        ->getSearchCondition()
+        ;
 
         $this->assertQueryIsExecutable($condition);
     }
@@ -271,7 +284,8 @@ final class SqlConditionGeneratorTest extends FunctionalDbalTestCase
                     ->add(new PatternMatch('foo', PatternMatch::PATTERN_STARTS_WITH))
                 ->end()
             ->end()
-        ->getSearchCondition();
+        ->getSearchCondition()
+        ;
 
         $this->assertQueryIsExecutable($condition);
     }
@@ -286,7 +300,8 @@ final class SqlConditionGeneratorTest extends FunctionalDbalTestCase
             ->field('customer_name')
                 ->add(new PatternMatch('foo', PatternMatch::PATTERN_STARTS_WITH))
             ->end()
-        ->getSearchCondition();
+        ->getSearchCondition()
+        ;
 
         $this->assertQueryIsExecutable($condition);
     }
@@ -305,7 +320,8 @@ final class SqlConditionGeneratorTest extends FunctionalDbalTestCase
                     ->end()
                 ->end()
             ->end()
-        ->getSearchCondition();
+        ->getSearchCondition()
+        ;
 
         $this->assertQueryIsExecutable($condition);
     }
@@ -318,9 +334,8 @@ final class SqlConditionGeneratorTest extends FunctionalDbalTestCase
         $converter
             ->expects(self::atLeastOnce())
             ->method('convertColumn')
-            ->willReturnCallback(static function ($column) use ($type) {
-                return "CAST({$column} AS {$type})";
-            });
+            ->willReturnCallback(static fn ($column) => "CAST({$column} AS {$type})")
+        ;
 
         $fieldSetBuilder = $this->getFieldSet(false);
         $fieldSetBuilder->add('customer', IntegerType::class, ['grouping' => true, 'doctrine_dbal_conversion' => $converter]);
@@ -330,7 +345,8 @@ final class SqlConditionGeneratorTest extends FunctionalDbalTestCase
                 ->addSimpleValue(2)
                 ->addSimpleValue(5)
             ->end()
-        ->getSearchCondition();
+        ->getSearchCondition()
+        ;
 
         $this->assertQueryIsExecutable($condition);
     }
@@ -343,9 +359,8 @@ final class SqlConditionGeneratorTest extends FunctionalDbalTestCase
         $converter
             ->expects(self::atLeastOnce())
             ->method('convertValue')
-            ->willReturnCallback(static function ($input) use ($type) {
-                return "CAST({$input} AS {$type})";
-            });
+            ->willReturnCallback(static fn ($input) => "CAST({$input} AS {$type})")
+        ;
 
         $fieldSetBuilder = $this->getFieldSet(false);
         $fieldSetBuilder->add('customer', IntegerType::class, ['grouping' => true, 'doctrine_dbal_conversion' => $converter]);
@@ -355,7 +370,8 @@ final class SqlConditionGeneratorTest extends FunctionalDbalTestCase
                 ->addSimpleValue(2)
                 ->addSimpleValue(5)
             ->end()
-        ->getSearchCondition();
+        ->getSearchCondition()
+        ;
 
         $this->assertQueryIsExecutable($condition);
     }
@@ -375,7 +391,8 @@ final class SqlConditionGeneratorTest extends FunctionalDbalTestCase
                 ->addSimpleValue(18)
                 ->addSimpleValue($date)
             ->end()
-        ->getSearchCondition();
+        ->getSearchCondition()
+        ;
 
         $this->assertQueryIsExecutable($condition);
     }
@@ -397,7 +414,8 @@ final class SqlConditionGeneratorTest extends FunctionalDbalTestCase
                 ->addSimpleValue($date)
                 ->add(new Range(CarbonInterval::fromString('1 year'), CarbonInterval::fromString('10 year')))
             ->end()
-        ->getSearchCondition();
+        ->getSearchCondition()
+        ;
 
         if ($this->conn->getDatabasePlatform()->getName() === 'postgresql') {
             $this->assertQueryIsExecutable(

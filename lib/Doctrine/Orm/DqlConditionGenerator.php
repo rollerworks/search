@@ -100,10 +100,10 @@ final class DqlConditionGenerator
             }
 
             if (\count($fields[$fieldName]) > 1) {
-                throw new BadMethodCallException(\sprintf('Field "%s" is registered as multiple mapping and cannot be used for sorting.', $fieldName));
+                throw new BadMethodCallException(sprintf('Field "%s" is registered as multiple mapping and cannot be used for sorting.', $fieldName));
             }
 
-            $qb->addOrderBy($fields[$fieldName][null]->column, \strtoupper($direction));
+            $qb->addOrderBy($fields[$fieldName][null]->column, mb_strtoupper($direction));
         }
     }
 }

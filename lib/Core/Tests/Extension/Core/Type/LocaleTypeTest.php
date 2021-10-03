@@ -42,7 +42,8 @@ final class LocaleTypeTest extends SearchIntegrationTestCase
         FieldTransformationAssertion::assertThat($field)
             ->withInput('en_GB')
             ->successfullyTransformsTo('en_GB')
-            ->andReverseTransformsTo('en_GB');
+            ->andReverseTransformsTo('en_GB')
+        ;
 
         $view = $field->createView(new FieldSetView());
 

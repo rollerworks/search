@@ -40,17 +40,20 @@ final class IntegerTypeTest extends SearchIntegrationTestCase
         FieldTransformationAssertion::assertThat($field)
             ->withInput('678')
             ->successfullyTransformsTo(678)
-            ->andReverseTransformsTo('678');
+            ->andReverseTransformsTo('678')
+        ;
 
         FieldTransformationAssertion::assertThat($field)
             ->withInput('1')
             ->successfullyTransformsTo(1)
-            ->andReverseTransformsTo('1');
+            ->andReverseTransformsTo('1')
+        ;
 
         FieldTransformationAssertion::assertThat($field)
             ->withInput('-1')
             ->successfullyTransformsTo(-1)
-            ->andReverseTransformsTo('-1');
+            ->andReverseTransformsTo('-1')
+        ;
     }
 
     /** @test */
@@ -63,7 +66,8 @@ final class IntegerTypeTest extends SearchIntegrationTestCase
         FieldTransformationAssertion::assertThat($field)
             ->withInput('١٢٣٤٥', '12345')
             ->successfullyTransformsTo(12345)
-            ->andReverseTransformsTo('١٢٣٤٥', '12345');
+            ->andReverseTransformsTo('١٢٣٤٥', '12345')
+        ;
     }
 
     /** @test */

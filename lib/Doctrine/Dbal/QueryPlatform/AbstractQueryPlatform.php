@@ -102,8 +102,8 @@ abstract class AbstractQueryPlatform
             PatternMatch::PATTERN_NOT_ENDS_WITH => ['%s', "'%%'"],
         ];
 
-        $value = \addcslashes($patternMatch->getValue(), $this->getLikeEscapeChars());
-        $value = \sprintf($this->connection->getDatabasePlatform()->getConcatExpression(...$patternMap[$patternMatch->getType()]), $this->createParamReferenceFor($value, Type::getType('text')));
+        $value = addcslashes($patternMatch->getValue(), $this->getLikeEscapeChars());
+        $value = sprintf($this->connection->getDatabasePlatform()->getConcatExpression(...$patternMap[$patternMatch->getType()]), $this->createParamReferenceFor($value, Type::getType('text')));
 
         if ($patternMatch->isCaseInsensitive()) {
             $column = "LOWER({$column})";

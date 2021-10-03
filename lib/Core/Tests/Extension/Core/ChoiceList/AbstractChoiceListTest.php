@@ -105,23 +105,23 @@ abstract class AbstractChoiceListTest extends TestCase
         $choices = $this->getChoices();
 
         $this->values = $this->getValues();
-        $this->structuredValues = \array_combine(\array_keys($choices), $this->values);
-        $this->choices = \array_combine($this->values, $choices);
-        $this->keys = \array_combine($this->values, \array_keys($choices));
+        $this->structuredValues = array_combine(array_keys($choices), $this->values);
+        $this->choices = array_combine($this->values, $choices);
+        $this->keys = array_combine($this->values, array_keys($choices));
 
         // allow access to the individual entries without relying on their indices
-        \reset($this->choices);
-        \reset($this->values);
-        \reset($this->keys);
+        reset($this->choices);
+        reset($this->values);
+        reset($this->keys);
 
         for ($i = 1; $i <= 4; ++$i) {
-            $this->{'choice' . $i} = \current($this->choices);
-            $this->{'value' . $i} = \current($this->values);
-            $this->{'key' . $i} = \current($this->keys);
+            $this->{'choice' . $i} = current($this->choices);
+            $this->{'value' . $i} = current($this->values);
+            $this->{'key' . $i} = current($this->keys);
 
-            \next($this->choices);
-            \next($this->values);
-            \next($this->keys);
+            next($this->choices);
+            next($this->values);
+            next($this->keys);
         }
     }
 

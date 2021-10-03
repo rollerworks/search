@@ -41,8 +41,8 @@ final class DqlQueryPlatform extends AbstractQueryPlatform
             PatternMatch::PATTERN_NOT_ENDS_WITH => "CONCAT(%s, '%%')",
         ];
 
-        $value = \addcslashes($patternMatch->getValue(), $this->getLikeEscapeChars());
-        $value = \sprintf($patternMap[$patternMatch->getType()], $this->createParamReferenceFor($value, Type::getType('text')));
+        $value = addcslashes($patternMatch->getValue(), $this->getLikeEscapeChars());
+        $value = sprintf($patternMap[$patternMatch->getType()], $this->createParamReferenceFor($value, Type::getType('text')));
 
         if ($patternMatch->isCaseInsensitive()) {
             $column = "LOWER({$column})";

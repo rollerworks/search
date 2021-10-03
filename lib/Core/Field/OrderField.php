@@ -64,9 +64,9 @@ final class OrderField implements FieldConfig
      */
     public function __construct(string $name, ResolvedFieldType $type, array $options = [])
     {
-        if (! \preg_match('/^@_?[a-zA-Z][a-zA-Z0-9_\-]*$/D', $name)) {
+        if (! preg_match('/^@_?[a-zA-Z][a-zA-Z0-9_\-]*$/D', $name)) {
             throw new InvalidArgumentException(
-                \sprintf(
+                sprintf(
                     'The name "%s" contains illegal characters. Name must start with @' .
                     'and only contain letters, digits, numbers, underscores ("_") and hyphens ("-").',
                     $name

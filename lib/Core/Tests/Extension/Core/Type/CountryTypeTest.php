@@ -41,7 +41,8 @@ final class CountryTypeTest extends SearchIntegrationTestCase
         FieldTransformationAssertion::assertThat($field)
             ->withInput('Germany', 'DE')
             ->successfullyTransformsTo('DE')
-            ->andReverseTransformsTo('Germany', 'DE');
+            ->andReverseTransformsTo('Germany', 'DE')
+        ;
 
         $view = $field->createView(new FieldSetView());
         $choices = $view->vars['choices'];

@@ -46,7 +46,8 @@ final class QueryConditionGeneratorTest extends SearchIntegrationTestCase
             ->field('unknown')
                 ->addSimpleValue('nope')
             ->end()
-        ->getSearchCondition();
+        ->getSearchCondition()
+        ;
         $generator = new QueryConditionGenerator($condition);
 
         self::assertEquals([
@@ -85,7 +86,8 @@ final class QueryConditionGeneratorTest extends SearchIntegrationTestCase
                 ->addSimpleValue('Doctor')
                 ->addSimpleValue('Foo')
             ->end()
-        ->getSearchCondition();
+        ->getSearchCondition()
+        ;
 
         $generator = new QueryConditionGenerator($condition);
         $generator->registerField('id', 'id');
@@ -142,7 +144,8 @@ final class QueryConditionGeneratorTest extends SearchIntegrationTestCase
                     ->end()
                 ->end()
             ->end()
-        ->getSearchCondition();
+        ->getSearchCondition()
+        ;
 
         $generator = new QueryConditionGenerator($condition);
         $generator->registerField('id', 'id');
@@ -206,7 +209,8 @@ final class QueryConditionGeneratorTest extends SearchIntegrationTestCase
                 ->addSimpleValue(10)
                 ->addExcludedSimpleValue(5)
             ->end()
-        ->getSearchCondition();
+        ->getSearchCondition()
+        ;
 
         $generator = new QueryConditionGenerator($condition);
         $generator->registerField('id', 'id');
@@ -250,7 +254,8 @@ final class QueryConditionGeneratorTest extends SearchIntegrationTestCase
                     ->addSimpleValue('Foo')
                 ->end()
             ->end()
-        ->getSearchCondition();
+        ->getSearchCondition()
+        ;
 
         $generator = new QueryConditionGenerator($condition);
         $generator->registerField('id', 'id');
@@ -299,7 +304,8 @@ final class QueryConditionGeneratorTest extends SearchIntegrationTestCase
                 ->add(new ExcludedRange(10, 20))
                 ->addExcludedSimpleValue(5)
             ->end()
-        ->getSearchCondition();
+        ->getSearchCondition()
+        ;
 
         $generator = new QueryConditionGenerator($condition);
         $generator->registerField('id', 'id');
@@ -352,7 +358,8 @@ final class QueryConditionGeneratorTest extends SearchIntegrationTestCase
                 ->add(new Compare(30, '>'))
                 ->add(new Compare(50, '<'))
             ->end()
-        ->getSearchCondition();
+        ->getSearchCondition()
+        ;
 
         $generator = new QueryConditionGenerator($condition);
         $generator->registerField('id', 'id');
@@ -410,7 +417,8 @@ final class QueryConditionGeneratorTest extends SearchIntegrationTestCase
                 ->add(new PatternMatch('Spider', PatternMatch::PATTERN_EQUALS, true))
                 ->add(new PatternMatch('Piggy', PatternMatch::PATTERN_NOT_EQUALS, true))
             ->end()
-        ->getSearchCondition();
+        ->getSearchCondition()
+        ;
 
         $generator = new QueryConditionGenerator($condition);
         $generator->registerField('id', 'id');
@@ -487,7 +495,8 @@ final class QueryConditionGeneratorTest extends SearchIntegrationTestCase
                 ->addSimpleValue('Doctor')
                 ->addSimpleValue('Foo')
             ->end()
-            ->getSearchCondition();
+            ->getSearchCondition()
+        ;
 
         $generator = new QueryConditionGenerator($condition);
         $generator->registerField('name', 'item[].author[].name');
@@ -540,7 +549,8 @@ final class QueryConditionGeneratorTest extends SearchIntegrationTestCase
 
         $condition = $this
             ->createCondition()
-            ->getSearchCondition();
+            ->getSearchCondition()
+        ;
         $condition->setPrimaryCondition($primaryCondition);
 
         $generator = new QueryConditionGenerator($condition);
@@ -588,7 +598,8 @@ final class QueryConditionGeneratorTest extends SearchIntegrationTestCase
                 ->addSimpleValue('Doctor')
                 ->addSimpleValue('Foo')
             ->end()
-            ->getSearchCondition();
+            ->getSearchCondition()
+        ;
         $condition->setPrimaryCondition($primaryCondition);
 
         $generator = new QueryConditionGenerator($condition);
@@ -647,7 +658,8 @@ final class QueryConditionGeneratorTest extends SearchIntegrationTestCase
                     ->addSimpleValue('foo')
                     ->addSimpleValue('bar')
                 ->end()
-            ->getSearchCondition();
+            ->getSearchCondition()
+        ;
 
         $generator = new QueryConditionGenerator($condition);
         $generator->registerField('name', 'child>subchild>sub.name');
@@ -694,7 +706,8 @@ final class QueryConditionGeneratorTest extends SearchIntegrationTestCase
                     ->addSimpleValue('foo')
                     ->addSimpleValue('bar')
                 ->end()
-            ->getSearchCondition();
+            ->getSearchCondition()
+        ;
 
         $generator = new QueryConditionGenerator($condition, new ParameterBag(['locale' => 'en', 'territory' => 'US']));
         $generator->registerField('name', '/articles_{locale}/territory_{territory}#child>name');
@@ -746,7 +759,8 @@ final class QueryConditionGeneratorTest extends SearchIntegrationTestCase
                 ->addSimpleValue('Doctor')
                 ->addSimpleValue('Foo')
             ->end()
-            ->getSearchCondition();
+            ->getSearchCondition()
+        ;
         $condition->setPrimaryCondition($primaryCondition);
 
         $generator = new QueryConditionGenerator($condition, new ParameterBag(['locale' => 'en', 'territory' => 'US']));
@@ -810,7 +824,8 @@ final class QueryConditionGeneratorTest extends SearchIntegrationTestCase
                     ->addSimpleValue('foo')
                     ->addSimpleValue('bar')
                 ->end()
-            ->getSearchCondition();
+            ->getSearchCondition()
+        ;
 
         $generator = new QueryConditionGenerator($condition, new ParameterBag(['locale' => 'en', 'user' => 123]));
         $generator->registerField(
@@ -889,7 +904,8 @@ final class QueryConditionGeneratorTest extends SearchIntegrationTestCase
     {
         $condition = $this
             ->createCondition(true)
-            ->getSearchCondition();
+            ->getSearchCondition()
+        ;
 
         $condition->setOrder($this->createSearchOrder(['@date' => 'asc']));
 
@@ -925,7 +941,8 @@ final class QueryConditionGeneratorTest extends SearchIntegrationTestCase
 
         $condition = $this
             ->createCondition(true)
-            ->getSearchCondition();
+            ->getSearchCondition()
+        ;
         $condition->setPrimaryCondition($primaryCondition);
 
         $condition->setOrder($this->createSearchOrder(['@date' => 'asc']));
@@ -957,7 +974,8 @@ final class QueryConditionGeneratorTest extends SearchIntegrationTestCase
     {
         $condition = $this
             ->createCondition(true)
-            ->getSearchCondition();
+            ->getSearchCondition()
+        ;
         $condition->setOrder($this->createSearchOrder(['@date' => 'asc']));
 
         $generator = new QueryConditionGenerator($condition);
@@ -997,7 +1015,8 @@ final class QueryConditionGeneratorTest extends SearchIntegrationTestCase
     {
         $condition = $this
             ->createCondition(true)
-            ->getSearchCondition();
+            ->getSearchCondition()
+        ;
         $condition->setOrder($this->createSearchOrder(['@date' => 'asc']));
 
         $generator = new QueryConditionGenerator($condition, new ParameterBag(['user' => 123]));
@@ -1055,7 +1074,8 @@ final class QueryConditionGeneratorTest extends SearchIntegrationTestCase
                 ->addSimpleValue('Doctor')
                 ->addSimpleValue('Foo')
             ->end()
-            ->getSearchCondition();
+            ->getSearchCondition()
+        ;
 
         $generator = new QueryConditionGenerator($condition);
         $generator->registerField('name', 'author[].name', [], [
@@ -1100,7 +1120,8 @@ final class QueryConditionGeneratorTest extends SearchIntegrationTestCase
                 ->addSimpleValue('Some')
                 ->addSimpleValue('Restriction')
             ->end()
-            ->getSearchCondition();
+            ->getSearchCondition()
+        ;
 
         $generator = new QueryConditionGenerator($condition);
         $generator->registerField('name', 'author[].name');
@@ -1161,7 +1182,8 @@ final class QueryConditionGeneratorTest extends SearchIntegrationTestCase
                 ->addSimpleValue('Some')
                 ->addSimpleValue('Restriction')
             ->end()
-            ->getSearchCondition();
+            ->getSearchCondition()
+        ;
 
         $generator = new QueryConditionGenerator($condition);
         $generator->registerField('name', 'item[].author[].name');
@@ -1269,10 +1291,10 @@ final class QueryConditionGeneratorTest extends SearchIntegrationTestCase
             }
         }
 
-        \sort($expected);
-        \sort($actual);
+        sort($expected);
+        sort($actual);
 
-        self::assertEquals($expected, \array_unique($actual));
+        self::assertEquals($expected, array_unique($actual));
     }
 
     /**
@@ -1287,8 +1309,8 @@ final class QueryConditionGeneratorTest extends SearchIntegrationTestCase
             $actual[] = $mapping->fieldName;
         }
 
-        \sort($expected);
-        \sort($actual);
+        sort($expected);
+        sort($actual);
 
         self::assertEquals($expected, $actual);
     }

@@ -43,7 +43,7 @@ final class LocalizedBirthdayTransformer implements DataTransformer
             $formatter = $this->getNumberFormatter();
             $result = $formatter->format($value);
 
-            if (\intl_is_failure($formatter->getErrorCode())) {
+            if (intl_is_failure($formatter->getErrorCode())) {
                 throw new TransformationFailedException($formatter->getErrorMessage());
             }
 
@@ -85,7 +85,7 @@ final class LocalizedBirthdayTransformer implements DataTransformer
 
     private function transformWhenInteger($value)
     {
-        if (! \preg_match('/^\p{N}+$/u', (string) $value)) {
+        if (! preg_match('/^\p{N}+$/u', (string) $value)) {
             return $value;
         }
 
@@ -93,7 +93,7 @@ final class LocalizedBirthdayTransformer implements DataTransformer
         $formatter = $this->getNumberFormatter();
         $result = $formatter->parse($value, \NumberFormatter::TYPE_INT32, $position);
 
-        if (\intl_is_failure($formatter->getErrorCode())) {
+        if (intl_is_failure($formatter->getErrorCode())) {
             throw new TransformationFailedException($formatter->getErrorMessage());
         }
 
@@ -115,7 +115,7 @@ final class LocalizedBirthdayTransformer implements DataTransformer
 
         if ($value > $currentDate) {
             throw new TransformationFailedException(
-                \sprintf(
+                sprintf(
                     'Date "%s" is higher then current date "%s". Are you a time traveler?',
                     $value->format('Y-m-d'),
                     $currentDate->format('Y-m-d')

@@ -81,7 +81,7 @@ final class ExtensionPass implements CompilerPassInterface
             $tag = $serviceDefinition->getTag($this->fieldTypeExtensionTag);
 
             if (! isset($tag[0]['extended_type'])) {
-                throw new InvalidArgumentException(\sprintf('"%s" tagged services must have the extended type configured using the extended_type/extended-type attribute, none was configured for the "%s" service.', $this->fieldTypeExtensionTag, $serviceId));
+                throw new InvalidArgumentException(sprintf('"%s" tagged services must have the extended type configured using the extended_type/extended-type attribute, none was configured for the "%s" service.', $this->fieldTypeExtensionTag, $serviceId));
             }
 
             $extendedType = $tag[0]['extended_type'];
@@ -91,10 +91,8 @@ final class ExtensionPass implements CompilerPassInterface
         $allExtensions = [];
 
         foreach ($typeExtensions as $extendedType => $extensions) {
-            $allExtensions[$extendedType] = new IteratorArgument(\array_map(
-                static function ($extensionId) {
-                    return new Reference($extensionId);
-                },
+            $allExtensions[$extendedType] = new IteratorArgument(array_map(
+                static fn ($extensionId) => new Reference($extensionId),
                 $extensions
             ));
         }

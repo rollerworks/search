@@ -46,9 +46,7 @@ final class DefaultChoiceListFactory implements ChoiceListFactory
         $keys = $list->getOriginalKeys();
 
         if (! \is_callable($preferredChoices) && ! empty($preferredChoices)) {
-            $preferredChoices = static function ($choice) use ($preferredChoices) {
-                return \array_search($choice, $preferredChoices, true) !== false;
-            };
+            $preferredChoices = static fn ($choice) => array_search($choice, $preferredChoices, true) !== false;
         }
 
         // The names are generated from an incrementing integer by default

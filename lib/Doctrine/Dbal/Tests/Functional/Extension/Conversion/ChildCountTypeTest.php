@@ -89,7 +89,8 @@ final class ChildCountTypeTest extends FunctionalDbalTestCase
             ->field('contact_count')
                 ->addSimpleValue(2)
             ->end()
-            ->getSearchCondition();
+            ->getSearchCondition()
+        ;
 
         $this->assertRecordsAreFound($condition, [1]);
     }

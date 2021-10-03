@@ -47,12 +47,12 @@ final class SchemaRecord
     {
         if (\count($values) != \count($this->columns)) {
             throw new \InvalidArgumentException(
-                \sprintf(
+                sprintf(
                     'Values count mismatch, expected %d got %d on table "%s" with record: %s',
                     \count($this->columns),
                     \count($values),
                     $this->table,
-                    \var_export($values, true)
+                    var_export($values, true)
                 )
             );
         }
@@ -92,7 +92,7 @@ final class SchemaRecord
         foreach ($this->records as $values) {
             $connection->insert(
                 $this->table,
-                \array_combine(\array_keys($this->columns), $values),
+                array_combine(array_keys($this->columns), $values),
                 $this->columns
             );
         }

@@ -132,16 +132,16 @@ class ConditionStructureBuilder implements StructureBuilder
         $groupCount = $this->groupsCount[$this->nestingLevel];
 
         if ($groupCount > $this->maxGroups) {
-            throw new GroupsOverflowException($this->maxGroups, \implode('', $this->path));
+            throw new GroupsOverflowException($this->maxGroups, implode('', $this->path));
         }
 
         // The new group is relative to it's current level (the group is declared at level x); and zero-indexed
-        $this->path[] = \sprintf($path, $groupCount - 1);
+        $this->path[] = sprintf($path, $groupCount - 1);
 
         ++$this->nestingLevel;
 
         if ($this->nestingLevel > $this->maxNesting) {
-            throw new GroupsNestingException($this->maxNesting, \implode('', $this->path));
+            throw new GroupsNestingException($this->maxNesting, implode('', $this->path));
         }
 
         $this->valuesGroupLevels[$this->nestingLevel - 1]->addGroup(
@@ -156,7 +156,7 @@ class ConditionStructureBuilder implements StructureBuilder
         }
 
         --$this->nestingLevel;
-        \array_pop($this->path);
+        array_pop($this->path);
     }
 
     public function field(string $name, string $path): void
@@ -168,7 +168,7 @@ class ConditionStructureBuilder implements StructureBuilder
         $this->valuesBag = new ValuesBag();
 
         $this->valuesGroupLevels[$this->nestingLevel]->addField($name, $this->valuesBag);
-        $this->path[] = \sprintf($path, $name);
+        $this->path[] = sprintf($path, $name);
 
         $this->validator->initializeContext($this->fieldConfig, $this->errorList);
     }
@@ -255,7 +255,7 @@ class ConditionStructureBuilder implements StructureBuilder
                 ConditionErrorMessage::withMessageTemplate(
                     $path[0] . $path[1],
                     'Unknown Comparison operator "{{ operator }}".',
-                    ['{{ operator }}' => \is_scalar($operator) ? $operator : \gettype($operator)]
+                    ['{{ operator }}' => is_scalar($operator) ? $operator : \gettype($operator)]
                 )
             );
             $operator = '<>';
@@ -279,7 +279,7 @@ class ConditionStructureBuilder implements StructureBuilder
         $this->increaseValuesCount($path[0]);
         $this->assertAcceptsType(PatternMatch::class);
 
-        if (! \is_scalar($value)) {
+        if (! is_scalar($value)) {
             $this->addError(new ConditionErrorMessage($path[0] . $path[1], 'PatternMatch value must a string.'));
 
             $valid = false;
@@ -322,7 +322,7 @@ class ConditionStructureBuilder implements StructureBuilder
         $this->valuesBag = null;
         $this->inputTransformer = null;
 
-        \array_pop($this->path);
+        array_pop($this->path);
     }
 
     /**
@@ -338,9 +338,9 @@ class ConditionStructureBuilder implements StructureBuilder
         }
 
         if ($this->inputTransformer === false) {
-            if ($value !== null && ! \is_scalar($value)) {
+            if ($value !== null && ! is_scalar($value)) {
                 $e = new \RuntimeException(
-                    \sprintf(
+                    sprintf(
                         'Norm value of type %s is not a scalar value or null and not cannot be ' .
                         'converted to a string. You must set a NormTransformer for field "%s" with type "%s".',
                         \gettype($value),
@@ -391,13 +391,13 @@ class ConditionStructureBuilder implements StructureBuilder
 
     private function createValuePath(string $path, string $type): string
     {
-        if (\mb_strpos($path, '{idx}') !== false) {
-            $path = \str_replace('{idx}', (string) $this->valuesBag->count($type), $path);
+        if (mb_strpos($path, '{idx}') !== false) {
+            $path = str_replace('{idx}', (string) $this->valuesBag->count($type), $path);
         } else {
-            $path = \str_replace('{pos}', (string) $this->valuesCount, $path);
+            $path = str_replace('{pos}', (string) $this->valuesCount, $path);
         }
 
-        return \implode('', $this->path) . $path;
+        return implode('', $this->path) . $path;
     }
 
     private function increaseValuesCount(string $path): void
@@ -425,8 +425,8 @@ class ConditionStructureBuilder implements StructureBuilder
         if (! $this->fieldConfig->getValueComparator()->isLower($range->getLower(), $range->getUpper(), $this->fieldConfig->getOptions())) {
             $message = 'Lower range-value {{ lower }} should be lower then upper range-value {{ upper }}.';
             $params = [
-                '{{ lower }}' => \mb_strpos((string) $lower, ' ') ? "'" . $lower . "'" : $lower,
-                '{{ upper }}' => \mb_strpos((string) $upper, ' ') ? "'" . $upper . "'" : $upper,
+                '{{ lower }}' => mb_strpos((string) $lower, ' ') ? "'" . $lower . "'" : $lower,
+                '{{ upper }}' => mb_strpos((string) $upper, ' ') ? "'" . $upper . "'" : $upper,
             ];
 
             $this->addError(ConditionErrorMessage::withMessageTemplate($path[0], $message, $params));

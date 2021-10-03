@@ -31,12 +31,8 @@ final class LazyFieldSetRegistryTest extends TestCase
 
         $registry = LazyFieldSetRegistry::create(
             [
-                'set' => static function () use ($configurator) {
-                    return $configurator;
-                },
-                'set2' => static function () use ($configurator2) {
-                    return $configurator2;
-                },
+                'set' => static fn () => $configurator,
+                'set2' => static fn () => $configurator2,
             ]
         );
 
@@ -62,9 +58,7 @@ final class LazyFieldSetRegistryTest extends TestCase
 
         $registry = LazyFieldSetRegistry::create(
             [
-                'set' => static function () use ($configurator) {
-                    return $configurator;
-                },
+                'set' => static fn () => $configurator,
             ]
         );
 
@@ -87,12 +81,8 @@ final class LazyFieldSetRegistryTest extends TestCase
 
         $registry = LazyFieldSetRegistry::create(
             [
-                'set' => static function () use ($configurator) {
-                    return $configurator;
-                },
-                $name => static function () use ($configurator2) {
-                    return $configurator2;
-                },
+                'set' => static fn () => $configurator,
+                $name => static fn () => $configurator2,
             ]
         );
 
@@ -114,9 +104,7 @@ final class LazyFieldSetRegistryTest extends TestCase
 
         $registry = LazyFieldSetRegistry::create(
             [
-                'set' => static function () use ($configurator) {
-                    return $configurator;
-                },
+                'set' => static fn () => $configurator,
             ]
         );
 
@@ -140,9 +128,7 @@ final class LazyFieldSetRegistryTest extends TestCase
 
         $registry = LazyFieldSetRegistry::create(
             [
-                'set' => static function () use ($configurator) {
-                    return $configurator;
-                },
+                'set' => static fn () => $configurator,
             ]
         );
 

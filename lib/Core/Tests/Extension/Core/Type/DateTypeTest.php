@@ -36,7 +36,8 @@ final class DateTypeTest extends SearchIntegrationTestCase
         FieldTransformationAssertion::assertThat($field)
             ->withInput($outputTime->format('m*Y*d'), $outputTime->format('Y-m-d'))
             ->successfullyTransformsTo($outputTime)
-            ->andReverseTransformsTo('06*2010*02', '2010-06-02');
+            ->andReverseTransformsTo('06*2010*02', '2010-06-02')
+        ;
     }
 
     /** @test */
@@ -48,11 +49,13 @@ final class DateTypeTest extends SearchIntegrationTestCase
 
         FieldTransformationAssertion::assertThat($field)
             ->withInput('06*2010*02', '2010-06-02')
-            ->failsToTransforms();
+            ->failsToTransforms()
+        ;
 
         FieldTransformationAssertion::assertThat($field)
             ->withInput('06-2010-02', '2010-06*02')
-            ->failsToTransforms();
+            ->failsToTransforms()
+        ;
     }
 
     /** @test */
@@ -68,7 +71,7 @@ final class DateTypeTest extends SearchIntegrationTestCase
         self::assertArrayHasKey('timezone', $fieldView->vars);
         self::assertArrayHasKey('pattern', $fieldView->vars);
 
-        self::assertEquals(\date_default_timezone_get(), $fieldView->vars['timezone']);
+        self::assertEquals(date_default_timezone_get(), $fieldView->vars['timezone']);
         self::assertEquals('M/d/yy', $fieldView->vars['pattern']);
     }
 
@@ -85,7 +88,7 @@ final class DateTypeTest extends SearchIntegrationTestCase
         self::assertArrayHasKey('timezone', $fieldView->vars);
         self::assertArrayHasKey('pattern', $fieldView->vars);
 
-        self::assertEquals(\date_default_timezone_get(), $fieldView->vars['timezone']);
+        self::assertEquals(date_default_timezone_get(), $fieldView->vars['timezone']);
         self::assertEquals('MM-yyyy-dd', $fieldView->vars['pattern']);
     }
 

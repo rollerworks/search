@@ -30,6 +30,7 @@ final class TextTypeTest extends SearchIntegrationTestCase
         FieldTransformationAssertion::assertThat($field)
             ->withInput('foobar')
             ->successfullyTransformsTo('foobar')
-            ->andReverseTransformsTo('foobar');
+            ->andReverseTransformsTo('foobar')
+        ;
     }
 }

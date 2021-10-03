@@ -93,8 +93,8 @@ final class SqlConditionGenerator implements ConditionGenerator
 
         $mappingIdx = null;
 
-        if (\mb_strpos($fieldName, '#') !== false) {
-            [$fieldName, $mappingIdx] = \explode('#', $fieldName, 2);
+        if (mb_strpos($fieldName, '#') !== false) {
+            [$fieldName, $mappingIdx] = explode('#', $fieldName, 2);
             unset($this->fields[$fieldName][null]);
         } else {
             $this->fields[$fieldName] = [];
@@ -151,10 +151,10 @@ final class SqlConditionGenerator implements ConditionGenerator
 
     private function getQueryPlatform(): AbstractQueryPlatform
     {
-        $dbPlatform = \ucfirst($this->connection->getDatabasePlatform()->getName());
+        $dbPlatform = ucfirst($this->connection->getDatabasePlatform()->getName());
         $platformClass = 'Rollerworks\\Component\\Search\\Doctrine\\Dbal\\QueryPlatform\\' . $dbPlatform . 'QueryPlatform';
 
-        if (! \class_exists($platformClass)) {
+        if (! class_exists($platformClass)) {
             $platformClass = SqlQueryPlatform::class;
         }
 

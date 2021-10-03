@@ -90,7 +90,7 @@ final class JsonInput extends AbstractInput
             throw new UnexpectedTypeException($input, 'string');
         }
 
-        $input = \trim($input);
+        $input = trim($input);
 
         $fieldSet = $config->getFieldSet();
 
@@ -98,13 +98,13 @@ final class JsonInput extends AbstractInput
             return new SearchCondition($fieldSet, new ValuesGroup());
         }
 
-        $array = \json_decode($input, true, 512, \JSON_BIGINT_AS_STRING);
+        $array = json_decode($input, true, 512, \JSON_BIGINT_AS_STRING);
 
-        if (\json_last_error() !== \JSON_ERROR_NONE) {
+        if (json_last_error() !== \JSON_ERROR_NONE) {
             throw new InvalidSearchConditionException([
                 ConditionErrorMessage::rawMessage(
                     $input,
-                    'Input does not contain valid JSON: ' . "\n" . \json_last_error_msg(),
+                    'Input does not contain valid JSON: ' . "\n" . json_last_error_msg(),
                     $input
                 ),
             ]);
@@ -255,8 +255,8 @@ final class JsonInput extends AbstractInput
     private function assertValueArrayHasKeys($array, array $requiredKeys, string $path): void
     {
         if (! \is_array($array)) {
-            throw new InputProcessorException(\implode('', $this->structureBuilder->getCurrentPath()) . $path,
-                \sprintf('Expected value-structure to be an array, got %s instead.', \gettype($array))
+            throw new InputProcessorException(implode('', $this->structureBuilder->getCurrentPath()) . $path,
+                sprintf('Expected value-structure to be an array, got %s instead.', \gettype($array))
             );
         }
 
@@ -269,12 +269,12 @@ final class JsonInput extends AbstractInput
         }
 
         if ($missingKeys) {
-            throw new InputProcessorException(\implode('', $this->structureBuilder->getCurrentPath()) . $path,
-                \sprintf(
+            throw new InputProcessorException(implode('', $this->structureBuilder->getCurrentPath()) . $path,
+                sprintf(
                     'Expected value-structure to contain the following keys: %s. ' .
                     'But the following keys are missing: %s.',
-                    \implode(', ', $requiredKeys),
-                    \implode(', ', $missingKeys)
+                    implode(', ', $requiredKeys),
+                    implode(', ', $missingKeys)
                 )
             );
         }

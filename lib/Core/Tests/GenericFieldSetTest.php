@@ -107,7 +107,8 @@ final class GenericFieldSetTest extends TestCase
                     $fieldView->vars['name'] = $name;
 
                     return $fieldView;
-                });
+                })
+            ;
         }
 
         return $field;

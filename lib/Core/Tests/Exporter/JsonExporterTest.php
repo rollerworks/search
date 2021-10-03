@@ -26,7 +26,7 @@ final class JsonExporterTest extends SearchConditionExporterTestCase
 {
     public function provideSingleValuePairTest()
     {
-        return \json_encode(
+        return json_encode(
             [
                 'fields' => [
                     'name' => [
@@ -49,7 +49,7 @@ final class JsonExporterTest extends SearchConditionExporterTestCase
 
     public function provideMultipleValuesTest()
     {
-        return \json_encode(
+        return json_encode(
             [
                 'fields' => [
                     'name' => [
@@ -65,7 +65,7 @@ final class JsonExporterTest extends SearchConditionExporterTestCase
 
     public function providePrivateFieldsTest()
     {
-        return \json_encode(
+        return json_encode(
             [
                 'fields' => [
                     'name' => [
@@ -81,7 +81,7 @@ final class JsonExporterTest extends SearchConditionExporterTestCase
 
     public function provideRangeValuesTest()
     {
-        return \json_encode(
+        return json_encode(
             [
                 'fields' => [
                     'id' => [
@@ -107,7 +107,7 @@ final class JsonExporterTest extends SearchConditionExporterTestCase
 
     public function provideComparisonValuesTest()
     {
-        return \json_encode(
+        return json_encode(
             [
                 'fields' => [
                     'id' => [
@@ -130,7 +130,7 @@ final class JsonExporterTest extends SearchConditionExporterTestCase
 
     public function provideMatcherValuesTest()
     {
-        return \json_encode(
+        return json_encode(
             [
                 'fields' => [
                     'name' => [
@@ -153,7 +153,7 @@ final class JsonExporterTest extends SearchConditionExporterTestCase
 
     public function provideGroupTest()
     {
-        return \json_encode(
+        return json_encode(
             [
                 'fields' => [
                     'name' => [
@@ -183,7 +183,7 @@ final class JsonExporterTest extends SearchConditionExporterTestCase
 
     public function provideMultipleSubGroupTest()
     {
-        return \json_encode(
+        return json_encode(
             [
                 'groups' => [
                     [
@@ -207,7 +207,7 @@ final class JsonExporterTest extends SearchConditionExporterTestCase
 
     public function provideNestedGroupTest()
     {
-        return \json_encode(
+        return json_encode(
             [
                 'groups' => [
                     [
@@ -228,12 +228,12 @@ final class JsonExporterTest extends SearchConditionExporterTestCase
 
     public function provideEmptyValuesTest()
     {
-        return \json_encode([]);
+        return json_encode([]);
     }
 
     public function provideEmptyGroupTest()
     {
-        return \json_encode(['groups' => [[]]]);
+        return json_encode(['groups' => [[]]]);
     }
 
     protected function getExporter(): ConditionExporter

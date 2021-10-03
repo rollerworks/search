@@ -36,7 +36,7 @@ final class MoneyType extends AbstractFieldType
 
     public function __construct()
     {
-        if (! \class_exists(IntlMoneyParser::class)) {
+        if (! class_exists(IntlMoneyParser::class)) {
             throw new \RuntimeException('Unable to use MoneyType without the "moneyphp/money" library.');
         }
 
@@ -98,7 +98,7 @@ final class MoneyType extends AbstractFieldType
                 StringQueryInput::VALUE_EXPORTER_OPTION_NAME => static function ($value, callable $transformer, FieldConfig $config) {
                     $transformedValue = $transformer($value, $config);
 
-                    if (\mb_strpos($transformedValue, ',') !== false) {
+                    if (mb_strpos($transformedValue, ',') !== false) {
                         $transformedValue = '"' . $transformedValue . '"';
                     }
 

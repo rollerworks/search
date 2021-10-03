@@ -123,7 +123,7 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
             $this->processOrder($primaryCondition->getOrder(), $orderClause, $orderCondition, true);
         }
 
-        $rootGroupCondition = \array_values(\array_filter([
+        $rootGroupCondition = array_values(array_filter([
             $primaryConditionGroupCondition,
             $rootGroupCondition,
             $orderCondition,
@@ -132,10 +132,10 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
         if (\count($rootGroupCondition) > 1) {
             $rootGroupCondition = [self::QUERY_BOOL => [self::CONDITION_AND => $rootGroupCondition]];
         } else {
-            $rootGroupCondition = \current($rootGroupCondition);
+            $rootGroupCondition = current($rootGroupCondition);
         }
 
-        return new Query(\array_filter([self::QUERY => $rootGroupCondition, self::SORT => $orderClause]));
+        return new Query(array_filter([self::QUERY => $rootGroupCondition, self::SORT => $orderClause]));
     }
 
     public function getMappings(): array
@@ -159,7 +159,7 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
             }
         }
 
-        return \array_values($mappings);
+        return array_values($mappings);
     }
 
     public function getSearchCondition(): SearchCondition
@@ -359,7 +359,7 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
             // https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-has-child-query.html#_sorting
             $propertyName = $mapping->join ? self::SORT_SCORE : $mapping->propertyName;
 
-            $clause = \array_merge_recursive(
+            $clause = array_merge_recursive(
                 $clause,
                 $mapping->options,
                 [
@@ -448,7 +448,7 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
                         /** @var Range $value */
                         $query = [
                             self::QUERY_IDS => [
-                                self::QUERY_VALUES => \range($value->getLower(), $value->getUpper()),
+                                self::QUERY_VALUES => range($value->getLower(), $value->getUpper()),
                             ],
                         ];
                     }
@@ -508,7 +508,7 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
             while ($nested !== false) {
                 $path = $nested[self::QUERY_PATH];
                 $query = [
-                    self::QUERY_NESTED => \array_replace_recursive(\compact('path', 'query'), $options),
+                    self::QUERY_NESTED => array_replace_recursive(compact('path', 'query'), $options),
                 ];
                 $nested = $nested['nested'];
             }
@@ -518,7 +518,7 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
             while ($join !== false) {
                 $type = $join[self::QUERY_TYPE];
                 $query = [
-                    self::QUERY_HAS_CHILD => \array_replace_recursive(\compact('type', 'query'), $options),
+                    self::QUERY_HAS_CHILD => array_replace_recursive(compact('type', 'query'), $options),
                 ];
                 $join = $join['join'];
             }
@@ -549,7 +549,7 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
             case PatternMatch::PATTERN_ENDS_WITH:
             case PatternMatch::PATTERN_NOT_ENDS_WITH:
                 $query[self::QUERY_WILDCARD] = [
-                    $propertyName => [self::QUERY_VALUE => '?' . \addcslashes($patternMatch->getValue(), '?*')],
+                    $propertyName => [self::QUERY_VALUE => '?' . addcslashes($patternMatch->getValue(), '?*')],
                 ];
 
                 break;
@@ -561,7 +561,7 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
                 break;
 
             default:
-                $message = \sprintf('Not supported PatternMatch type "%s"', $patternMatch->getType());
+                $message = sprintf('Not supported PatternMatch type "%s"', $patternMatch->getType());
 
                 throw new BadMethodCallException($message);
         }
@@ -576,7 +576,7 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
         }
 
         if (\is_array($template)) {
-            return \array_map([$this->parameterBag, 'injectParameters'], $template);
+            return array_map([$this->parameterBag, 'injectParameters'], $template);
         }
 
         return $this->parameterBag->injectParameters($template);
@@ -686,7 +686,7 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
             foreach ($bool[$condition] as &$previousQuery) {
                 if (isset($previousQuery[self::QUERY_HAS_CHILD])
                     && $previousQuery[self::QUERY_HAS_CHILD][self::QUERY_TYPE] === $query[self::QUERY_HAS_CHILD][self::QUERY_TYPE]) {
-                    $previousQuery[self::QUERY_HAS_CHILD] = \array_replace(
+                    $previousQuery[self::QUERY_HAS_CHILD] = array_replace(
                         $previousQuery[self::QUERY_HAS_CHILD],
                         $query[self::QUERY_HAS_CHILD],
                         [
@@ -714,7 +714,7 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
             foreach ($bool[$condition] as &$previousQuery) {
                 if (isset($previousQuery[self::QUERY_NESTED])
                     && $previousQuery[self::QUERY_NESTED][self::QUERY_PATH] === $query[self::QUERY_NESTED][self::QUERY_PATH]) {
-                    $previousQuery[self::QUERY_NESTED] = \array_replace(
+                    $previousQuery[self::QUERY_NESTED] = array_replace(
                         $previousQuery[self::QUERY_NESTED],
                         $query[self::QUERY_NESTED],
                         [

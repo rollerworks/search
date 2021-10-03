@@ -89,7 +89,7 @@ final class QueryBuilderConditionGenerator implements ConditionGenerator
     public function apply(): self
     {
         if ($this->isApplied) {
-            \trigger_error('SearchCondition was already applied. Ignoring operation.', \E_USER_WARNING);
+            trigger_error('SearchCondition was already applied. Ignoring operation.', \E_USER_WARNING);
 
             return $this;
         }

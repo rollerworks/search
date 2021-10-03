@@ -50,11 +50,11 @@ final class DateTimeToLocalizedStringTransformer extends BaseDateTimeTransformer
         }
 
         if (! \in_array($dateFormat, self::$formats, true)) {
-            throw new UnexpectedTypeException($dateFormat, \implode('", "', self::$formats));
+            throw new UnexpectedTypeException($dateFormat, implode('", "', self::$formats));
         }
 
         if (! \in_array($timeFormat, self::$formats, true)) {
-            throw new UnexpectedTypeException($timeFormat, \implode('", "', self::$formats));
+            throw new UnexpectedTypeException($timeFormat, implode('", "', self::$formats));
         }
 
         $this->dateFormat = $dateFormat;
@@ -85,8 +85,8 @@ final class DateTimeToLocalizedStringTransformer extends BaseDateTimeTransformer
 
         $value = $this->getIntlDateFormatter()->format($dateTime->getTimestamp());
 
-        if (\intl_get_error_code() != 0) {
-            throw new TransformationFailedException(\intl_get_error_message());
+        if (intl_get_error_code() != 0) {
+            throw new TransformationFailedException(intl_get_error_message());
         }
 
         return $value;
@@ -116,8 +116,8 @@ final class DateTimeToLocalizedStringTransformer extends BaseDateTimeTransformer
 
         $timestamp = $this->getIntlDateFormatter($dateOnly)->parse($value);
 
-        if (\intl_get_error_code() != 0) {
-            throw new TransformationFailedException(\intl_get_error_message());
+        if (intl_get_error_code() != 0) {
+            throw new TransformationFailedException(intl_get_error_message());
         }
 
         if ($timestamp > 253402214400) {
@@ -128,11 +128,11 @@ final class DateTimeToLocalizedStringTransformer extends BaseDateTimeTransformer
         try {
             if ($dateOnly) {
                 // we only care about year-month-date, which has been delivered as a timestamp pointing to UTC midnight
-                return new \DateTimeImmutable(\gmdate('Y-m-d', $timestamp), new \DateTimeZone($this->inputTimezone));
+                return new \DateTimeImmutable(gmdate('Y-m-d', $timestamp), new \DateTimeZone($this->inputTimezone));
             }
 
             // read timestamp into DateTime object - the formatter delivers a timestamp
-            $dateTime = new \DateTimeImmutable(\sprintf('@%s', $timestamp));
+            $dateTime = new \DateTimeImmutable(sprintf('@%s', $timestamp));
             // set timezone separately, as it would be ignored if set via the constructor,
             // see http://php.net/manual/en/datetime.construct.php
             $dateTime = $dateTime->setTimezone(new \DateTimeZone($this->outputTimezone));
@@ -160,7 +160,7 @@ final class DateTimeToLocalizedStringTransformer extends BaseDateTimeTransformer
         $timeFormat = $this->timeFormat;
         $timezone = $ignoreTimezone ? 'UTC' : $this->outputTimezone;
 
-        if (\class_exists('IntlTimeZone', false)) {
+        if (class_exists('IntlTimeZone', false)) {
             // see https://bugs.php.net/bug.php?id=66323
             $timezone = \IntlTimeZone::createTimeZone($timezone);
         }
@@ -171,7 +171,7 @@ final class DateTimeToLocalizedStringTransformer extends BaseDateTimeTransformer
 
         // new \IntlDateFormatter may return null instead of false in case of failure, see https://bugs.php.net/bug.php?id=66323
         if (! $intlDateFormatter) {
-            throw new TransformationFailedException(\intl_get_error_message(), \intl_get_error_code());
+            throw new TransformationFailedException(intl_get_error_message(), intl_get_error_code());
         }
 
         if ($pattern) {
@@ -190,9 +190,9 @@ final class DateTimeToLocalizedStringTransformer extends BaseDateTimeTransformer
         }
 
         // strip escaped text
-        $pattern = \preg_replace("#'(.*?)'#", '', $this->pattern);
+        $pattern = preg_replace("#'(.*?)'#", '', $this->pattern);
 
         // check for the absence of time-related placeholders
-        return \preg_match('#[ahHkKmsSAzZOvVxX]#', $pattern) === 0;
+        return preg_match('#[ahHkKmsSAzZOvVxX]#', $pattern) === 0;
     }
 }

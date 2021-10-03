@@ -38,7 +38,8 @@ final class TimestampTypeTest extends SearchIntegrationTestCase
         FieldTransformationAssertion::assertThat($field)
             ->withInput($input)
             ->successfullyTransformsTo($output)
-            ->andReverseTransformsTo($input);
+            ->andReverseTransformsTo($input)
+        ;
     }
 
     /** @test */
@@ -48,6 +49,7 @@ final class TimestampTypeTest extends SearchIntegrationTestCase
 
         FieldTransformationAssertion::assertThat($field)
             ->withInput('06*2010*02', '06*2010*02')
-            ->failsToTransforms();
+            ->failsToTransforms()
+        ;
     }
 }

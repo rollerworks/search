@@ -66,7 +66,7 @@ final class InvalidSearchConditionNormalizer implements NormalizerInterface
         return [
             'type' => $context['type'] ?? 'https://tools.ietf.org/html/rfc2616#section-10',
             'title' => $context['title'] ?? 'An error occurred',
-            'detail' => $messages ? \implode("\n", $messages) : (string) $object,
+            'detail' => $messages ? implode("\n", $messages) : (string) $object,
             'violations' => $violations,
         ];
     }
@@ -95,7 +95,7 @@ final class InvalidSearchConditionNormalizer implements NormalizerInterface
 
             if ($this->serializePayloadFields && $constraint && $constraint->payload) {
                 // If some fields are whitelisted, only them are added
-                $payloadFields = $this->serializePayloadFields === null ? $constraint->payload : \array_intersect_key($constraint->payload, \array_flip($this->serializePayloadFields));
+                $payloadFields = $this->serializePayloadFields === null ? $constraint->payload : array_intersect_key($constraint->payload, array_flip($this->serializePayloadFields));
                 $payloadFields && $violationData['payload'] = $payloadFields;
             }
 

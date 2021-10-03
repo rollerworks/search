@@ -33,7 +33,7 @@ abstract class FunctionalTestCase extends WebTestCase
 
     protected static function newClient(array $options = [], array $server = []): KernelBrowser
     {
-        $client = static::createClient(\array_merge(['config' => 'default.yml'], $options), $server);
+        $client = static::createClient(array_merge(['config' => 'default.yml'], $options), $server);
 
         $warmer = $client->getContainer()->get('cache_warmer');
         $warmer->enableOptionalWarmers();

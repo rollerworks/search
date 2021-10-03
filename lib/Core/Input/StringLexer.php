@@ -45,7 +45,7 @@ final class StringLexer
      */
     public function parse(string $data, array $fieldLexers = []): void
     {
-        $this->data = \str_replace(["\r\n", "\r"], "\n", $data);
+        $this->data = str_replace(["\r\n", "\r"], "\n", $data);
         $this->valueLexers = $fieldLexers;
         $this->end = mb_strlen($this->data, '8bit');
         $this->lineno = 1;
@@ -60,8 +60,8 @@ final class StringLexer
      */
     public function skipWhitespace(): void
     {
-        if (\preg_match('/\h+/A', $this->data, $match, 0, $this->cursor)) {
-            $this->char += \mb_strlen($match[0]);
+        if (preg_match('/\h+/A', $this->data, $match, 0, $this->cursor)) {
+            $this->char += mb_strlen($match[0]);
             $this->cursor += mb_strlen($match[0], '8bit');
         }
     }
@@ -71,15 +71,15 @@ final class StringLexer
      */
     public function skipEmptyLines(): void
     {
-        if (\preg_match('/(?:\s*+)++/A', $this->data, $match, 0, $this->cursor)) {
+        if (preg_match('/(?:\s*+)++/A', $this->data, $match, 0, $this->cursor)) {
             $this->moveCursor($match[0]);
         }
     }
 
     public function moveCursor(string $text): void
     {
-        $this->lineno += \mb_substr_count($text, "\n");
-        $this->char += \mb_strlen($text);
+        $this->lineno += mb_substr_count($text, "\n");
+        $this->char += mb_strlen($text);
         $this->cursor += mb_strlen($text, '8bit');
     }
 
@@ -179,7 +179,7 @@ final class StringLexer
             $expected,
             $this->isEnd() ? 'end of string' :
                 ($this->data[$this->cursor] === "\n" ? 'line end' :
-                    \mb_substr($this->data, $this->cursor, \min(10, $this->end)))
+                    mb_substr($this->data, $this->cursor, min(10, $this->end)))
         );
     }
 
@@ -215,14 +215,14 @@ final class StringLexer
                         break;
                     }
 
-                    if (\mb_substr($this->data, $this->char + 1, 1) !== '"') {
+                    if (mb_substr($this->data, $this->char + 1, 1) !== '"') {
                         break;
                     }
 
                     $this->moveCursor($c);
                 }
 
-                $value .= $c = \mb_substr($this->data, $this->char, 1);
+                $value .= $c = mb_substr($this->data, $this->char, 1);
                 $this->moveCursor($c);
 
                 if ($this->cursor === $this->end) {
@@ -239,16 +239,16 @@ final class StringLexer
             $this->skipWhitespace();
 
             // Detect an user error like: "foo"bar"
-            if ($this->cursor < $this->end && ! $this->isGlimpse('/[' . \preg_quote($allowedNext, '/') . ']/A')) {
+            if ($this->cursor < $this->end && ! $this->isGlimpse('/[' . preg_quote($allowedNext, '/') . ']/A')) {
                 throw $this->createFormatException(StringLexerException::VALUE_QUOTES_MUST_ESCAPE);
             }
 
             return $value;
         }
 
-        $allowedNextRegex = '/[' . \preg_quote($allowedNext, '/') . ']/A';
+        $allowedNextRegex = '/[' . preg_quote($allowedNext, '/') . ']/A';
 
-        while ($this->cursor < $this->end && "\n" !== $c = \mb_substr($this->data, $this->char, 1)) {
+        while ($this->cursor < $this->end && "\n" !== $c = mb_substr($this->data, $this->char, 1)) {
             if ($c === '"') {
                 throw $this->createFormatException(StringLexerException::QUOTED_VALUE_REQUIRE_QUOTING);
             }
@@ -265,9 +265,9 @@ final class StringLexer
             $this->moveCursor($c);
         }
 
-        $value = \rtrim($value);
+        $value = rtrim($value);
 
-        if (\preg_match('/\s+/', $value)) {
+        if (preg_match('/\s+/', $value)) {
             throw $this->createFormatException(StringLexerException::SPACES_REQ_QUOTING);
         }
 
@@ -276,7 +276,7 @@ final class StringLexer
 
     public function fieldIdentification(): string
     {
-        return \mb_substr(\trim($this->expects(self::FIELD_NAME, 'FieldIdentification')), 0, -1);
+        return mb_substr(trim($this->expects(self::FIELD_NAME, 'FieldIdentification')), 0, -1);
     }
 
     //
@@ -349,11 +349,11 @@ final class StringLexer
         $negative = false;
         $caseInsensitive = false;
 
-        if (! \preg_match('/([^*<>=]{0,2}\s*)([*<>=])/A', $this->data, $match, 0, $this->cursor)) {
+        if (! preg_match('/([^*<>=]{0,2}\s*)([*<>=])/A', $this->data, $match, 0, $this->cursor)) {
             throw $this->createSyntaxException('PatternMatch');
         }
 
-        if (\preg_match('/\s+/', $match[0])) {
+        if (preg_match('/\s+/', $match[0])) {
             throw $this->createFormatException(StringLexerException::NO_SPACES_IN_OPERATOR);
         }
 
@@ -446,7 +446,7 @@ final class StringLexer
             return $data === $this->data[$this->cursor] ? $data : null;
         }
 
-        if (\preg_match($data, $this->data, $match, 0, $this->cursor)) {
+        if (preg_match($data, $this->data, $match, 0, $this->cursor)) {
             return $match[0];
         }
 

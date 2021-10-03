@@ -92,7 +92,7 @@ final class FieldTransformationAssertion
         try {
             $this->modelToView($this->inputView);
 
-            Assert::fail(\sprintf('Expected view-input "%s" to be invalid', $this->inputView));
+            Assert::fail(sprintf('Expected view-input "%s" to be invalid', $this->inputView));
         } catch (TransformationFailedException $e) {
             Assert::assertTrue(true); // no-op
         }
@@ -100,7 +100,7 @@ final class FieldTransformationAssertion
         try {
             $this->modelToNorm($this->inputNorm);
 
-            Assert::fail(\sprintf('Expected norm-input "%s" to be invalid', $this->inputNorm));
+            Assert::fail(sprintf('Expected norm-input "%s" to be invalid', $this->inputNorm));
         } catch (TransformationFailedException $e) {
             Assert::assertTrue(true); // no-op
         }

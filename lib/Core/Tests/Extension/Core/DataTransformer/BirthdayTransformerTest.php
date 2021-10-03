@@ -100,7 +100,7 @@ final class BirthdayTransformerTest extends TestCase
         $transformer = new BirthdayTransformer($dateTransformer->reveal());
 
         $this->expectException(TransformationFailedException::class);
-        $this->expectExceptionMessage(\sprintf('Date "%s" is higher then current date ', $dateObj->format('Y-m-d')));
+        $this->expectExceptionMessage(sprintf('Date "%s" is higher then current date ', $dateObj->format('Y-m-d')));
 
         $transformer->reverseTransform($dateObj->format('Y-m-d'));
     }

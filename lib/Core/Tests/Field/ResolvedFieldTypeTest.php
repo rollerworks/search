@@ -92,21 +92,25 @@ final class ResolvedFieldTypeTest extends TestCase
         // First the default options are generated for the super type
         $this->parentType->expects(self::once())
             ->method('configureOptions')
-            ->willReturnCallback($assertIndexAndAddOption(0, 'a', 'a_default'));
+            ->willReturnCallback($assertIndexAndAddOption(0, 'a', 'a_default'))
+        ;
 
         // The field type itself
         $this->type->expects(self::once())
             ->method('configureOptions')
-            ->willReturnCallback($assertIndexAndAddOption(1, 'b', 'b_default'));
+            ->willReturnCallback($assertIndexAndAddOption(1, 'b', 'b_default'))
+        ;
 
         // And its extensions
         $this->extension1->expects(self::once())
             ->method('configureOptions')
-            ->willReturnCallback($assertIndexAndAddOption(2, 'c', 'c_default'));
+            ->willReturnCallback($assertIndexAndAddOption(2, 'c', 'c_default'))
+        ;
 
         $this->extension2->expects(self::once())
             ->method('configureOptions')
-            ->willReturnCallback($assertIndexAndAddOption(3, 'd', 'd_default'));
+            ->willReturnCallback($assertIndexAndAddOption(3, 'd', 'd_default'))
+        ;
 
         $givenOptions = ['a' => 'a_custom', 'c' => 'c_custom'];
         $resolvedOptions = ['a' => 'a_custom', 'b' => 'b_default', 'c' => 'c_custom', 'd' => 'd_default'];
@@ -126,16 +130,19 @@ final class ResolvedFieldTypeTest extends TestCase
         $this->resolvedType = $this->getMockBuilder(GenericResolvedFieldType::class)
             ->setConstructorArgs([$this->type, [$this->extension1, $this->extension2], $this->parentResolvedType])
             ->setMethods(['getOptionsResolver'])
-            ->getMock();
+            ->getMock()
+        ;
 
         $this->resolvedType->expects(self::once())
             ->method('getOptionsResolver')
-            ->willReturn($optionsResolver);
+            ->willReturn($optionsResolver)
+        ;
 
         $optionsResolver->expects(self::once())
             ->method('resolve')
             ->with($givenOptions)
-            ->willReturn($resolvedOptions);
+            ->willReturn($resolvedOptions)
+        ;
 
         $field = $this->resolvedType->createField('name', $givenOptions);
 
@@ -163,24 +170,28 @@ final class ResolvedFieldTypeTest extends TestCase
         $this->parentType->expects(self::once())
             ->method('buildType')
             ->with($field, $options)
-            ->willReturnCallback($assertIndex(0));
+            ->willReturnCallback($assertIndex(0))
+        ;
 
         // Then the type itself
         $this->type->expects(self::once())
             ->method('buildType')
             ->with($field, $options)
-            ->willReturnCallback($assertIndex(1));
+            ->willReturnCallback($assertIndex(1))
+        ;
 
         // Then its extensions
         $this->extension1->expects(self::once())
             ->method('buildType')
             ->with($field, $options)
-            ->willReturnCallback($assertIndex(2));
+            ->willReturnCallback($assertIndex(2))
+        ;
 
         $this->extension2->expects(self::once())
             ->method('buildType')
             ->with($field, $options)
-            ->willReturnCallback($assertIndex(3));
+            ->willReturnCallback($assertIndex(3))
+        ;
 
         $this->resolvedType->buildType($field, $options);
     }
@@ -199,7 +210,8 @@ final class ResolvedFieldTypeTest extends TestCase
     {
         $this->type->expects(self::once())
             ->method('getBlockPrefix')
-            ->willReturn('my_prefix');
+            ->willReturn('my_prefix')
+        ;
 
         $resolvedType = new GenericResolvedFieldType($this->type);
         self::assertSame('my_prefix', $resolvedType->getBlockPrefix());
@@ -226,24 +238,28 @@ final class ResolvedFieldTypeTest extends TestCase
         $this->parentType->expects(self::once())
             ->method('buildView')
             ->with($view, $field, $options)
-            ->willReturnCallback($assertIndex(0));
+            ->willReturnCallback($assertIndex(0))
+        ;
 
         // Then the type itself
         $this->type->expects(self::once())
             ->method('buildView')
             ->with($view, $field, $options)
-            ->willReturnCallback($assertIndex(1));
+            ->willReturnCallback($assertIndex(1))
+        ;
 
         // Then its extensions
         $this->extension1->expects(self::once())
             ->method('buildView')
             ->with($field, $view)
-            ->willReturnCallback($assertIndex(2));
+            ->willReturnCallback($assertIndex(2))
+        ;
 
         $this->extension2->expects(self::once())
             ->method('buildView')
             ->with($field, $view)
-            ->willReturnCallback($assertIndex(3));
+            ->willReturnCallback($assertIndex(3))
+        ;
 
         $this->resolvedType->buildFieldView($view, $field, $options);
     }
@@ -255,7 +271,8 @@ final class ResolvedFieldTypeTest extends TestCase
     {
         return $this->getMockBuilder($typeClass)
             ->setMethods(['configureOptions', 'buildView', 'buildType', 'getBlockPrefix'])
-            ->getMock();
+            ->getMock()
+        ;
     }
 
     /**
@@ -275,7 +292,8 @@ final class ResolvedFieldTypeTest extends TestCase
     {
         return $this->getMockBuilder(OptionsResolver::class)
             ->disableOriginalConstructor()
-            ->getMock();
+            ->getMock()
+        ;
     }
 
     /**

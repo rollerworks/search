@@ -116,15 +116,15 @@ final class CachedConditionGenerator extends AbstractCachedConditionGenerator im
         if ($this->cacheKey === null) {
             $searchCondition = $this->conditionGenerator->getSearchCondition();
 
-            $this->cacheKey = \hash(
+            $this->cacheKey = hash(
                 'sha256',
                 $searchCondition->getFieldSet()->getSetName() .
                 "\n" .
-                \serialize($searchCondition->getValuesGroup()) .
+                serialize($searchCondition->getValuesGroup()) .
                 "\n" .
-                \serialize($searchCondition->getPrimaryCondition()) .
+                serialize($searchCondition->getPrimaryCondition()) .
                 "\n" .
-                \serialize($this->conditionGenerator->getFieldsMapping())
+                serialize($this->conditionGenerator->getFieldsMapping())
             );
         }
 

@@ -39,9 +39,7 @@ class ChildCountType extends AbstractFieldType
         $resolver->setRequired(['table_name', 'table_column']);
         $resolver->setDefaults(
             [
-                'doctrine_dbal_conversion' => static function () use ($conversion) {
-                    return $conversion;
-                },
+                'doctrine_dbal_conversion' => static fn () => $conversion,
             ]
         );
     }

@@ -55,7 +55,8 @@ final class DqlConditionGeneratorTest extends OrmTestCase
             $qb = $this->em->createQueryBuilder()
                 ->select('I')
                 ->from(ECommerceInvoice::class, 'I')
-                ->join('I.customer', 'C');
+                ->join('I.customer', 'C')
+            ;
         }
 
         $conditionGenerator = $this->getOrmFactory()->createConditionGenerator($qb, $condition);
@@ -86,7 +87,8 @@ final class DqlConditionGeneratorTest extends OrmTestCase
                 ->addSimpleValue(2)
                 ->addSimpleValue(5)
             ->end()
-        ->getSearchCondition();
+        ->getSearchCondition()
+        ;
 
         $conditionGenerator = $this->getConditionGenerator($condition);
 
@@ -94,18 +96,18 @@ final class DqlConditionGeneratorTest extends OrmTestCase
             $conditionGenerator,
             'WHERE (((C.id = :search_0 OR C.id = :search_1)))',
             <<<'SQL'
-SELECT
-    i0_.invoice_id AS invoice_id_0,
-    i0_.label AS label_1,
-    i0_.pubdate AS pubdate_2,
-    i0_.status AS status_3,
-    i0_.price_total AS price_total_4,
-    i0_.customer AS customer_5,
-    i0_.parent_id AS parent_id_6
-FROM invoices i0_
-         INNER JOIN customers c1_ ON i0_.customer = c1_.id
-WHERE (((c1_.id = ? OR c1_.id = ?)))
-SQL
+                SELECT
+                    i0_.invoice_id AS invoice_id_0,
+                    i0_.label AS label_1,
+                    i0_.pubdate AS pubdate_2,
+                    i0_.status AS status_3,
+                    i0_.price_total AS price_total_4,
+                    i0_.customer AS customer_5,
+                    i0_.parent_id AS parent_id_6
+                FROM invoices i0_
+                         INNER JOIN customers c1_ ON i0_.customer = c1_.id
+                WHERE (((c1_.id = ? OR c1_.id = ?)))
+                SQL
 ,
             [
                 ':search_0' => [2, Type::getType('integer')],
@@ -126,7 +128,8 @@ SQL
                 ->addSimpleValue(2)
                 ->addSimpleValue(5)
             ->end()
-        ->getSearchCondition();
+        ->getSearchCondition()
+        ;
 
         $conditionGenerator = $this->getConditionGenerator($condition);
 
@@ -134,19 +137,19 @@ SQL
             $conditionGenerator,
             'WHERE (((C.id = :search_0 OR C.id = :search_1)) AND ((I.status = :search_2 OR I.status = :search_3)))',
             <<<'SQL'
-SELECT
-    i0_.invoice_id AS invoice_id_0,
-    i0_.label AS label_1,
-    i0_.pubdate AS pubdate_2,
-    i0_.status AS status_3,
-    i0_.price_total AS price_total_4,
-    i0_.customer AS customer_5,
-    i0_.parent_id AS parent_id_6
-FROM
-    invoices i0_
-        INNER JOIN customers c1_ ON i0_.customer = c1_.id
-WHERE (((c1_.id = ? OR c1_.id = ?)) AND ((i0_.status = ? OR i0_.status = ?)))
-SQL
+                SELECT
+                    i0_.invoice_id AS invoice_id_0,
+                    i0_.label AS label_1,
+                    i0_.pubdate AS pubdate_2,
+                    i0_.status AS status_3,
+                    i0_.price_total AS price_total_4,
+                    i0_.customer AS customer_5,
+                    i0_.parent_id AS parent_id_6
+                FROM
+                    invoices i0_
+                        INNER JOIN customers c1_ ON i0_.customer = c1_.id
+                WHERE (((c1_.id = ? OR c1_.id = ?)) AND ((i0_.status = ? OR i0_.status = ?)))
+                SQL
 ,
             [
                 ':search_0' => [2, Type::getType('integer')],
@@ -174,7 +177,8 @@ SQL
                 ->addExcludedSimpleValue(2)
                 ->addExcludedSimpleValue(5)
             ->end()
-        ->getSearchCondition();
+        ->getSearchCondition()
+        ;
 
         $conditionGenerator = $this->getConditionGenerator($condition);
 
@@ -189,7 +193,8 @@ SQL
                 ->addSimpleValue(2)
                 ->addExcludedSimpleValue(5)
             ->end()
-        ->getSearchCondition();
+        ->getSearchCondition()
+        ;
 
         $conditionGenerator = $this->getConditionGenerator($condition);
 
@@ -214,7 +219,8 @@ SQL
                 ->addSimpleValue(8)
                 ->addSimpleValue(9)
             ->end()
-            ->getSearchCondition();
+            ->getSearchCondition()
+        ;
 
         $conditionGenerator = $this->getConditionGenerator($condition);
 
@@ -222,19 +228,19 @@ SQL
             $conditionGenerator,
             'WHERE (((C.id = :search_0 OR C.id = :search_1))) AND (((I.id = :search_2 OR I.id = :search_3)) AND ((I.status = :search_4 OR I.status = :search_5)))',
             <<<'SQL'
-SELECT
-    i0_.invoice_id AS invoice_id_0,
-    i0_.label AS label_1,
-    i0_.pubdate AS pubdate_2,
-    i0_.status AS status_3,
-    i0_.price_total AS price_total_4,
-    i0_.customer AS customer_5,
-    i0_.parent_id AS parent_id_6
-FROM
-    invoices i0_
-        INNER JOIN customers c1_ ON i0_.customer = c1_.id
-WHERE (((c1_.id = ? OR c1_.id = ?))) AND (((i0_.invoice_id = ? OR i0_.invoice_id = ?)) AND ((i0_.status = ? OR i0_.status = ?)))
-SQL
+                SELECT
+                    i0_.invoice_id AS invoice_id_0,
+                    i0_.label AS label_1,
+                    i0_.pubdate AS pubdate_2,
+                    i0_.status AS status_3,
+                    i0_.price_total AS price_total_4,
+                    i0_.customer AS customer_5,
+                    i0_.parent_id AS parent_id_6
+                FROM
+                    invoices i0_
+                        INNER JOIN customers c1_ ON i0_.customer = c1_.id
+                WHERE (((c1_.id = ? OR c1_.id = ?))) AND (((i0_.invoice_id = ? OR i0_.invoice_id = ?)) AND ((i0_.status = ? OR i0_.status = ?)))
+                SQL
             ,
             [
                 ':search_0' => [2, Type::getType('integer')],
@@ -261,7 +267,8 @@ SQL
                     ->addSimpleValue(5)
                 ->end()
             ->end()
-            ->getSearchCondition();
+            ->getSearchCondition()
+        ;
 
         $conditionGenerator = $this->getConditionGenerator($condition);
 
@@ -269,19 +276,19 @@ SQL
             $conditionGenerator,
             'WHERE (((C.id = :search_0 OR C.id = :search_1)) AND ((I.status = :search_2 OR I.status = :search_3)))',
             <<<'SQL'
-SELECT
-    i0_.invoice_id AS invoice_id_0,
-    i0_.label AS label_1,
-    i0_.pubdate AS pubdate_2,
-    i0_.status AS status_3,
-    i0_.price_total AS price_total_4,
-    i0_.customer AS customer_5,
-    i0_.parent_id AS parent_id_6
-FROM
-    invoices i0_
-        INNER JOIN customers c1_ ON i0_.customer = c1_.id
-WHERE (((c1_.id = ? OR c1_.id = ?)) AND ((i0_.status = ? OR i0_.status = ?)))
-SQL
+                SELECT
+                    i0_.invoice_id AS invoice_id_0,
+                    i0_.label AS label_1,
+                    i0_.pubdate AS pubdate_2,
+                    i0_.status AS status_3,
+                    i0_.price_total AS price_total_4,
+                    i0_.customer AS customer_5,
+                    i0_.parent_id AS parent_id_6
+                FROM
+                    invoices i0_
+                        INNER JOIN customers c1_ ON i0_.customer = c1_.id
+                WHERE (((c1_.id = ? OR c1_.id = ?)) AND ((i0_.status = ? OR i0_.status = ?)))
+                SQL
             ,
             [
                 ':search_0' => [2, Type::getType('integer')],
@@ -301,7 +308,8 @@ SQL
                 ->addSimpleValue(5)
             ->end()
             ->order('@id', 'DESC')
-            ->getSearchCondition();
+            ->getSearchCondition()
+        ;
 
         $conditionGenerator = $this->getConditionGenerator($condition);
 
@@ -309,19 +317,19 @@ SQL
             $conditionGenerator,
             'WHERE (((C.id = :search_0 OR C.id = :search_1))) ORDER BY I.id DESC',
             <<<'SQL'
-SELECT
-    i0_.invoice_id AS invoice_id_0,
-    i0_.label AS label_1,
-    i0_.pubdate AS pubdate_2,
-    i0_.status AS status_3,
-    i0_.price_total AS price_total_4,
-    i0_.customer AS customer_5,
-    i0_.parent_id AS parent_id_6
-FROM invoices i0_
-         INNER JOIN customers c1_ ON i0_.customer = c1_.id
-WHERE (((c1_.id = ? OR c1_.id = ?)))
-ORDER BY i0_.invoice_id DESC
-SQL
+                SELECT
+                    i0_.invoice_id AS invoice_id_0,
+                    i0_.label AS label_1,
+                    i0_.pubdate AS pubdate_2,
+                    i0_.status AS status_3,
+                    i0_.price_total AS price_total_4,
+                    i0_.customer AS customer_5,
+                    i0_.parent_id AS parent_id_6
+                FROM invoices i0_
+                         INNER JOIN customers c1_ ON i0_.customer = c1_.id
+                WHERE (((c1_.id = ? OR c1_.id = ?)))
+                ORDER BY i0_.invoice_id DESC
+                SQL
             ,
             [
                 ':search_0' => [2, Type::getType('integer')],
@@ -340,7 +348,8 @@ SQL
             ->end()
             ->order('@customer')
             ->order('@id', 'DESC')
-            ->getSearchCondition();
+            ->getSearchCondition()
+        ;
 
         $conditionGenerator = $this->getConditionGenerator($condition);
 
@@ -348,19 +357,19 @@ SQL
             $conditionGenerator,
             'WHERE (((C.id = :search_0 OR C.id = :search_1))) ORDER BY C.id ASC, I.id DESC',
             <<<'SQL'
-SELECT
-    i0_.invoice_id AS invoice_id_0,
-    i0_.label AS label_1,
-    i0_.pubdate AS pubdate_2,
-    i0_.status AS status_3,
-    i0_.price_total AS price_total_4,
-    i0_.customer AS customer_5,
-    i0_.parent_id AS parent_id_6
-FROM invoices i0_
-         INNER JOIN customers c1_ ON i0_.customer = c1_.id
-WHERE (((c1_.id = ? OR c1_.id = ?)))
-ORDER BY c1_.id ASC, i0_.invoice_id DESC
-SQL
+                SELECT
+                    i0_.invoice_id AS invoice_id_0,
+                    i0_.label AS label_1,
+                    i0_.pubdate AS pubdate_2,
+                    i0_.status AS status_3,
+                    i0_.price_total AS price_total_4,
+                    i0_.customer AS customer_5,
+                    i0_.parent_id AS parent_id_6
+                FROM invoices i0_
+                         INNER JOIN customers c1_ ON i0_.customer = c1_.id
+                WHERE (((c1_.id = ? OR c1_.id = ?)))
+                ORDER BY c1_.id ASC, i0_.invoice_id DESC
+                SQL
             ,
             [
                 ':search_0' => [2, Type::getType('integer')],
@@ -374,7 +383,8 @@ SQL
     {
         $condition = SearchConditionBuilder::create($this->getFieldSet())
             ->order('@id', 'DESC')
-            ->getSearchCondition();
+            ->getSearchCondition()
+        ;
 
         $conditionGenerator = $this->getConditionGenerator($condition);
 
@@ -382,18 +392,18 @@ SQL
             $conditionGenerator,
             'ORDER BY I.id DESC',
             <<<'SQL'
-SELECT
-    i0_.invoice_id AS invoice_id_0,
-    i0_.label AS label_1,
-    i0_.pubdate AS pubdate_2,
-    i0_.status AS status_3,
-    i0_.price_total AS price_total_4,
-    i0_.customer AS customer_5,
-    i0_.parent_id AS parent_id_6
-FROM invoices i0_
-INNER JOIN customers c1_ ON i0_.customer = c1_.id
-ORDER BY i0_.invoice_id DESC
-SQL
+                SELECT
+                    i0_.invoice_id AS invoice_id_0,
+                    i0_.label AS label_1,
+                    i0_.pubdate AS pubdate_2,
+                    i0_.status AS status_3,
+                    i0_.price_total AS price_total_4,
+                    i0_.customer AS customer_5,
+                    i0_.parent_id AS parent_id_6
+                FROM invoices i0_
+                INNER JOIN customers c1_ ON i0_.customer = c1_.id
+                ORDER BY i0_.invoice_id DESC
+                SQL
         );
     }
 
@@ -408,7 +418,8 @@ SQL
             ->primaryCondition()
                 ->order('@id', 'DESC')
             ->end()
-            ->getSearchCondition();
+            ->getSearchCondition()
+        ;
 
         $conditionGenerator = $this->getConditionGenerator($condition);
 
@@ -416,19 +427,19 @@ SQL
             $conditionGenerator,
             'WHERE (((C.id = :search_0 OR C.id = :search_1))) ORDER BY I.id DESC',
             <<<'SQL'
-SELECT
-    i0_.invoice_id AS invoice_id_0,
-    i0_.label AS label_1,
-    i0_.pubdate AS pubdate_2,
-    i0_.status AS status_3,
-    i0_.price_total AS price_total_4,
-    i0_.customer AS customer_5,
-    i0_.parent_id AS parent_id_6
-FROM invoices i0_
-         INNER JOIN customers c1_ ON i0_.customer = c1_.id
-WHERE (((c1_.id = ? OR c1_.id = ?)))
-ORDER BY i0_.invoice_id DESC
-SQL
+                SELECT
+                    i0_.invoice_id AS invoice_id_0,
+                    i0_.label AS label_1,
+                    i0_.pubdate AS pubdate_2,
+                    i0_.status AS status_3,
+                    i0_.price_total AS price_total_4,
+                    i0_.customer AS customer_5,
+                    i0_.parent_id AS parent_id_6
+                FROM invoices i0_
+                         INNER JOIN customers c1_ ON i0_.customer = c1_.id
+                WHERE (((c1_.id = ? OR c1_.id = ?)))
+                ORDER BY i0_.invoice_id DESC
+                SQL
             ,
             [
                 ':search_0' => [2, Type::getType('integer')],
@@ -449,7 +460,8 @@ SQL
             ->primaryCondition()
                 ->order('@id', 'DESC') // Must be applied first
             ->end()
-            ->getSearchCondition();
+            ->getSearchCondition()
+        ;
 
         $conditionGenerator = $this->getConditionGenerator($condition);
 
@@ -457,19 +469,19 @@ SQL
             $conditionGenerator,
             'WHERE (((C.id = :search_0 OR C.id = :search_1))) ORDER BY I.id DESC, C.id DESC',
             <<<'SQL'
-SELECT
-    i0_.invoice_id AS invoice_id_0,
-    i0_.label AS label_1,
-    i0_.pubdate AS pubdate_2,
-    i0_.status AS status_3,
-    i0_.price_total AS price_total_4,
-    i0_.customer AS customer_5,
-    i0_.parent_id AS parent_id_6
-FROM invoices i0_
-         INNER JOIN customers c1_ ON i0_.customer = c1_.id
-WHERE (((c1_.id = ? OR c1_.id = ?)))
-ORDER BY i0_.invoice_id DESC, c1_.id DESC
-SQL
+                SELECT
+                    i0_.invoice_id AS invoice_id_0,
+                    i0_.label AS label_1,
+                    i0_.pubdate AS pubdate_2,
+                    i0_.status AS status_3,
+                    i0_.price_total AS price_total_4,
+                    i0_.customer AS customer_5,
+                    i0_.parent_id AS parent_id_6
+                FROM invoices i0_
+                         INNER JOIN customers c1_ ON i0_.customer = c1_.id
+                WHERE (((c1_.id = ? OR c1_.id = ?)))
+                ORDER BY i0_.invoice_id DESC, c1_.id DESC
+                SQL
             ,
             [
                 ':search_0' => [2, Type::getType('integer')],
@@ -485,7 +497,8 @@ SQL
             ->primaryCondition()
                 ->order('@id', 'DESC')
             ->end()
-            ->getSearchCondition();
+            ->getSearchCondition()
+        ;
 
         $conditionGenerator = $this->getConditionGenerator($condition);
 
@@ -493,18 +506,18 @@ SQL
             $conditionGenerator,
             'ORDER BY I.id DESC',
             <<<'SQL'
-SELECT
-    i0_.invoice_id AS invoice_id_0,
-    i0_.label AS label_1,
-    i0_.pubdate AS pubdate_2,
-    i0_.status AS status_3,
-    i0_.price_total AS price_total_4,
-    i0_.customer AS customer_5,
-    i0_.parent_id AS parent_id_6
-FROM invoices i0_
-         INNER JOIN customers c1_ ON i0_.customer = c1_.id
-ORDER BY i0_.invoice_id DESC
-SQL
+                SELECT
+                    i0_.invoice_id AS invoice_id_0,
+                    i0_.label AS label_1,
+                    i0_.pubdate AS pubdate_2,
+                    i0_.status AS status_3,
+                    i0_.price_total AS price_total_4,
+                    i0_.customer AS customer_5,
+                    i0_.parent_id AS parent_id_6
+                FROM invoices i0_
+                         INNER JOIN customers c1_ ON i0_.customer = c1_.id
+                ORDER BY i0_.invoice_id DESC
+                SQL
         );
     }
 
@@ -518,7 +531,8 @@ SQL
                 ->add(new Range(60, 70, false))
                 ->add(new Range(100, 150, true, false))
             ->end()
-        ->getSearchCondition();
+        ->getSearchCondition()
+        ;
 
         $conditionGenerator = $this->getConditionGenerator($condition);
 
@@ -538,7 +552,8 @@ SQL
                 ->add(new ExcludedRange(60, 70, false))
                 ->add(new ExcludedRange(100, 150, true, false))
             ->end()
-        ->getSearchCondition();
+        ->getSearchCondition()
+        ;
 
         $conditionGenerator = $this->getConditionGenerator($condition);
 
@@ -555,7 +570,8 @@ SQL
             ->field('customer')
                 ->add(new Compare(2, '>'))
             ->end()
-        ->getSearchCondition();
+        ->getSearchCondition()
+        ;
 
         $conditionGenerator = $this->getConditionGenerator($condition);
 
@@ -570,7 +586,8 @@ SQL
                 ->add(new Compare(2, '>'))
                 ->add(new Compare(10, '<'))
             ->end()
-        ->getSearchCondition();
+        ->getSearchCondition()
+        ;
 
         $conditionGenerator = $this->getConditionGenerator($condition);
 
@@ -595,7 +612,8 @@ SQL
                     ->add(new Compare(30, '>'))
                 ->end()
             ->end()
-        ->getSearchCondition();
+        ->getSearchCondition()
+        ;
 
         $conditionGenerator = $this->getConditionGenerator($condition);
 
@@ -613,7 +631,8 @@ SQL
                 ->add(new Compare(2, '<>'))
                 ->add(new Compare(5, '<>'))
             ->end()
-        ->getSearchCondition();
+        ->getSearchCondition()
+        ;
 
         $conditionGenerator = $this->getConditionGenerator($condition);
 
@@ -630,7 +649,8 @@ SQL
                 ->add(new Compare(30, '>'))
                 ->add(new Compare(50, '<'))
             ->end()
-        ->getSearchCondition();
+        ->getSearchCondition()
+        ;
 
         $conditionGenerator = $this->getConditionGenerator($condition);
 
@@ -651,7 +671,8 @@ SQL
                 ->add(new PatternMatch('fo\'\'o', PatternMatch::PATTERN_STARTS_WITH))
                 ->add(new PatternMatch('bar', PatternMatch::PATTERN_NOT_ENDS_WITH, true))
             ->end()
-        ->getSearchCondition();
+        ->getSearchCondition()
+        ;
 
         $conditionGenerator = $this->getConditionGenerator($condition);
 
@@ -660,27 +681,27 @@ SQL
                 $conditionGenerator,
                 'WHERE (((C.firstName LIKE CONCAT(\'%\', :search_0) OR C.firstName LIKE CONCAT(\'%\', :search_1) OR C.firstName LIKE CONCAT(\'%\', :search_2) OR C.firstName LIKE CONCAT(\'%\', :search_3)) AND LOWER(C.firstName) NOT LIKE LOWER(CONCAT(:search_4, \'%\'))))',
                 <<<'SQL'
-SELECT
-    i0_.invoice_id AS invoice_id_0,
-    i0_.label AS label_1,
-    i0_.pubdate AS pubdate_2,
-    i0_.status AS status_3,
-    i0_.price_total AS price_total_4,
-    i0_.customer AS customer_5,
-    i0_.parent_id AS parent_id_6
-FROM
-    invoices i0_
-        INNER JOIN customers c1_ ON i0_.customer = c1_.id
-WHERE (((c1_.first_name LIKE '%' || ? OR c1_.first_name LIKE '%' || ? OR c1_.first_name LIKE '%' || ? OR
-         c1_.first_name LIKE '%' || ?) AND LOWER(c1_.first_name) NOT LIKE LOWER(? || '%')))
-SQL
+                    SELECT
+                        i0_.invoice_id AS invoice_id_0,
+                        i0_.label AS label_1,
+                        i0_.pubdate AS pubdate_2,
+                        i0_.status AS status_3,
+                        i0_.price_total AS price_total_4,
+                        i0_.customer AS customer_5,
+                        i0_.parent_id AS parent_id_6
+                    FROM
+                        invoices i0_
+                            INNER JOIN customers c1_ ON i0_.customer = c1_.id
+                    WHERE (((c1_.first_name LIKE '%' || ? OR c1_.first_name LIKE '%' || ? OR c1_.first_name LIKE '%' || ? OR
+                             c1_.first_name LIKE '%' || ?) AND LOWER(c1_.first_name) NOT LIKE LOWER(? || '%')))
+                    SQL
             );
         } else {
             $this->assertDqlCompiles(
                 $conditionGenerator,
                 <<<'DQL'
-WHERE (((C.firstName LIKE CONCAT('%', :search_0) OR C.firstName LIKE CONCAT('%', :search_1) OR C.firstName LIKE CONCAT('%', :search_2) OR C.firstName LIKE CONCAT('%', :search_3)) AND LOWER(C.firstName) NOT LIKE LOWER(CONCAT(:search_4, '%'))))
-DQL
+                    WHERE (((C.firstName LIKE CONCAT('%', :search_0) OR C.firstName LIKE CONCAT('%', :search_1) OR C.firstName LIKE CONCAT('%', :search_2) OR C.firstName LIKE CONCAT('%', :search_3)) AND LOWER(C.firstName) NOT LIKE LOWER(CONCAT(:search_4, '%'))))
+                    DQL
             );
         }
     }
@@ -699,7 +720,8 @@ DQL
                     ->addSimpleValue(3)
                 ->end()
             ->end()
-        ->getSearchCondition();
+        ->getSearchCondition()
+        ;
 
         $conditionGenerator = $this->getConditionGenerator($condition);
 
@@ -718,7 +740,8 @@ DQL
                     ->add(new PatternMatch('foo', PatternMatch::PATTERN_STARTS_WITH))
                 ->end()
             ->end()
-        ->getSearchCondition();
+        ->getSearchCondition()
+        ;
 
         $conditionGenerator = $this->getConditionGenerator($condition);
 
@@ -738,7 +761,8 @@ DQL
             ->field('customer_first_name')
                 ->add(new PatternMatch('foo', PatternMatch::PATTERN_STARTS_WITH))
             ->end()
-        ->getSearchCondition();
+        ->getSearchCondition()
+        ;
 
         $conditionGenerator = $this->getConditionGenerator($condition);
 
@@ -762,7 +786,8 @@ DQL
                     ->end()
                 ->end()
             ->end()
-        ->getSearchCondition();
+        ->getSearchCondition()
+        ;
 
         $conditionGenerator = $this->getConditionGenerator($condition);
 
@@ -785,7 +810,8 @@ DQL
                 self::assertEquals('C.id', $hints->column);
 
                 return "SEARCH_CONVERSION_CAST({$column}, 'customer_type')";
-            });
+            })
+        ;
 
         $fieldSetBuilder = $this->getFieldSet(false);
         $fieldSetBuilder->add('customer', IntegerType::class, ['grouping' => true, 'doctrine_orm_conversion' => $converter]);
@@ -794,7 +820,8 @@ DQL
             ->field('customer')
                 ->addSimpleValue(2)
             ->end()
-        ->getSearchCondition();
+        ->getSearchCondition()
+        ;
 
         $conditionGenerator = $this->getConditionGenerator($condition);
 
@@ -802,14 +829,14 @@ DQL
             $conditionGenerator,
             "WHERE ((SEARCH_CONVERSION_CAST(C.id, 'customer_type') = :search_0))",
             <<<'SQL'
-SELECT
-    i0_.invoice_id AS invoice_id_0, i0_.label AS label_1, i0_.pubdate AS pubdate_2, i0_.status AS status_3,
-    i0_.price_total AS price_total_4, i0_.customer AS customer_5, i0_.parent_id AS parent_id_6
-FROM
-    invoices i0_
-        INNER JOIN customers c1_ ON i0_.customer = c1_.id
-WHERE ((CAST(c1_.id AS customer_type) = ?))
-SQL
+                SELECT
+                    i0_.invoice_id AS invoice_id_0, i0_.label AS label_1, i0_.pubdate AS pubdate_2, i0_.status AS status_3,
+                    i0_.price_total AS price_total_4, i0_.customer AS customer_5, i0_.parent_id AS parent_id_6
+                FROM
+                    invoices i0_
+                        INNER JOIN customers c1_ ON i0_.customer = c1_.id
+                WHERE ((CAST(c1_.id AS customer_type) = ?))
+                SQL
         );
     }
 
@@ -830,7 +857,8 @@ SQL
                 $value = $hints->createParamReferenceFor($value);
 
                 return "get_customer_type({$value})";
-            });
+            })
+        ;
 
         $fieldSetBuilder = $this->getFieldSet(false);
         $fieldSetBuilder->add('customer', IntegerType::class, ['grouping' => true, 'doctrine_orm_conversion' => $converter]);
@@ -839,7 +867,8 @@ SQL
             ->field('customer')
                 ->addSimpleValue(2)
             ->end()
-        ->getSearchCondition();
+        ->getSearchCondition()
+        ;
 
         $conditionGenerator = $this->getConditionGenerator($condition);
 
@@ -857,7 +886,8 @@ SQL
             ->field('customer')
                 ->addSimpleValue(2)
             ->end()
-        ->getSearchCondition();
+        ->getSearchCondition()
+        ;
 
         $qb = $this->em->createQueryBuilder();
         $qb->select('C')->from(self::CUSTOMER_CLASS, 'C');
@@ -897,7 +927,8 @@ SQL
                 ->addSimpleValue(2)
                 ->addSimpleValue(5)
             ->end()
-        ->getSearchCondition();
+        ->getSearchCondition()
+        ;
 
         $condition->setPrimaryCondition(
             new SearchPrimaryCondition(
@@ -927,7 +958,8 @@ SQL
                 ->addSimpleValue(2)
                 ->addSimpleValue(5)
             ->end()
-        ->getSearchCondition();
+        ->getSearchCondition()
+        ;
 
         $condition->setPrimaryCondition(
             new SearchPrimaryCondition(
@@ -957,8 +989,8 @@ SQL
         $conditionGenerator->apply();
 
         $expectedDql = $mainDql . ($expectedDql ? ' ' : '') . $expectedDql;
-        $expectedDql = \preg_replace('/\s+/', ' ', \trim($expectedDql));
-        $actualDql = \preg_replace('/\s+/', ' ', \trim($qb->getDQL()));
+        $expectedDql = preg_replace('/\s+/', ' ', trim($expectedDql));
+        $actualDql = preg_replace('/\s+/', ' ', trim($qb->getDQL()));
 
         self::assertEquals($expectedDql, $actualDql);
         self::assertQueryParametersEquals($parameters, $qb);
@@ -967,8 +999,8 @@ SQL
             $sql = $qb->getQuery()->getSQL();
 
             if ($expectedSql !== '') {
-                $expectedSql = \preg_replace('/\s+/', ' ', \trim($expectedSql));
-                $sql = \preg_replace('/\s+/', ' ', \trim($sql));
+                $expectedSql = preg_replace('/\s+/', ' ', trim($expectedSql));
+                $sql = preg_replace('/\s+/', ' ', trim($sql));
 
                 self::assertEquals($expectedSql, $sql);
             }

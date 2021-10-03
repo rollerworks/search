@@ -156,7 +156,7 @@ final class InputValidatorTest extends SearchIntegrationTestCase
      */
     private static function formatDateTime($value)
     {
-        if (\class_exists('IntlDateFormatter')) {
+        if (class_exists('IntlDateFormatter')) {
             $locale = \Locale::getDefault();
             $formatter = new \IntlDateFormatter($locale, \IntlDateFormatter::MEDIUM, \IntlDateFormatter::SHORT);
 

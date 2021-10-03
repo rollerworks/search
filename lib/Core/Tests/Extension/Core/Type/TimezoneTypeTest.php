@@ -41,7 +41,8 @@ final class TimezoneTypeTest extends SearchIntegrationTestCase
         FieldTransformationAssertion::assertThat($field)
             ->withInput('Kinshasa', 'Africa/Kinshasa')
             ->successfullyTransformsTo('Africa/Kinshasa')
-            ->andReverseTransformsTo('Kinshasa', 'Africa/Kinshasa');
+            ->andReverseTransformsTo('Kinshasa', 'Africa/Kinshasa')
+        ;
 
         $view = $field->createView(new FieldSetView());
 

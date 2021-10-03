@@ -65,9 +65,9 @@ final class LazyFieldSetRegistry implements FieldSetRegistry
      */
     public static function create(array $configurators = []): self
     {
-        $names = \array_keys($configurators);
+        $names = array_keys($configurators);
 
-        return new self(new ClosureContainer($configurators), \array_combine($names, $names));
+        return new self(new ClosureContainer($configurators), array_combine($names, $names));
     }
 
     /**
@@ -82,15 +82,15 @@ final class LazyFieldSetRegistry implements FieldSetRegistry
         if (! isset($this->configurators[$name])) {
             if (isset($this->serviceIds[$name])) {
                 $configurator = $this->container->get($this->serviceIds[$name]);
-            } elseif (\class_exists($name)) {
+            } elseif (class_exists($name)) {
                 // Support fully-qualified class names.
                 $configurator = new $name();
             } else {
-                throw new InvalidArgumentException(\sprintf('Could not load FieldSet configurator "%s".', $name));
+                throw new InvalidArgumentException(sprintf('Could not load FieldSet configurator "%s".', $name));
             }
 
             if (! $configurator instanceof FieldSetConfigurator) {
-                throw new InvalidArgumentException(\sprintf('Configurator class "%s" is expected to be an instance of ' . FieldSetConfigurator::class, $name));
+                throw new InvalidArgumentException(sprintf('Configurator class "%s" is expected to be an instance of ' . FieldSetConfigurator::class, $name));
             }
 
             $this->configurators[$name] = $configurator;
@@ -114,6 +114,6 @@ final class LazyFieldSetRegistry implements FieldSetRegistry
             return true;
         }
 
-        return \class_exists($name) && \in_array(FieldSetConfigurator::class, \class_implements($name), true);
+        return class_exists($name) && \in_array(FieldSetConfigurator::class, class_implements($name), true);
     }
 }

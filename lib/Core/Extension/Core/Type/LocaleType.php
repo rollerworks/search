@@ -48,7 +48,7 @@ final class LocaleType extends AbstractFieldType implements ChoiceLoader
             return $this->choiceList;
         }
 
-        return $this->choiceList = new ArrayChoiceList(\array_flip(Locales::getNames()), $value);
+        return $this->choiceList = new ArrayChoiceList(array_flip(Locales::getNames()), $value);
     }
 
     public function isValuesConstant(): bool

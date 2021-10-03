@@ -20,6 +20,6 @@ final class ChildCountConversion implements ColumnConversion
 {
     public function convertColumn(string $column, array $options, ConversionHints $hints): string
     {
-        return \sprintf('SEARCH_COUNT_CHILDREN(%s, %s, %s)', $options['table_name'], $options['table_column'], $column);
+        return sprintf('SEARCH_COUNT_CHILDREN(%s, %s, %s)', $options['table_name'], $options['table_column'], $column);
     }
 }

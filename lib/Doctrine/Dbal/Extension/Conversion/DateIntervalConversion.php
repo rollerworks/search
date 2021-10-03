@@ -41,7 +41,7 @@ final class DateIntervalConversion implements ValueConversion
             $intervalString = self::convertForMysql($value);
         } else {
             throw new \RuntimeException(
-                \sprintf('Unsupported platform "%s" for DateIntervalConversion.', $platform)
+                sprintf('Unsupported platform "%s" for DateIntervalConversion.', $platform)
             );
         }
 
@@ -59,10 +59,10 @@ final class DateIntervalConversion implements ValueConversion
         $handler = static function (array $units) use ($negative) {
             foreach ($units as &$value) {
                 // MySQL doesn't support plural names.
-                $value = \mb_strtoupper(\rtrim($value, 's'));
+                $value = mb_strtoupper(rtrim($value, 's'));
             }
 
-            return \implode(($negative ? ' - INTERVAL ' : ' + INTERVAL '), $units);
+            return implode(($negative ? ' - INTERVAL ' : ' + INTERVAL '), $units);
         };
 
         // Note. Don't use parameters here, values are already pre-formatted.

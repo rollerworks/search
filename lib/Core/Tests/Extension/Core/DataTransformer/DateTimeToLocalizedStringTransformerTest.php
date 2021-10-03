@@ -152,8 +152,8 @@ final class DateTimeToLocalizedStringTransformerTest extends TestCase
     /** @test */
     public function reverse_transform_with_no_constructor_parameters(): void
     {
-        $tz = \date_default_timezone_get();
-        \date_default_timezone_set('Europe/Rome');
+        $tz = date_default_timezone_get();
+        date_default_timezone_set('Europe/Rome');
 
         $transformer = new DateTimeToLocalizedStringTransformer();
 
@@ -164,7 +164,7 @@ final class DateTimeToLocalizedStringTransformerTest extends TestCase
             $transformer->reverseTransform('03.02.2010, 04:05')->format('c')
         );
 
-        \date_default_timezone_set($tz);
+        date_default_timezone_set($tz);
     }
 
     /** @test */

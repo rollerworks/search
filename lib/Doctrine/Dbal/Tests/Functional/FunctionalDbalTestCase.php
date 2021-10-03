@@ -158,26 +158,24 @@ abstract class FunctionalDbalTestCase extends DbalTestCase
         foreach ($conditionGenerator->getParameters() as $name => [$value, $type]) {
             $statement->bindValue($name, $value, $type);
 
-            $paramsString .= \sprintf("%s = '%s'\n", $name, $type === null ? (\is_scalar($value) ? (string) $value : get_debug_type($value)) : $type->convertToDatabaseValue($value, $platform));
+            $paramsString .= sprintf("%s = '%s'\n", $name, $type === null ? (is_scalar($value) ? (string) $value : get_debug_type($value)) : $type->convertToDatabaseValue($value, $platform));
         }
 
         $statement->execute();
 
         $rows = $statement->fetchAll(\PDO::FETCH_ASSOC);
-        $idRows = \array_map(
-            static function ($value) {
-                return $value['id'];
-            },
+        $idRows = array_map(
+            static fn ($value) => $value['id'],
             $rows
         );
 
-        \sort($ids);
-        \sort($idRows);
+        sort($ids);
+        sort($idRows);
 
         static::assertEquals(
             $ids,
-            \array_merge([], \array_unique($idRows)),
-            \sprintf("Found these records instead: \n%s\nWith WHERE-clause: %s\nAnd params: %s", \print_r($rows, true), $whereClause, $paramsString)
+            array_merge([], array_unique($idRows)),
+            sprintf("Found these records instead: \n%s\nWith WHERE-clause: %s\nAnd params: %s", print_r($rows, true), $whereClause, $paramsString)
         );
     }
 
@@ -199,9 +197,9 @@ abstract class FunctionalDbalTestCase extends DbalTestCase
         static::assertNotNull($statement);
 
         if ($expectedSql !== '') {
-            $expectedSql = \preg_replace('/\s+/', ' ', \trim($expectedSql));
+            $expectedSql = preg_replace('/\s+/', ' ', trim($expectedSql));
 
-            static::assertEquals($expectedSql, \preg_replace('/\s+/', ' ', \trim($whereClause)));
+            static::assertEquals($expectedSql, preg_replace('/\s+/', ' ', trim($whereClause)));
         }
 
         if ($parameters !== null) {
@@ -212,7 +210,7 @@ abstract class FunctionalDbalTestCase extends DbalTestCase
     protected function onNotSuccessfulTest(\Throwable $e): void
     {
         // Ignore deprecation warnings.
-        if ($e instanceof AssertionFailedError || ($e instanceof Warning && \mb_strpos($e->getMessage(), ' is deprecated,'))) {
+        if ($e instanceof AssertionFailedError || ($e instanceof Warning && mb_strpos($e->getMessage(), ' is deprecated,'))) {
             throw $e;
         }
 
@@ -220,19 +218,19 @@ abstract class FunctionalDbalTestCase extends DbalTestCase
             $queries = '';
             $i = \count($this->sqlLoggerStack->queries);
 
-            foreach (\array_reverse($this->sqlLoggerStack->queries) as $query) {
-                $params = \array_map(
+            foreach (array_reverse($this->sqlLoggerStack->queries) as $query) {
+                $params = array_map(
                     static function ($p) {
                         if (\is_object($p)) {
                             return \get_class($p);
                         }
 
-                        return "'" . \var_export($p, true) . "'";
+                        return "'" . var_export($p, true) . "'";
                     },
                     $query['params'] ?: []
                 );
 
-                $queries .= ($i + 1) . ". SQL: '" . $query['sql'] . "' Params: " . \implode(', ', $params) . \PHP_EOL;
+                $queries .= ($i + 1) . ". SQL: '" . $query['sql'] . "' Params: " . implode(', ', $params) . \PHP_EOL;
                 --$i;
             }
 
@@ -241,7 +239,7 @@ abstract class FunctionalDbalTestCase extends DbalTestCase
 
             foreach ($trace as $part) {
                 if (isset($part['file'])) {
-                    if (\mb_strpos($part['file'], 'PHPUnit/') !== false) {
+                    if (mb_strpos($part['file'], 'PHPUnit/') !== false) {
                         // Beginning with PHPUnit files we don't print the trace anymore.
                         break;
                     }

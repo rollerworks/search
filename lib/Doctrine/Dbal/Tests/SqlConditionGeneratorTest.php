@@ -60,7 +60,8 @@ final class SqlConditionGeneratorTest extends DbalTestCase
                 ->addSimpleValue(2)
                 ->addSimpleValue(5)
             ->end()
-        ->getSearchCondition();
+        ->getSearchCondition()
+        ;
 
         $conditionGenerator = $this->getConditionGenerator($condition);
 
@@ -85,7 +86,8 @@ final class SqlConditionGeneratorTest extends DbalTestCase
                 ->addSimpleValue(2)
                 ->addSimpleValue(5)
             ->end()
-        ->getSearchCondition();
+        ->getSearchCondition()
+        ;
 
         $conditionGenerator = $this->getConditionGenerator($condition);
 
@@ -103,7 +105,8 @@ final class SqlConditionGeneratorTest extends DbalTestCase
                 ->addSimpleValue(2)
                 ->addSimpleValue(5)
             ->end()
-        ->getSearchCondition();
+        ->getSearchCondition()
+        ;
 
         $conditionGenerator = $this->getConditionGenerator($condition);
 
@@ -118,7 +121,8 @@ final class SqlConditionGeneratorTest extends DbalTestCase
                 ->addSimpleValue(2)
                 ->addSimpleValue(5)
             ->end()
-        ->getSearchCondition();
+        ->getSearchCondition()
+        ;
 
         $condition->setPrimaryCondition(
             new SearchPrimaryCondition(
@@ -148,7 +152,8 @@ final class SqlConditionGeneratorTest extends DbalTestCase
                 ->addSimpleValue(2)
                 ->addSimpleValue(5)
             ->end()
-        ->getSearchCondition();
+        ->getSearchCondition()
+        ;
 
         $condition->setPrimaryCondition(
             new SearchPrimaryCondition(
@@ -179,7 +184,8 @@ final class SqlConditionGeneratorTest extends DbalTestCase
                 ->addSimpleValue(2)
                 ->addSimpleValue(5)
             ->end()
-        ->getSearchCondition();
+        ->getSearchCondition()
+        ;
 
         $conditionGenerator = $this->getConditionGenerator($condition);
 
@@ -203,7 +209,8 @@ final class SqlConditionGeneratorTest extends DbalTestCase
                 ->addSimpleValue(2)
                 ->addSimpleValue(5)
             ->end()
-        ->getSearchCondition();
+        ->getSearchCondition()
+        ;
 
         $conditionGenerator = $this->getConditionGenerator($condition);
         $conditionGenerator->setField('customer#1', 'id', null, 'integer');
@@ -229,7 +236,8 @@ final class SqlConditionGeneratorTest extends DbalTestCase
                 ->addSimpleValue(2)
                 ->addSimpleValue(5)
             ->end()
-        ->getSearchCondition();
+        ->getSearchCondition()
+        ;
 
         $conditionGenerator = $this->getConditionGenerator($condition);
         $conditionGenerator->setField('customer#1', 'id', null, 'integer');
@@ -265,7 +273,8 @@ final class SqlConditionGeneratorTest extends DbalTestCase
                 ->addExcludedSimpleValue(2)
                 ->addExcludedSimpleValue(5)
             ->end()
-        ->getSearchCondition();
+        ->getSearchCondition()
+        ;
 
         $conditionGenerator = $this->getConditionGenerator($condition);
 
@@ -287,7 +296,8 @@ final class SqlConditionGeneratorTest extends DbalTestCase
                 ->addSimpleValue(2)
                 ->addExcludedSimpleValue(5)
             ->end()
-        ->getSearchCondition();
+        ->getSearchCondition()
+        ;
 
         $conditionGenerator = $this->getConditionGenerator($condition);
 
@@ -311,7 +321,8 @@ final class SqlConditionGeneratorTest extends DbalTestCase
                 ->add(new Range(60, 70, false))
                 ->add(new Range(100, 150, true, false))
             ->end()
-        ->getSearchCondition();
+        ->getSearchCondition()
+        ;
 
         $conditionGenerator = $this->getConditionGenerator($condition);
 
@@ -342,7 +353,8 @@ final class SqlConditionGeneratorTest extends DbalTestCase
                 ->add(new ExcludedRange(60, 70, false))
                 ->add(new ExcludedRange(100, 150, true, false))
             ->end()
-        ->getSearchCondition();
+        ->getSearchCondition()
+        ;
 
         $conditionGenerator = $this->getConditionGenerator($condition);
 
@@ -371,7 +383,8 @@ final class SqlConditionGeneratorTest extends DbalTestCase
             ->field('customer')
                 ->add(new Compare(2, '>'))
             ->end()
-        ->getSearchCondition();
+        ->getSearchCondition()
+        ;
 
         $conditionGenerator = $this->getConditionGenerator($condition);
 
@@ -392,7 +405,8 @@ final class SqlConditionGeneratorTest extends DbalTestCase
                 ->add(new Compare(2, '>'))
                 ->add(new Compare(10, '<'))
             ->end()
-        ->getSearchCondition();
+        ->getSearchCondition()
+        ;
 
         $conditionGenerator = $this->getConditionGenerator($condition);
 
@@ -424,7 +438,8 @@ final class SqlConditionGeneratorTest extends DbalTestCase
                     ->add(new Compare(30, '>'))
                 ->end()
             ->end()
-        ->getSearchCondition();
+        ->getSearchCondition()
+        ;
 
         $conditionGenerator = $this->getConditionGenerator($condition);
 
@@ -448,7 +463,8 @@ final class SqlConditionGeneratorTest extends DbalTestCase
                 ->add(new Compare(2, '<>'))
                 ->add(new Compare(5, '<>'))
             ->end()
-        ->getSearchCondition();
+        ->getSearchCondition()
+        ;
 
         $conditionGenerator = $this->getConditionGenerator($condition);
 
@@ -472,7 +488,8 @@ final class SqlConditionGeneratorTest extends DbalTestCase
                 ->add(new Compare(30, '>'))
                 ->add(new Compare(50, '<'))
             ->end()
-        ->getSearchCondition();
+        ->getSearchCondition()
+        ;
 
         $conditionGenerator = $this->getConditionGenerator($condition);
 
@@ -501,7 +518,8 @@ final class SqlConditionGeneratorTest extends DbalTestCase
                 ->add(new PatternMatch('Spider', PatternMatch::PATTERN_EQUALS, true))
                 ->add(new PatternMatch('Piggy', PatternMatch::PATTERN_NOT_EQUALS, true))
             ->end()
-        ->getSearchCondition();
+        ->getSearchCondition()
+        ;
 
         $conditionGenerator = $this->getConditionGenerator($condition);
 
@@ -530,7 +548,8 @@ final class SqlConditionGeneratorTest extends DbalTestCase
             ->group()
                 ->field('customer')->addSimpleValue(3)->end()
             ->end()
-        ->getSearchCondition();
+        ->getSearchCondition()
+        ;
 
         $conditionGenerator = $this->getConditionGenerator($condition);
 
@@ -556,7 +575,8 @@ final class SqlConditionGeneratorTest extends DbalTestCase
                     ->add(new PatternMatch('foo', PatternMatch::PATTERN_STARTS_WITH))
                 ->end()
             ->end()
-        ->getSearchCondition();
+        ->getSearchCondition()
+        ;
 
         $conditionGenerator = $this->getConditionGenerator($condition);
 
@@ -580,7 +600,8 @@ final class SqlConditionGeneratorTest extends DbalTestCase
             ->field('customer_name')
                 ->add(new PatternMatch('foo', PatternMatch::PATTERN_STARTS_WITH))
             ->end()
-        ->getSearchCondition();
+        ->getSearchCondition()
+        ;
 
         $conditionGenerator = $this->getConditionGenerator($condition);
 
@@ -608,7 +629,8 @@ final class SqlConditionGeneratorTest extends DbalTestCase
                     ->end()
                 ->end()
             ->end()
-        ->getSearchCondition();
+        ->getSearchCondition()
+        ;
 
         $conditionGenerator = $this->getConditionGenerator($condition);
 
@@ -637,7 +659,8 @@ final class SqlConditionGeneratorTest extends DbalTestCase
                 self::assertEquals('I.customer', $hints->column);
 
                 return "CAST({$column} AS customer_type)";
-            });
+            })
+        ;
 
         $fieldSetBuilder = $this->getFieldSet(false);
         $fieldSetBuilder->add('customer', IntegerType::class, ['grouping' => true, 'doctrine_dbal_conversion' => $converter]);
@@ -647,7 +670,8 @@ final class SqlConditionGeneratorTest extends DbalTestCase
                 ->addSimpleValue(2)
                 ->addSimpleValue(5)
             ->end()
-        ->getSearchCondition();
+        ->getSearchCondition()
+        ;
 
         $conditionGenerator = $this->getConditionGenerator($condition);
 
@@ -675,7 +699,8 @@ final class SqlConditionGeneratorTest extends DbalTestCase
                 $value = $hints->createParamReferenceFor($value);
 
                 return "get_customer_type({$value})";
-            });
+            })
+        ;
 
         $fieldSetBuilder = $this->getFieldSet(false);
         $fieldSetBuilder->add('customer', IntegerType::class, ['grouping' => true, 'doctrine_dbal_conversion' => $converter]);
@@ -685,7 +710,8 @@ final class SqlConditionGeneratorTest extends DbalTestCase
                 ->addSimpleValue(2)
                 ->addSimpleValue(5)
             ->end()
-        ->getSearchCondition();
+        ->getSearchCondition()
+        ;
 
         $conditionGenerator = $this->getConditionGenerator($condition);
 
@@ -715,7 +741,8 @@ final class SqlConditionGeneratorTest extends DbalTestCase
                 }
 
                 return $hints->createParamReferenceFor($value, Type::getType('integer'));
-            });
+            })
+        ;
 
         $fieldSet = $this->getFieldSet(false);
         $fieldSet->add('customer_birthday', DateType::class, ['doctrine_dbal_conversion' => $converter, 'pattern' => 'dd-MM-yy']);
@@ -725,7 +752,8 @@ final class SqlConditionGeneratorTest extends DbalTestCase
                 ->addSimpleValue(18)
                 ->addSimpleValue(new \DateTimeImmutable('2001-01-15', new \DateTimeZone('UTC')))
             ->end()
-        ->getSearchCondition();
+        ->getSearchCondition()
+        ;
 
         $conditionGenerator = $this->getConditionGenerator($condition);
 
@@ -752,7 +780,8 @@ final class SqlConditionGeneratorTest extends DbalTestCase
                 }
 
                 return $column;
-            });
+            })
+        ;
 
         $fieldSetBuilder = $this->getFieldSet(false);
         $fieldSetBuilder->add('customer_birthday', TextType::class, ['doctrine_dbal_conversion' => $converter]);
@@ -762,7 +791,8 @@ final class SqlConditionGeneratorTest extends DbalTestCase
                 ->addSimpleValue(18)
                 ->addSimpleValue('2001-01-15')
             ->end()
-        ->getSearchCondition();
+        ->getSearchCondition()
+        ;
 
         $conditionGenerator = $this->getConditionGenerator($condition);
         $conditionGenerator->setField('customer_birthday', 'birthday', 'C', 'string');
@@ -791,14 +821,13 @@ final class SqlConditionGeneratorTest extends DbalTestCase
                 self::assertEquals('I.customer', $hints->column);
 
                 return "CAST({$column} AS customer_type)";
-            });
+            })
+        ;
 
         $fieldSetBuilder = $this->getFieldSet(false);
         $fieldSetBuilder->add('customer', IntegerType::class, [
             'grouping' => true,
-            'doctrine_dbal_conversion' => static function () use ($converter) {
-                return $converter;
-            },
+            'doctrine_dbal_conversion' => static fn () => $converter,
         ]);
 
         $condition = SearchConditionBuilder::create($fieldSetBuilder->getFieldSet())
@@ -806,7 +835,8 @@ final class SqlConditionGeneratorTest extends DbalTestCase
                 ->addSimpleValue(2)
                 ->addSimpleValue(5)
             ->end()
-        ->getSearchCondition();
+        ->getSearchCondition()
+        ;
 
         $conditionGenerator = $this->getConditionGenerator($condition);
         self::assertEquals('(((CAST(I.customer AS customer_type) = :search_0 OR CAST(I.customer AS customer_type) = :search_1)))', $conditionGenerator->getWhereClause());

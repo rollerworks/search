@@ -69,7 +69,7 @@ final class TimezoneType extends AbstractFieldType implements ChoiceLoader
         $timezones = [];
 
         foreach (\DateTimeZone::listIdentifiers() as $timezone) {
-            $parts = \explode('/', $timezone);
+            $parts = explode('/', $timezone);
 
             if (\count($parts) > 2) {
                 $region = $parts[0];
@@ -82,7 +82,7 @@ final class TimezoneType extends AbstractFieldType implements ChoiceLoader
                 $name = $parts[0];
             }
 
-            $timezones[$region][\str_replace('_', ' ', $name)] = $timezone;
+            $timezones[$region][str_replace('_', ' ', $name)] = $timezone;
         }
 
         return $timezones;

@@ -49,12 +49,14 @@ final class MoneyTypeTest extends SearchIntegrationTestCase
         FieldTransformationAssertion::assertThat($field)
             ->withInput('€ 12,20', 'EUR 12.20')
             ->successfullyTransformsTo(new MoneyValue(Money::EUR('1220')))
-            ->andReverseTransformsTo('€ 12,20', 'EUR 12.20');
+            ->andReverseTransformsTo('€ 12,20', 'EUR 12.20')
+        ;
 
         FieldTransformationAssertion::assertThat($field)
             ->withInput('12,00', '12.00')
             ->successfullyTransformsTo(new MoneyValue(Money::EUR('1200'), false))
-            ->andReverseTransformsTo('12,00', '12.00');
+            ->andReverseTransformsTo('12,00', '12.00')
+        ;
     }
 
     /** @test */
@@ -67,12 +69,14 @@ final class MoneyTypeTest extends SearchIntegrationTestCase
         FieldTransformationAssertion::assertThat($field)
             ->withInput('12,00 €', 'EUR 12.00')
             ->successfullyTransformsTo(new MoneyValue(Money::EUR('1200')))
-            ->andReverseTransformsTo('12,00 €', 'EUR 12.00');
+            ->andReverseTransformsTo('12,00 €', 'EUR 12.00')
+        ;
 
         FieldTransformationAssertion::assertThat($field)
             ->withInput('12,00', '12.00')
             ->successfullyTransformsTo(new MoneyValue(Money::EUR('1200'), false))
-            ->andReverseTransformsTo('12,00', '12.00');
+            ->andReverseTransformsTo('12,00', '12.00')
+        ;
     }
 
     /** @test */
@@ -85,22 +89,26 @@ final class MoneyTypeTest extends SearchIntegrationTestCase
         FieldTransformationAssertion::assertThat($field)
             ->withInput('¥12,00', 'JPY 12.00')
             ->successfullyTransformsTo(new MoneyValue(Money::JPY('12')))
-            ->andReverseTransformsTo('¥12', 'JPY 12');
+            ->andReverseTransformsTo('¥12', 'JPY 12')
+        ;
 
         FieldTransformationAssertion::assertThat($field)
             ->withInput('¥12', 'JPY 12')
             ->successfullyTransformsTo(new MoneyValue(Money::JPY('12')))
-            ->andReverseTransformsTo('¥12', 'JPY 12');
+            ->andReverseTransformsTo('¥12', 'JPY 12')
+        ;
 
         FieldTransformationAssertion::assertThat($field)
             ->withInput('12', '12.00')
             ->successfullyTransformsTo(new MoneyValue(Money::JPY('12'), false))
-            ->andReverseTransformsTo('12', '12');
+            ->andReverseTransformsTo('12', '12')
+        ;
 
         FieldTransformationAssertion::assertThat($field)
             ->withInput('€12.00', 'EUR 12.00')
             ->successfullyTransformsTo(new MoneyValue(Money::EUR('1200')))
-            ->andReverseTransformsTo('€12.00', 'EUR 12.00');
+            ->andReverseTransformsTo('€12.00', 'EUR 12.00')
+        ;
     }
 
     /** @test */
@@ -130,7 +138,8 @@ final class MoneyTypeTest extends SearchIntegrationTestCase
 
         $fieldSet = $this->getFactory()->createFieldSetBuilder()
             ->set($field)
-            ->getFieldSet();
+            ->getFieldSet()
+        ;
 
         $condition = SearchConditionBuilder::create($fieldSet)
             ->field('money')
@@ -140,7 +149,8 @@ final class MoneyTypeTest extends SearchIntegrationTestCase
                 ->addSimpleValue('€ 12000.00')
                 ->addSimpleValue('€ 12000.00')
             ->end()
-            ->getSearchCondition();
+            ->getSearchCondition()
+        ;
 
         $this->assertConditionEquals(
             'money: 12.00 €, € 12.00, € 12.00, € 12000.00, "€ 12000.00"',
@@ -155,7 +165,8 @@ final class MoneyTypeTest extends SearchIntegrationTestCase
                 ->addSimpleValue('EUR 12.00')
                 ->addSimpleValue('12.00')
             ->end()
-            ->getSearchCondition();
+            ->getSearchCondition()
+        ;
 
         $this->assertConditionEquals(
             'money: EUR 12.00, "EUR 12.00", 12.00',

@@ -50,15 +50,9 @@ final class ConditionExporterLoader
         return new self(
             new ClosureContainer(
                 [
-                    'rollerworks_search.condition_exporter.json' => static function () {
-                        return new Exporter\JsonExporter();
-                    },
-                    'rollerworks_search.condition_exporter.string_query' => static function () {
-                        return new Exporter\StringQueryExporter();
-                    },
-                    'rollerworks_search.condition_exporter.norm_string_query' => static function () {
-                        return new Exporter\NormStringQueryExporter();
-                    },
+                    'rollerworks_search.condition_exporter.json' => static fn () => new Exporter\JsonExporter(),
+                    'rollerworks_search.condition_exporter.string_query' => static fn () => new Exporter\StringQueryExporter(),
+                    'rollerworks_search.condition_exporter.norm_string_query' => static fn () => new Exporter\NormStringQueryExporter(),
                 ]
             ),
             [
@@ -76,7 +70,7 @@ final class ConditionExporterLoader
     {
         if (! isset($this->serviceIds[$format])) {
             throw new InvalidArgumentException(
-                \sprintf('Enable to load exporter, format "%s" has no registered exporter.', $format)
+                sprintf('Enable to load exporter, format "%s" has no registered exporter.', $format)
             );
         }
 

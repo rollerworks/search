@@ -42,7 +42,8 @@ final class CurrencyTypeTest extends SearchIntegrationTestCase
         FieldTransformationAssertion::assertThat($field)
             ->withInput('EUR')
             ->successfullyTransformsTo('EUR')
-            ->andReverseTransformsTo('EUR');
+            ->andReverseTransformsTo('EUR')
+        ;
 
         $view = $field->createView(new FieldSetView());
 

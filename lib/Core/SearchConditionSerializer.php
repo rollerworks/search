@@ -47,7 +47,7 @@ class SearchConditionSerializer
     {
         $setName = $searchCondition->getFieldSet()->getSetName();
 
-        return [$setName, \serialize($searchCondition->getValuesGroup())];
+        return [$setName, serialize($searchCondition->getValuesGroup())];
     }
 
     /**
@@ -69,7 +69,7 @@ class SearchConditionSerializer
         $fieldSet = $this->searchFactory->createFieldSet($searchCondition[0]);
 
         // FIXME This needs safe serialzing with error handling
-        if (false === $group = \unserialize($searchCondition[1])) {
+        if (false === $group = unserialize($searchCondition[1])) {
             throw new InvalidArgumentException('Unable to unserialize invalid value.');
         }
 

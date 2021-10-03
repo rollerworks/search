@@ -24,11 +24,11 @@ class UnexpectedTypeException extends \InvalidArgumentException implements Searc
     public function __construct($value, $expectedType)
     {
         if (\is_array($expectedType)) {
-            $expectedType = \implode('", "', $expectedType);
+            $expectedType = implode('", "', $expectedType);
         }
 
         parent::__construct(
-            \sprintf(
+            sprintf(
                 'Expected argument of type "%s", "%s" given',
                 $expectedType,
                 \is_object($value) ? \get_class($value) : \gettype($value)

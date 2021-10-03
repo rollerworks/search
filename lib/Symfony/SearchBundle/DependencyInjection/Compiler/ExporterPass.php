@@ -39,7 +39,7 @@ final class ExporterPass implements CompilerPassInterface
 
         foreach ($container->findTaggedServiceIds('rollerworks_search.condition_exporter') as $serviceId => $tag) {
             if (! isset($tag[0]['format'])) {
-                throw new InvalidArgumentException(\sprintf('"rollerworks_search.condition_exporter" tagged services must have the format configured using the format attribute, none was configured for the "%s" service.', $serviceId));
+                throw new InvalidArgumentException(sprintf('"rollerworks_search.condition_exporter" tagged services must have the format configured using the format attribute, none was configured for the "%s" service.', $serviceId));
             }
 
             $exporters[$tag[0]['format']] = $serviceId;

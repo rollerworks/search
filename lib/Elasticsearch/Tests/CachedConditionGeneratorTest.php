@@ -60,13 +60,15 @@ final class CachedConditionGeneratorTest extends ElasticsearchTestCase
                     return true;
                 })
             )
-            ->willReturn(false);
+            ->willReturn(false)
+        ;
 
         $query = $this->mockQuery();
 
         $this->cacheDriver
             ->expects(self::never())
-            ->method('get');
+            ->method('get')
+        ;
         $this->cacheDriver
             ->expects(self::once())
             ->method('set')
@@ -78,12 +80,14 @@ final class CachedConditionGeneratorTest extends ElasticsearchTestCase
                 ),
                 $query,
                 60
-            );
+            )
+        ;
 
         $this->conditionGenerator
             ->expects(self::once())
             ->method('getQuery')
-            ->willReturn($query);
+            ->willReturn($query)
+        ;
 
         self::assertEquals($query, $this->cachedConditionGenerator->getQuery());
     }
@@ -105,10 +109,12 @@ final class CachedConditionGeneratorTest extends ElasticsearchTestCase
                     return true;
                 })
             )
-            ->willReturn(true);
+            ->willReturn(true)
+        ;
         $this->cacheDriver
             ->expects(self::never())
-            ->method('set');
+            ->method('set')
+        ;
         $this->cacheDriver
             ->expects(self::once())
             ->method('get')
@@ -117,11 +123,13 @@ final class CachedConditionGeneratorTest extends ElasticsearchTestCase
                     return $cacheKey === $key;
                 })
             )
-            ->willReturn($query);
+            ->willReturn($query)
+        ;
 
         $this->conditionGenerator
             ->expects(self::never())
-            ->method('getQuery');
+            ->method('getQuery')
+        ;
 
         self::assertEquals($query, $this->cachedConditionGenerator->getQuery());
     }
@@ -136,7 +144,8 @@ final class CachedConditionGeneratorTest extends ElasticsearchTestCase
         $this->conditionGenerator
             ->expects(self::any())
             ->method('getSearchCondition')
-            ->willReturn($searchCondition);
+            ->willReturn($searchCondition)
+        ;
 
         /** @var Cache cacheDriver */
         $this->cacheDriver = $this->createMock(Cache::class);
@@ -151,6 +160,7 @@ final class CachedConditionGeneratorTest extends ElasticsearchTestCase
     private function mockQuery(): Query
     {
         return $this->getMockBuilder(Query::class)
-            ->getMock();
+            ->getMock()
+        ;
     }
 }

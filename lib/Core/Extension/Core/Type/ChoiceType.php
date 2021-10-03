@@ -84,7 +84,7 @@ final class ChoiceType extends AbstractFieldType
         /** @var ChoiceListView $choiceListView */
         $choiceListView = $config->getAttribute('choice_list_view');
 
-        $view->vars = \array_replace($view->vars, [
+        $view->vars = array_replace($view->vars, [
             'preferred_choices' => $choiceListView->preferredChoices,
             'choices' => $choiceListView->choices,
             'separator' => '-------------------',
@@ -134,15 +134,11 @@ final class ChoiceType extends AbstractFieldType
         $resolver->setAllowedValues('norm_format', ['auto', 'label', 'value']);
         $resolver->setNormalizer(
             'view_format',
-            static function (Options $options, $value) {
-                return $value === 'auto' ? 'label' : $value;
-            }
+            static fn (Options $options, $value) => $value === 'auto' ? 'label' : $value
         );
         $resolver->setNormalizer(
             'norm_format',
-            static function (Options $options, $value) {
-                return $value === 'auto' ? 'value' : $value;
-            }
+            static fn (Options $options, $value) => $value === 'auto' ? 'value' : $value
         );
     }
 

@@ -36,11 +36,14 @@ class RollerworksSearchExtension extends Extension implements PrependExtensionIn
         $loader->load('condition_exporter.xml');
 
         $container->registerForAutoconfiguration(FieldType::class)
-            ->addTag('rollerworks_search.type');
+            ->addTag('rollerworks_search.type')
+        ;
         $container->registerForAutoconfiguration(FieldTypeExtension::class)
-            ->addTag('rollerworks_search.type_extension');
+            ->addTag('rollerworks_search.type_extension')
+        ;
         $container->registerForAutoconfiguration(FieldSetConfigurator::class)
-            ->addTag('rollerworks_search.fieldset');
+            ->addTag('rollerworks_search.fieldset')
+        ;
 
         $configuration = $this->getConfiguration($configs, $container);
         $config = $this->processConfiguration($configuration, $configs);
@@ -61,11 +64,11 @@ class RollerworksSearchExtension extends Extension implements PrependExtensionIn
             $loader->load('elasticsearch.xml');
         }
 
-        if (\interface_exists(ValidatorInterface::class)) {
+        if (interface_exists(ValidatorInterface::class)) {
             $loader->load('input_validator.xml');
         }
 
-        if (\class_exists(Translator::class)) {
+        if (class_exists(Translator::class)) {
             $loader->load('translator_alias_resolver.xml');
         }
 
@@ -103,7 +106,7 @@ class RollerworksSearchExtension extends Extension implements PrependExtensionIn
             ],
         ]);
 
-        if (\class_exists(Translator::class)) {
+        if (class_exists(Translator::class)) {
             $container->prependExtensionConfig('framework', [
                 'translator' => [
                     'paths' => [

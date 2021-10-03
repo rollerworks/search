@@ -60,7 +60,7 @@ final class MoneyValueConversion implements ValueConversion, ColumnConversion
 
     private function getCastType(int $scale, ConversionHints $hints): string
     {
-        if (\mb_strpos($hints->connection->getDatabasePlatform()->getName(), 'mysql') !== false) {
+        if (mb_strpos($hints->connection->getDatabasePlatform()->getName(), 'mysql') !== false) {
             return "DECIMAL(10, {$scale})";
         }
 

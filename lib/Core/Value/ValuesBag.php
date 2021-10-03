@@ -67,12 +67,12 @@ class ValuesBag implements \Countable, \Serializable
 
     public function serialize(): string
     {
-        return \serialize($this->__serialize());
+        return serialize($this->__serialize());
     }
 
     public function unserialize($data): void
     {
-        $this->__unserialize(\unserialize($data));
+        $this->__unserialize(unserialize($data));
     }
 
     public function getSimpleValues(): array

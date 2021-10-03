@@ -42,7 +42,7 @@ class InputProcessorException extends \InvalidArgumentException implements Searc
         $this->messageParameters = $messageParameters;
         $this->plural = $plural;
 
-        parent::__construct(\strtr($messageTemplate, $this->formatParameters($messageParameters)), 0, $previous);
+        parent::__construct(strtr($messageTemplate, $this->formatParameters($messageParameters)), 0, $previous);
     }
 
     public function toErrorMessageObj(): ConditionErrorMessage
@@ -84,7 +84,7 @@ class InputProcessorException extends \InvalidArgumentException implements Searc
 
         foreach ($messageParameters as $name => $value) {
             if (\is_array($value)) {
-                $value = \implode(', ', \array_map([$this, 'formatValue'], $value));
+                $value = implode(', ', array_map([$this, 'formatValue'], $value));
             } else {
                 $value = $this->formatValue($value);
             }
@@ -99,7 +99,7 @@ class InputProcessorException extends \InvalidArgumentException implements Searc
     {
         $value = (string) $value;
 
-        if (\ctype_punct($value)) {
+        if (ctype_punct($value)) {
             $value = '"' . $value . '"';
         }
 

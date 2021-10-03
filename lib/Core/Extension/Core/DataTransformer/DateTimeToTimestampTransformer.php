@@ -59,7 +59,7 @@ final class DateTimeToTimestampTransformer extends BaseDateTimeTransformer
             return null;
         }
 
-        if (! \is_numeric($value)) {
+        if (! is_numeric($value)) {
             throw new TransformationFailedException('Expected a numeric.');
         }
 

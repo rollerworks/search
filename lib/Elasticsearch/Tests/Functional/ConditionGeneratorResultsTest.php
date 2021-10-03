@@ -74,7 +74,7 @@ final class ConditionGeneratorResultsTest extends FunctionalElasticsearchTestCas
     /** @test */
     public function it_finds_by_customer_birthday(): void
     {
-        $this->makeTest('customer-birthday: "2000-05-15";', \range(2, 4));
+        $this->makeTest('customer-birthday: "2000-05-15";', range(2, 4));
     }
 
     /** @test */

@@ -45,7 +45,7 @@ final class SearchOrder
         $fields = [];
 
         foreach ($this->values->getFields() as $fieldName => $valuesBag) {
-            $direction = \strtolower(\current($valuesBag->getSimpleValues()));
+            $direction = mb_strtolower(current($valuesBag->getSimpleValues()));
             \assert($direction === 'desc' || $direction === 'asc');
 
             $fields[$fieldName] = $direction;

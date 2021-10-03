@@ -111,17 +111,20 @@ final class ChoiceTypeTest extends SearchIntegrationTestCase
         FieldTransformationAssertion::assertThat($field)
             ->withInput('Yes', '1')
             ->successfullyTransformsTo(true)
-            ->andReverseTransformsTo('Yes', '1');
+            ->andReverseTransformsTo('Yes', '1')
+        ;
 
         FieldTransformationAssertion::assertThat($field)
             ->withInput('No', '0')
             ->successfullyTransformsTo(false)
-            ->andReverseTransformsTo('No', '0');
+            ->andReverseTransformsTo('No', '0')
+        ;
 
         FieldTransformationAssertion::assertThat($field)
             ->withInput('n/a', '')
             ->successfullyTransformsTo('')
-            ->andReverseTransformsTo('n/a', '');
+            ->andReverseTransformsTo('n/a', '')
+        ;
 
         $field->finalizeConfig();
         $view = $field->createView(new FieldSetView());
@@ -142,17 +145,20 @@ final class ChoiceTypeTest extends SearchIntegrationTestCase
         FieldTransformationAssertion::assertThat($field)
             ->withInput('Yes', 'Yes')
             ->successfullyTransformsTo(true)
-            ->andReverseTransformsTo('Yes', 'Yes');
+            ->andReverseTransformsTo('Yes', 'Yes')
+        ;
 
         FieldTransformationAssertion::assertThat($field)
             ->withInput('No', 'No')
             ->successfullyTransformsTo(false)
-            ->andReverseTransformsTo('No', 'No');
+            ->andReverseTransformsTo('No', 'No')
+        ;
 
         FieldTransformationAssertion::assertThat($field)
             ->withInput('n/a', 'n/a')
             ->successfullyTransformsTo('')
-            ->andReverseTransformsTo('n/a', 'n/a');
+            ->andReverseTransformsTo('n/a', 'n/a')
+        ;
 
         $field->finalizeConfig();
         $view = $field->createView(new FieldSetView());
@@ -188,7 +194,8 @@ final class ChoiceTypeTest extends SearchIntegrationTestCase
         FieldTransformationAssertion::assertThat($field)
             ->withInput($this->objectChoices[2]->name, $this->objectChoices[2]->id)
             ->successfullyTransformsTo($this->objectChoices[2])
-            ->andReverseTransformsTo($this->objectChoices[2]->name, $this->objectChoices[2]->id);
+            ->andReverseTransformsTo($this->objectChoices[2]->name, $this->objectChoices[2]->id)
+        ;
     }
 
     /** @test */
@@ -204,7 +211,8 @@ final class ChoiceTypeTest extends SearchIntegrationTestCase
         FieldTransformationAssertion::assertThat($field)
             ->withInput($this->objectChoices[2]->id)
             ->successfullyTransformsTo($this->objectChoices[2])
-            ->andReverseTransformsTo($this->objectChoices[2]->id);
+            ->andReverseTransformsTo($this->objectChoices[2]->id)
+        ;
 
         $field->finalizeConfig();
         $view = $field->createView(new FieldSetView());
@@ -229,7 +237,8 @@ final class ChoiceTypeTest extends SearchIntegrationTestCase
         FieldTransformationAssertion::assertThat($field)
             ->withInput('Fabien', 'b')
             ->successfullyTransformsTo('b')
-            ->andReverseTransformsTo('Fabien', 'b');
+            ->andReverseTransformsTo('Fabien', 'b')
+        ;
     }
 
     /** @test */

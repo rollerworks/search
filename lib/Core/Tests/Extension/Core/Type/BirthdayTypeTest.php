@@ -33,11 +33,13 @@ final class BirthdayTypeTest extends SearchIntegrationTestCase
         FieldTransformationAssertion::assertThat($field)
             ->withInput('2010-06-02', '2010-06-02')
             ->successfullyTransformsTo(new \DateTimeImmutable('2010-06-02'))
-            ->andReverseTransformsTo('2010-06-02', '2010-06-02');
+            ->andReverseTransformsTo('2010-06-02', '2010-06-02')
+        ;
 
         FieldTransformationAssertion::assertThat($field)
             ->withInput('21')
-            ->failsToTransforms();
+            ->failsToTransforms()
+        ;
     }
 
     /** @test */
@@ -50,12 +52,14 @@ final class BirthdayTypeTest extends SearchIntegrationTestCase
         FieldTransformationAssertion::assertThat($field)
             ->withInput('2010-06-02', '2010-06-02')
             ->successfullyTransformsTo(new \DateTimeImmutable('2010-06-02'))
-            ->andReverseTransformsTo('2010-06-02', '2010-06-02');
+            ->andReverseTransformsTo('2010-06-02', '2010-06-02')
+        ;
 
         FieldTransformationAssertion::assertThat($field)
             ->withInput('15')
             ->successfullyTransformsTo(15)
-            ->andReverseTransformsTo('15');
+            ->andReverseTransformsTo('15')
+        ;
     }
 
     /** @test */
@@ -96,6 +100,7 @@ final class BirthdayTypeTest extends SearchIntegrationTestCase
         FieldTransformationAssertion::assertThat($field)
             ->withInput($currentDate->format('Y-m-d'))
             ->successfullyTransformsTo($currentDate)
-            ->andReverseTransformsTo($currentDate->format('Y-m-d'));
+            ->andReverseTransformsTo($currentDate->format('Y-m-d'))
+        ;
     }
 }

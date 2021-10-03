@@ -307,7 +307,8 @@ final class StringQueryInputTest extends InputProcessorTestCase
                     ->addSimpleValue('paris')
                 ->end()
             ->end()
-            ->getSearchCondition();
+            ->getSearchCondition()
+        ;
 
         self::assertEquals($condition, $processor->process($config, '*(title:paris;subtitle:paris;teaser:paris)'));
     }

@@ -36,7 +36,7 @@ class NumberToStringTransformer extends NumberToLocalizedStringTransformer
             return '';
         }
 
-        if (! \is_numeric($value)) {
+        if (! is_numeric($value)) {
             throw new TransformationFailedException('Expected a numeric or null.');
         }
 
@@ -59,7 +59,7 @@ class NumberToStringTransformer extends NumberToLocalizedStringTransformer
      */
     public function reverseTransform($value)
     {
-        if (! \is_scalar($value)) {
+        if (! is_scalar($value)) {
             throw new TransformationFailedException('Expected a scalar.');
         }
 
@@ -69,12 +69,12 @@ class NumberToStringTransformer extends NumberToLocalizedStringTransformer
 
         $result = $value;
 
-        if (! \is_numeric($result)) {
+        if (! is_numeric($result)) {
             throw new TransformationFailedException('Value is not numeric.');
         }
 
         if (\is_string($result)) {
-            if (\mb_strpos($result, '.') !== false) {
+            if (mb_strpos($result, '.') !== false) {
                 $result = (float) $result;
             } else {
                 $result = (int) $result;

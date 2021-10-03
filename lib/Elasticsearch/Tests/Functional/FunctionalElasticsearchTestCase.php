@@ -40,17 +40,17 @@ abstract class FunctionalElasticsearchTestCase extends ElasticsearchTestCase
 
             foreach ($mappings as $name => $properties) {
                 if (\array_key_exists($name, $documents) === false) {
-                    throw new \RuntimeException(\sprintf('No documents for mapping "%1$s" defined', $name));
+                    throw new \RuntimeException(sprintf('No documents for mapping "%1$s" defined', $name));
                 }
                 $data = $documents[$name];
                 $this->createDocuments($name, $properties, $data);
             }
         } catch (ResponseException $exception) {
-            static::fail(\sprintf(
+            static::fail(sprintf(
                 "%s\nWith path: %s\nWith query: ---------------------\n%s\n---------------------------------\n",
                 $exception->getMessage(),
                 $exception->getRequest()->getPath(),
-                \json_encode($exception->getRequest()->toArray(), \JSON_THROW_ON_ERROR | \JSON_PRETTY_PRINT)
+                json_encode($exception->getRequest()->toArray(), \JSON_THROW_ON_ERROR | \JSON_PRETTY_PRINT)
             ));
         }
 
@@ -98,9 +98,7 @@ abstract class FunctionalElasticsearchTestCase extends ElasticsearchTestCase
 
     protected function getDocuments(): array
     {
-        $date = static function (string $input) {
-            return (new \DateTimeImmutable($input, new \DateTimeZone('UTC')))->format('Y-m-d\TH:i:sP');
-        };
+        $date = static fn (string $input) => (new \DateTimeImmutable($input, new \DateTimeZone('UTC')))->format('Y-m-d\TH:i:sP');
 
         return [
             'customers' => [
@@ -161,8 +159,8 @@ abstract class FunctionalElasticsearchTestCase extends ElasticsearchTestCase
     {
         // TODO: extract settings to config file, add proper logger
         return new Client([
-            'host' => \getenv('ELASTICSEARCH_HOST') ?: 'elasticsearch',
-            'port' => \getenv('ELASTICSEARCH_PORT') ?: 9200,
+            'host' => getenv('ELASTICSEARCH_HOST') ?: 'elasticsearch',
+            'port' => getenv('ELASTICSEARCH_PORT') ?: 9200,
         ]);
     }
 
@@ -180,7 +178,7 @@ abstract class FunctionalElasticsearchTestCase extends ElasticsearchTestCase
                 $documents = [];
 
                 foreach ($data as $id => $item) {
-                    $normalized = \array_combine(\array_keys($properties), $item);
+                    $normalized = array_combine(array_keys($properties), $item);
                     $document = new Document((string) $id, $normalized);
 
                     if (isset($normalized['type']['parent'])) {
@@ -192,11 +190,11 @@ abstract class FunctionalElasticsearchTestCase extends ElasticsearchTestCase
                 $index->refresh();
             }
         } catch (ResponseException $exception) {
-            static::fail(\sprintf(
+            static::fail(sprintf(
                 "%s\nWith path: %s\nWith query: ---------------------\n%s\n---------------------------------\n",
                 $exception->getMessage(),
                 $exception->getRequest()->getPath(),
-                \json_encode($exception->getRequest()->toArray(), \JSON_THROW_ON_ERROR | \JSON_PRETTY_PRINT)
+                json_encode($exception->getRequest()->toArray(), \JSON_THROW_ON_ERROR | \JSON_PRETTY_PRINT)
             ));
         }
     }
@@ -304,29 +302,27 @@ abstract class FunctionalElasticsearchTestCase extends ElasticsearchTestCase
         try {
             $results = $search->search($query);
             $documents = $results->getDocuments();
-            $foundIds = \array_map(
-                static function (Document $document) {
-                    return (string) $document->getId();
-                },
+            $foundIds = array_map(
+                static fn (Document $document) => (string) $document->getId(),
                 $documents
             );
         } catch (ResponseException $exception) {
-            static::fail(\sprintf(
+            static::fail(sprintf(
                 "%s\nWith path: %s\nWith query: ---------------------\n%s\n---------------------------------\n",
                 $exception->getMessage(),
                 $search->getPath(),
-                \json_encode($query->toArray(), \JSON_THROW_ON_ERROR | \JSON_PRETTY_PRINT)
+                json_encode($query->toArray(), \JSON_THROW_ON_ERROR | \JSON_PRETTY_PRINT)
             ));
         }
 
         static::assertSame(
-            \array_map('strval', $expectedIds),
+            array_map('strval', $expectedIds),
             $foundIds,
-            \sprintf(
+            sprintf(
                 "Found these records instead: \n%s\n"
                 . "With query: ---------------------\n%s\n---------------------------------\n",
-                \var_export($documents, true),
-                \json_encode($query->toArray(), \JSON_THROW_ON_ERROR | \JSON_PRETTY_PRINT)
+                var_export($documents, true),
+                json_encode($query->toArray(), \JSON_THROW_ON_ERROR | \JSON_PRETTY_PRINT)
             )
         );
     }

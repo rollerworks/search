@@ -96,7 +96,7 @@ final class SearchConditionListener
     {
         if (empty($searchConfig['contexts'])) {
             throw new RuntimeException(
-                \sprintf(
+                sprintf(
                     'Resource "%s" is missing a contexts array. Add a "contexts" array with at least one entry.',
                     $resourceClass . '#attributes[rollerworks_search]'
                 )
@@ -107,18 +107,18 @@ final class SearchConditionListener
 
         if (! isset($searchConfig['contexts'][$context])) {
             throw new RuntimeException(
-                \sprintf(
+                sprintf(
                     'Search context "%s" is not supported for Resource "%s", supported: "%s".',
                     $context,
                     $resourceClass . '#attributes[rollerworks_search][contexts]',
-                    \implode('", "', \array_keys($searchConfig['contexts']))
+                    implode('", "', array_keys($searchConfig['contexts']))
                 )
             );
         }
 
         if (empty($searchConfig['contexts'][$context]) || empty($searchConfig['contexts'][$context]['fieldset'])) {
             throw new RuntimeException(
-                \sprintf(
+                sprintf(
                     'Search context "%s" is incorrectly configured for Resource "%s", missing a "fieldset" reference.',
                     $context,
                     $resourceClass . '#attributes[rollerworks_search]'
@@ -139,13 +139,13 @@ final class SearchConditionListener
         }
 
         foreach ($options['processor'] as $option => $value) {
-            $method = 'set' . \ucfirst(\str_replace(' ', '', \ucwords(\str_replace('_', ' ', $option))));
+            $method = 'set' . ucfirst(str_replace(' ', '', ucwords(str_replace('_', ' ', $option))));
 
-            if (! \method_exists($config, $method)) {
-                throw new RuntimeException(\sprintf('Processor option "%s" is not supported for Resource "%s".', $option, $resourceClass));
+            if (! method_exists($config, $method)) {
+                throw new RuntimeException(sprintf('Processor option "%s" is not supported for Resource "%s".', $option, $resourceClass));
             }
 
-            if (\ctype_digit($value)) {
+            if (ctype_digit($value)) {
                 $value = (int) $value;
             }
 

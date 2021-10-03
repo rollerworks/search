@@ -66,20 +66,24 @@ final class GenericSearchFactoryTest extends TestCase
         $this->registry->expects(self::once())
             ->method('getType')
             ->with(TextType::class)
-            ->willReturn($resolvedType);
+            ->willReturn($resolvedType)
+        ;
 
         $resolvedType->expects(self::once())
             ->method('createField')
             ->with('name', $options)
-            ->willReturn($this->fieldConfig);
+            ->willReturn($this->fieldConfig)
+        ;
 
         $this->fieldConfig->expects(self::any())
             ->method('getOptions')
-            ->willReturn($resolvedOptions);
+            ->willReturn($resolvedOptions)
+        ;
 
         $resolvedType->expects(self::once())
             ->method('buildType')
-            ->with($this->fieldConfig, $resolvedOptions);
+            ->with($this->fieldConfig, $resolvedOptions)
+        ;
 
         self::assertSame($this->fieldConfig, $this->factory->createField('name', TextType::class, $options));
     }

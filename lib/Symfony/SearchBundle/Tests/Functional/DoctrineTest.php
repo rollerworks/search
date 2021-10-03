@@ -24,7 +24,7 @@ final class DoctrineTest extends FunctionalTestCase
     /** @test */
     public function doctrine_dbal_factory_is_accessible(): void
     {
-        if (! \class_exists(DoctrineDbalFactory::class)) {
+        if (! class_exists(DoctrineDbalFactory::class)) {
             self::markTestSkipped('rollerworks/search-doctrine-dbal is not installed');
         }
 
@@ -39,7 +39,7 @@ final class DoctrineTest extends FunctionalTestCase
     /** @test */
     public function doctrine_orm_factory_is_accessible(): void
     {
-        if (! \class_exists(DoctrineOrmFactory::class)) {
+        if (! class_exists(DoctrineOrmFactory::class)) {
             self::markTestSkipped('rollerworks/search-doctrine-orm is not installed');
         }
 

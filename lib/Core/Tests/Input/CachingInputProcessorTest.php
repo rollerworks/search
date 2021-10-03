@@ -55,7 +55,8 @@ final class CachingInputProcessorTest extends TestCase
         $serializer
             ->expects(self::once())
             ->method('unserialize')
-            ->willThrowException(new InvalidArgumentException());
+            ->willThrowException(new InvalidArgumentException())
+        ;
 
         $inputProcessor = new SpyingInputProcessor();
         $cache = new Psr16Cache($arrayCache = new ArrayAdapter());
@@ -76,7 +77,8 @@ final class CachingInputProcessorTest extends TestCase
             ->expects(self::once())
             ->method('unserialize')
             ->with(['cachedResult'])
-            ->willReturn($condition = new SearchCondition(new FieldSetStub(), new ValuesGroup()));
+            ->willReturn($condition = new SearchCondition(new FieldSetStub(), new ValuesGroup()))
+        ;
 
         $inputProcessor = new SpyingInputProcessor();
 
@@ -84,7 +86,8 @@ final class CachingInputProcessorTest extends TestCase
         $cache
             ->expects(self::once())
             ->method('get')
-            ->willReturn(['cachedResult']);
+            ->willReturn(['cachedResult'])
+        ;
 
         $processor = new CachingInputProcessor($cache, $serializer, $inputProcessor);
 
@@ -100,24 +103,28 @@ final class CachingInputProcessorTest extends TestCase
         $serializer
             ->expects(self::once())
             ->method('unserialize')
-            ->willThrowException(new InvalidArgumentException());
+            ->willThrowException(new InvalidArgumentException())
+        ;
 
         $serializer
             ->expects(self::once())
             ->method('serialize')
             ->with(SpyingInputProcessor::getCondition())
-            ->willReturn(['noop', 'serializedResult']);
+            ->willReturn(['noop', 'serializedResult'])
+        ;
 
         $cache = $this->createMock(CacheInterface::class);
         $cache
             ->expects(self::once())
             ->method('get')
-            ->willReturn([]);
+            ->willReturn([])
+        ;
 
         $cache
             ->expects(self::once())
             ->method('set')
-            ->with('57844014a80a2251e25a05e3c94ffdc2f47cb6ff06b3e2dcc27c5d5124dff22a', ['noop', 'serializedResult']);
+            ->with('57844014a80a2251e25a05e3c94ffdc2f47cb6ff06b3e2dcc27c5d5124dff22a', ['noop', 'serializedResult'])
+        ;
 
         $inputProcessor = new SpyingInputProcessor();
         $processor = new CachingInputProcessor($cache, $serializer, $inputProcessor);
@@ -135,21 +142,25 @@ final class CachingInputProcessorTest extends TestCase
         $serializer
             ->expects(self::once())
             ->method('unserialize')
-            ->willThrowException(new InvalidArgumentException());
+            ->willThrowException(new InvalidArgumentException())
+        ;
 
         $serializer
             ->expects(self::never())
-            ->method('serialize');
+            ->method('serialize')
+        ;
 
         $cache = $this->createMock(CacheInterface::class);
         $cache
             ->expects(self::once())
             ->method('get')
-            ->willReturn([]);
+            ->willReturn([])
+        ;
 
         $cache
             ->expects(self::never())
-            ->method('set');
+            ->method('set')
+        ;
 
         $inputProcessor = new EmptyInputProcessorStub();
         $processor = new CachingInputProcessor($cache, $serializer, $inputProcessor);
@@ -164,7 +175,8 @@ final class CachingInputProcessorTest extends TestCase
         $serializer
             ->expects(self::any())
             ->method('unserialize')
-            ->willThrowException(new InvalidArgumentException());
+            ->willThrowException(new InvalidArgumentException())
+        ;
 
         $cache = new Psr16Cache($arrayCache = new ArrayAdapter());
 

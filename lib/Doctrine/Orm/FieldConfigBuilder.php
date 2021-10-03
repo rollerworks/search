@@ -54,8 +54,8 @@ final class FieldConfigBuilder
         $mappingIdx = null;
         $fieldName = $mappingName;
 
-        if (\mb_strpos($mappingName, '#') !== false) {
-            [$fieldName, $mappingIdx] = \explode('#', $mappingName, 2);
+        if (mb_strpos($mappingName, '#') !== false) {
+            [$fieldName, $mappingIdx] = explode('#', $mappingName, 2);
             unset($this->fields[$fieldName][null]);
         } else {
             $this->fields[$fieldName] = [];
@@ -96,7 +96,7 @@ final class FieldConfigBuilder
         }
 
         throw new \RuntimeException(
-            \sprintf(
+            sprintf(
                 'Entity field "%s"#%s is a JOIN association, you must explicitly set the ' .
                 'entity alias and column mapping for search field "%s" to point to the (head) reference and the ' .
                 'entity field you want to use, this entity field must be owned by the entity ' .
@@ -119,7 +119,7 @@ final class FieldConfigBuilder
 
         if ($type === null) {
             throw new \RuntimeException(
-                \sprintf(
+                sprintf(
                     'Unable to determine DBAL type of field-mapping "%s" with entity reference "%s"#%s. ' .
                     'Configure an explicit dbal type for the field.',
                     $fieldName,

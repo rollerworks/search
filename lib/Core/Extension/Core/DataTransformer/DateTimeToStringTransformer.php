@@ -58,7 +58,7 @@ final class DateTimeToStringTransformer extends BaseDateTimeTransformer
         // where the time corresponds to the current server time.
         // With "|" and "Y-m-d", "2010-02-03" becomes "2010-02-03 00:00:00",
         // which is at least deterministic and thus used here.
-        if (\mb_strpos($this->parseFormat, '|') === false) {
+        if (mb_strpos($this->parseFormat, '|') === false) {
             $this->parseFormat .= '|';
         }
     }
@@ -116,7 +116,7 @@ final class DateTimeToStringTransformer extends BaseDateTimeTransformer
         $lastErrors = \DateTimeImmutable::getLastErrors();
 
         if (0 < $lastErrors['warning_count'] || 0 < $lastErrors['error_count']) {
-            throw new TransformationFailedException(\implode(', ', \array_merge(\array_values($lastErrors['warnings']), \array_values($lastErrors['errors']))));
+            throw new TransformationFailedException(implode(', ', array_merge(array_values($lastErrors['warnings']), array_values($lastErrors['errors']))));
         }
 
         try {

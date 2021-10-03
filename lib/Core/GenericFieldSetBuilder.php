@@ -96,7 +96,7 @@ final class GenericFieldSetBuilder implements FieldSetBuilder
             return $this->fields[$name];
         }
 
-        throw new InvalidArgumentException(\sprintf('The field with the name "%s" does not exist.', $name));
+        throw new InvalidArgumentException(sprintf('The field with the name "%s" does not exist.', $name));
     }
 
     public function getFieldSet(string $setName = null): FieldSet

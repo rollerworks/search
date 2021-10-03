@@ -41,9 +41,7 @@ final class LazyExtensionTest extends TestCase
     {
         $extension = LazyExtension::create(
             [
-                TextType::class => static function () {
-                    return new TextType();
-                },
+                TextType::class => static fn () => new TextType(),
             ]
         );
 
@@ -74,9 +72,7 @@ final class LazyExtensionTest extends TestCase
 
         $extension = LazyExtension::create(
             [
-                TextType::class => static function () {
-                    return new TextType();
-                },
+                TextType::class => static fn () => new TextType(),
             ],
             [
                 TextType::class => [$typeExtension1, $typeExtension2],
@@ -100,9 +96,7 @@ final class LazyExtensionTest extends TestCase
 
         $extension = LazyExtension::create(
             [
-                TextType::class => static function () {
-                    return new TextType();
-                },
+                TextType::class => static fn () => new TextType(),
             ],
             [
                 IntegerType::class => ['extension_1' => $typeExtension1],
@@ -111,7 +105,7 @@ final class LazyExtensionTest extends TestCase
 
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(
-            \sprintf(
+            sprintf(
                 'The extended type specified for the service "%s" does not match the actual extended type. Expected "%s", given "%s".',
                 'extension_1',
                 IntegerType::class,
@@ -128,7 +122,8 @@ final class LazyExtensionTest extends TestCase
         $typeExtension
             ->expects(self::any())
             ->method('getExtendedType')
-            ->willReturn($type);
+            ->willReturn($type)
+        ;
 
         return $typeExtension;
     }

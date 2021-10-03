@@ -19,13 +19,13 @@ final class ArrayKeysValidator
 {
     public static function assertKeysExists(array $input, array $required, string $path): void
     {
-        if ([] !== $missing = \array_diff_key(\array_flip($required), $input)) {
+        if ([] !== $missing = array_diff_key(array_flip($required), $input)) {
             throw new RuntimeException(
-                \sprintf(
+                sprintf(
                     'Config "%s" is missing "%s", got "%s".',
                     $path,
-                    \implode('", "', \array_flip($missing)),
-                    \implode('", "', \array_keys($input))
+                    implode('", "', array_flip($missing)),
+                    implode('", "', array_keys($input))
                 )
             );
         }
@@ -33,13 +33,13 @@ final class ArrayKeysValidator
 
     public static function assertOnlyKeys(array $input, array $accepted, string $path): void
     {
-        if (\array_diff(\array_keys($input), $accepted) !== []) {
+        if (array_diff(array_keys($input), $accepted) !== []) {
             throw new RuntimeException(
-                \sprintf(
+                sprintf(
                     'Config "%s" accepts only "%s", got "%s".',
                     $path,
-                    \implode('", "', $accepted),
-                    \implode('", "', \array_keys($input))
+                    implode('", "', $accepted),
+                    implode('", "', array_keys($input))
                 )
             );
         }

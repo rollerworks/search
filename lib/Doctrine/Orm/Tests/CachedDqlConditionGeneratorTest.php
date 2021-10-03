@@ -53,13 +53,15 @@ final class CachedDqlConditionGeneratorTest extends OrmTestCase
     {
         $this->cacheDriver
             ->expects(self::never())
-            ->method('has');
+            ->method('has')
+        ;
 
         $this->cacheDriver
             ->expects(self::once())
             ->method('get')
             ->with(self::CACHE_KEY)
-            ->willReturn(null);
+            ->willReturn(null)
+        ;
 
         $this->cacheDriver
             ->expects(self::once())
@@ -74,7 +76,8 @@ final class CachedDqlConditionGeneratorTest extends OrmTestCase
                     ],
                 ],
                 60
-            );
+            )
+        ;
 
         $this->assertQueryBuilderEquals(
             ' WHERE (((C.id = :search_0 OR C.id = :search_1)))',
@@ -104,17 +107,20 @@ final class CachedDqlConditionGeneratorTest extends OrmTestCase
     {
         $this->cacheDriver
             ->expects(self::never())
-            ->method('has');
+            ->method('has')
+        ;
 
         $this->cacheDriver
             ->expects(self::once())
             ->method('get')
             ->with(self::CACHE_KEY)
-            ->willReturn(["me = 'foo'", [':search' => [1, 'integer']]]);
+            ->willReturn(["me = 'foo'", [':search' => [1, 'integer']]])
+        ;
 
         $this->cacheDriver
             ->expects(self::never())
-            ->method('set');
+            ->method('set')
+        ;
 
         $this->assertQueryBuilderEquals(" WHERE me = 'foo'", [':search' => [1, Type::getType('integer')]]);
     }
@@ -124,7 +130,8 @@ final class CachedDqlConditionGeneratorTest extends OrmTestCase
     {
         $this->cacheDriver
             ->expects(self::never())
-            ->method('has');
+            ->method('has')
+        ;
 
         // Second-key is used for (non-empty) primary-condition
         // Note: ordering doesn't change the cache-key as ordering is applied independently.
@@ -132,11 +139,13 @@ final class CachedDqlConditionGeneratorTest extends OrmTestCase
             ->expects(self::any())
             ->method('get')
             ->with(self::matchesRegularExpression('/^' . self::CACHE_KEY . '|2572233a315f25e5bc6603ae17db405863603c0a61b9d780bf9f6d62a37350ce/'))
-            ->willReturn(["me = 'foo'", [':search' => [1, 'integer']]]);
+            ->willReturn(["me = 'foo'", [':search' => [1, 'integer']]])
+        ;
 
         $this->cacheDriver
             ->expects(self::never())
-            ->method('set');
+            ->method('set')
+        ;
 
         $searchCondition = SearchConditionBuilder::create($this->getFieldSet())
             ->field('customer')
@@ -144,7 +153,8 @@ final class CachedDqlConditionGeneratorTest extends OrmTestCase
                 ->addSimpleValue(5)
             ->end()
             ->order('@id', 'DESC')
-            ->getSearchCondition();
+            ->getSearchCondition()
+        ;
 
         $this->assertQueryBuilderEquals(
             " WHERE me = 'foo' ORDER BY I.id DESC",
@@ -160,7 +170,8 @@ final class CachedDqlConditionGeneratorTest extends OrmTestCase
             ->primaryCondition()
                 ->order('@id', 'DESC')
             ->end()
-            ->getSearchCondition();
+            ->getSearchCondition()
+        ;
 
         $this->assertQueryBuilderEquals(
             " WHERE me = 'foo' ORDER BY I.id DESC",
@@ -177,7 +188,8 @@ final class CachedDqlConditionGeneratorTest extends OrmTestCase
             ->primaryCondition()
                 ->order('@id', 'DESC')
             ->end()
-            ->getSearchCondition();
+            ->getSearchCondition()
+        ;
 
         $this->assertQueryBuilderEquals(
             " WHERE me = 'foo' ORDER BY I.id DESC, C.id DESC",
@@ -194,17 +206,20 @@ final class CachedDqlConditionGeneratorTest extends OrmTestCase
         $this->cacheDriver = $this->createMock(CacheInterface::class);
         $this->cacheDriver
             ->expects(self::never())
-            ->method('has');
+            ->method('has')
+        ;
 
         $this->cacheDriver
             ->expects(self::once())
             ->method('get')
             ->with('0bd93612c80eb441a04867c5963104aa1b4dd33cf0afa555e958bf696c14e0b0')
-            ->willReturn(null);
+            ->willReturn(null)
+        ;
 
         $this->cacheDriver
             ->expects(self::never())
-            ->method('set');
+            ->method('set')
+        ;
 
         $this->conditionGenerator = $this->createCachedConditionGenerator($this->cacheDriver, $searchCondition);
 
@@ -235,7 +250,8 @@ final class CachedDqlConditionGeneratorTest extends OrmTestCase
                 ->addSimpleValue(2)
                 ->addSimpleValue(5)
             ->end()
-        ->getSearchCondition();
+        ->getSearchCondition()
+        ;
 
         $query1 = $this->createQuery();
         $cachedConditionGenerator = $this->createCachedConditionGenerator($cacheDriver, $searchCondition, $query1);
@@ -245,7 +261,8 @@ final class CachedDqlConditionGeneratorTest extends OrmTestCase
                 ->addSimpleValue(2)
                 ->addSimpleValue(5)
             ->end()
-        ->getSearchCondition();
+        ->getSearchCondition()
+        ;
 
         $searchCondition2->setPrimaryCondition(new SearchPrimaryCondition(
             SearchConditionBuilder::create($this->getFieldSet())
@@ -274,7 +291,8 @@ final class CachedDqlConditionGeneratorTest extends OrmTestCase
                 ->addSimpleValue(2)
                 ->addSimpleValue(5)
             ->end()
-        ->getSearchCondition();
+        ->getSearchCondition()
+        ;
 
         $this->cacheDriver = $this->createMock(CacheInterface::class);
         $this->conditionGenerator = $this->createCachedConditionGenerator($this->cacheDriver, $searchCondition);
@@ -285,7 +303,8 @@ final class CachedDqlConditionGeneratorTest extends OrmTestCase
         return $this->em->createQueryBuilder()
             ->select('I')
             ->from(ECommerceInvoice::class, 'I')
-            ->join('I.customer', 'C');
+            ->join('I.customer', 'C')
+        ;
     }
 
     private function createCachedConditionGenerator(CacheInterface $cacheDriver, SearchCondition $searchCondition, ?QueryBuilder $qb = null): CachedDqlConditionGenerator

@@ -81,7 +81,7 @@ final class SearchExtension implements QueryCollectionExtensionInterface
         $configPath .= '[relations]';
 
         if (isset($configuration['relations']['o'])) {
-            throw new RuntimeException(\sprintf('Invalid configuration for "%s", relation name "o" is already used for the root.', $configPath));
+            throw new RuntimeException(sprintf('Invalid configuration for "%s", relation name "o" is already used for the root.', $configPath));
         }
 
         foreach ($configuration['relations'] as $alias => $config) {
@@ -90,8 +90,8 @@ final class SearchExtension implements QueryCollectionExtensionInterface
             ArrayKeysValidator::assertOnlyKeys($config, ['join', 'entity', 'type', 'conditionType', 'condition', 'index'], $path);
             ArrayKeysValidator::assertKeysExists($config, ['join', 'entity'], $path);
 
-            if (! \method_exists($queryBuilder, ($config['type'] = $config['type'] ?? 'left') . 'Join')) {
-                throw new RuntimeException(\sprintf('Invalid value for "%s", type "%s" is not supported. Use left, right or inner.', $path . '[type]', $config['type']));
+            if (! method_exists($queryBuilder, ($config['type'] = $config['type'] ?? 'left') . 'Join')) {
+                throw new RuntimeException(sprintf('Invalid value for "%s", type "%s" is not supported. Use left, right or inner.', $path . '[type]', $config['type']));
             }
 
             $queryBuilder->{$config['type'] . 'Join'}(
@@ -125,7 +125,7 @@ final class SearchExtension implements QueryCollectionExtensionInterface
             ArrayKeysValidator::assertKeysExists($mapping, ['property'], $path);
 
             if (! isset($configuration['relations'][$mapping['alias']])) {
-                throw new RuntimeException(\sprintf('Invalid value for "%s", alias "%s" is not registered in the "relations".', $path . '[alias]', $mapping['alias']));
+                throw new RuntimeException(sprintf('Invalid value for "%s", alias "%s" is not registered in the "relations".', $path . '[alias]', $mapping['alias']));
             }
 
             $conditionGenerator->setField(

@@ -96,7 +96,7 @@ final class QueryGenerator
 
         // Wrap all the fields as a group
         $finalQuery[] = self::wrapIfNotEmpty(
-            self::implodeWithValue(' ' . \mb_strtoupper($valuesGroup->getGroupLogical()) . ' ', $query),
+            self::implodeWithValue(' ' . mb_strtoupper($valuesGroup->getGroupLogical()) . ' ', $query),
             '(',
             ')'
         );
@@ -134,7 +134,7 @@ final class QueryGenerator
             $hints->originalValue = $value;
             $column = $this->queryPlatform->getFieldColumn($mappingConfig, $mappingConfig->column, $hints);
 
-            $query[] = \sprintf(
+            $query[] = sprintf(
                 $patterns[(int) $exclude],
                 $column,
                 $this->queryPlatform->getValueAsSql($value, $mappingConfig, $hints)
@@ -157,7 +157,7 @@ final class QueryGenerator
             $hints->context = ConversionHints::CONTEXT_RANGE_UPPER_BOUND;
             $upperBound = $this->queryPlatform->getValueAsSql($range->getUpper(), $mappingConfig, $hints);
 
-            $query[] = \sprintf(
+            $query[] = sprintf(
                 $this->getRangePattern($range, $exclude),
                 $column,
                 $lowerBound,
@@ -207,7 +207,7 @@ final class QueryGenerator
             $hints->originalValue = $comparison;
             $column = $this->queryPlatform->getFieldColumn($mappingConfig, $mappingConfig->column, $hints);
 
-            $valuesQuery[] = \sprintf(
+            $valuesQuery[] = sprintf(
                 '%s %s %s',
                 $column,
                 $comparison->getOperator(),
@@ -252,29 +252,25 @@ final class QueryGenerator
     private static function implodeWithValue(string $glue, array $values): string
     {
         // Remove the empty values
-        $values = \array_filter($values, static function (string $val): bool {
-            return $val !== '';
-        });
+        $values = array_filter($values, static fn (string $val): bool => $val !== '');
 
         if (\count($values) === 0) {
             return '';
         }
 
-        return \implode($glue, $values);
+        return implode($glue, $values);
     }
 
     private static function implodeValuesWithWrapping(string $glue, array $values, string $prefix, string $suffix): string
     {
         // Remove the empty values
-        $values = \array_filter($values, static function (string $val): bool {
-            return $val !== '';
-        });
+        $values = array_filter($values, static fn (string $val): bool => $val !== '');
 
         if (\count($values) === 0) {
             return '';
         }
 
-        $value = \implode($glue, $values);
+        $value = implode($glue, $values);
 
         if (\count($values) > 1) {
             return $prefix . $value . $suffix;

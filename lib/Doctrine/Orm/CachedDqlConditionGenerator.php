@@ -96,7 +96,7 @@ class CachedDqlConditionGenerator extends AbstractCachedConditionGenerator imple
     public function apply(): void
     {
         if ($this->isApplied) {
-            \trigger_error('SearchCondition was already applied. Ignoring operation.', \E_USER_WARNING);
+            trigger_error('SearchCondition was already applied. Ignoring operation.', \E_USER_WARNING);
 
             return;
         }
@@ -149,16 +149,16 @@ class CachedDqlConditionGenerator extends AbstractCachedConditionGenerator imple
             $searchCondition = $this->searchCondition;
             $primaryCondition = $searchCondition->getPrimaryCondition();
 
-            $this->cacheKey = \hash(
+            $this->cacheKey = hash(
                 'sha256',
                 "dql\n" .
                 $searchCondition->getFieldSet()->getSetName() .
                 "\n" .
-                \serialize($searchCondition->getValuesGroup()) .
+                serialize($searchCondition->getValuesGroup()) .
                 "\n" .
-                \serialize($primaryCondition ? $primaryCondition->getValuesGroup() : null) .
+                serialize($primaryCondition ? $primaryCondition->getValuesGroup() : null) .
                 "\n" .
-                \serialize($this->fieldsConfig->getFields())
+                serialize($this->fieldsConfig->getFields())
             );
         }
 

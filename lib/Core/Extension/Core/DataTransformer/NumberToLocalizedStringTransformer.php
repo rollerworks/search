@@ -113,19 +113,19 @@ class NumberToLocalizedStringTransformer implements DataTransformer
             return '';
         }
 
-        if (! \is_numeric($value)) {
+        if (! is_numeric($value)) {
             throw new TransformationFailedException('Expected a numeric.');
         }
 
         $formatter = $this->getNumberFormatter();
         $value = (string) $formatter->format((float) $value);
 
-        if (\intl_is_failure($formatter->getErrorCode())) {
+        if (intl_is_failure($formatter->getErrorCode())) {
             throw new TransformationFailedException($formatter->getErrorMessage());
         }
 
         // Convert non-breaking and narrow non-breaking spaces to normal ones
-        return \str_replace(["\xc2\xa0", "\xe2\x80\xaf"], ' ', $value);
+        return str_replace(["\xc2\xa0", "\xe2\x80\xaf"], ' ', $value);
     }
 
     /**
@@ -158,14 +158,14 @@ class NumberToLocalizedStringTransformer implements DataTransformer
         $decSep = $formatter->getSymbol(\NumberFormatter::DECIMAL_SEPARATOR_SYMBOL);
 
         if ($decSep !== '.' && (! $this->grouping || $groupSep !== '.')) {
-            $value = \str_replace('.', $decSep, $value);
+            $value = str_replace('.', $decSep, $value);
         }
 
         if ($decSep !== ',' && (! $this->grouping || $groupSep !== ',')) {
-            $value = \str_replace(',', $decSep, $value);
+            $value = str_replace(',', $decSep, $value);
         }
 
-        if (\mb_strpos($value, $decSep) !== false) {
+        if (mb_strpos($value, $decSep) !== false) {
             $type = \NumberFormatter::TYPE_DOUBLE;
         } else {
             $type = \PHP_INT_SIZE === 8
@@ -175,7 +175,7 @@ class NumberToLocalizedStringTransformer implements DataTransformer
 
         $result = $formatter->parse($value, $type, $position);
 
-        if (\intl_is_failure($formatter->getErrorCode())) {
+        if (intl_is_failure($formatter->getErrorCode())) {
             throw new TransformationFailedException($formatter->getErrorMessage());
         }
 
@@ -185,12 +185,12 @@ class NumberToLocalizedStringTransformer implements DataTransformer
 
         $result = $this->castParsedValue($result);
 
-        if (false !== $encoding = \mb_detect_encoding($value, null, true)) {
-            $length = \mb_strlen($value, $encoding);
-            $remainder = \mb_substr($value, $position, $length, $encoding);
+        if (false !== $encoding = mb_detect_encoding($value, null, true)) {
+            $length = mb_strlen($value, $encoding);
+            $remainder = mb_substr($value, $position, $length, $encoding);
         } else {
-            $length = \mb_strlen($value);
-            $remainder = \mb_substr($value, $position, $length);
+            $length = mb_strlen($value);
+            $remainder = mb_substr($value, $position, $length);
         }
 
         // After parsing, position holds the index of the character where the
@@ -198,10 +198,10 @@ class NumberToLocalizedStringTransformer implements DataTransformer
         if ($position < $length) {
             // Check if there are unrecognized characters at the end of the
             // number (excluding whitespace characters)
-            $remainder = \trim($remainder, " \t\n\r\0\x0b\xc2\xa0");
+            $remainder = trim($remainder, " \t\n\r\0\x0b\xc2\xa0");
 
             if ($remainder !== '') {
-                throw new TransformationFailedException(\sprintf('The number contains unrecognized characters: "%s"', $remainder));
+                throw new TransformationFailedException(sprintf('The number contains unrecognized characters: "%s"', $remainder));
             }
         }
 
@@ -255,37 +255,37 @@ class NumberToLocalizedStringTransformer implements DataTransformer
 
             switch ($this->roundingMode) {
                 case self::ROUND_CEILING:
-                    $number = \ceil($number);
+                    $number = ceil($number);
 
                     break;
 
                 case self::ROUND_FLOOR:
-                    $number = \floor($number);
+                    $number = floor($number);
 
                     break;
 
                 case self::ROUND_UP:
-                    $number = $number > 0 ? \ceil($number) : \floor($number);
+                    $number = $number > 0 ? ceil($number) : floor($number);
 
                     break;
 
                 case self::ROUND_DOWN:
-                    $number = $number > 0 ? \floor($number) : \ceil($number);
+                    $number = $number > 0 ? floor($number) : ceil($number);
 
                     break;
 
                 case self::ROUND_HALF_EVEN:
-                    $number = \round($number, 0, \PHP_ROUND_HALF_EVEN);
+                    $number = round($number, 0, \PHP_ROUND_HALF_EVEN);
 
                     break;
 
                 case self::ROUND_HALF_UP:
-                    $number = \round($number, 0, \PHP_ROUND_HALF_UP);
+                    $number = round($number, 0, \PHP_ROUND_HALF_UP);
 
                     break;
 
                 case self::ROUND_HALF_DOWN:
-                    $number = \round($number, 0, \PHP_ROUND_HALF_DOWN);
+                    $number = round($number, 0, \PHP_ROUND_HALF_DOWN);
 
                     break;
             }

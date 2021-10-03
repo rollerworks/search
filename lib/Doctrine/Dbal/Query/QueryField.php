@@ -83,7 +83,7 @@ class QueryField implements \Serializable
 
     public function serialize()
     {
-        return \serialize(
+        return serialize(
             [
                 'mapping_name' => $this->mappingName,
                 'field' => $this->fieldConfig->getName(),

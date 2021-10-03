@@ -128,9 +128,7 @@ final class PropertyAccessDecorator implements ChoiceListFactory
         }
 
         if ($label instanceof PropertyPath) {
-            $label = static function ($choice) use ($accessor, $label) {
-                return $accessor->getValue($choice, $label);
-            };
+            $label = static fn ($choice) => $accessor->getValue($choice, $label);
         }
 
         if (\is_string($preferredChoices)) {
@@ -153,9 +151,7 @@ final class PropertyAccessDecorator implements ChoiceListFactory
         }
 
         if ($index instanceof PropertyPath) {
-            $index = static function ($choice) use ($accessor, $index) {
-                return $accessor->getValue($choice, $index);
-            };
+            $index = static fn ($choice) => $accessor->getValue($choice, $index);
         }
 
         if (\is_string($groupBy)) {
@@ -177,9 +173,7 @@ final class PropertyAccessDecorator implements ChoiceListFactory
         }
 
         if ($attr instanceof PropertyPath) {
-            $attr = static function ($choice) use ($accessor, $attr) {
-                return $accessor->getValue($choice, $attr);
-            };
+            $attr = static fn ($choice) => $accessor->getValue($choice, $attr);
         }
 
         return $this->decoratedFactory->createView($list, $preferredChoices, $label, $index, $groupBy, $attr);

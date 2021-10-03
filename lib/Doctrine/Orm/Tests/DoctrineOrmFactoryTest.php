@@ -41,7 +41,8 @@ final class DoctrineOrmFactoryTest extends OrmTestCase
         $qb = $this->em->createQueryBuilder()
             ->select('I')
             ->from(ECommerceInvoice::class, 'I')
-            ->join('I.customer', 'C');
+            ->join('I.customer', 'C')
+        ;
 
         $conditionGenerator = $this->factory->createConditionGenerator($qb, $condition);
         self::assertInstanceOf(QueryBuilderConditionGenerator::class, $conditionGenerator);
@@ -53,7 +54,8 @@ final class DoctrineOrmFactoryTest extends OrmTestCase
         $qb = $this->em->createQueryBuilder()
             ->select('I')
             ->from(ECommerceInvoice::class, 'I')
-            ->join('I.customer', 'C');
+            ->join('I.customer', 'C')
+        ;
         $searchCondition = new SearchCondition(new GenericFieldSet([]), new ValuesGroup());
         $cachedConditionGenerator = $this->factory->createCachedConditionGenerator($qb, $searchCondition);
 

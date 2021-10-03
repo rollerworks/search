@@ -70,7 +70,7 @@ class ValuesGroup implements \Serializable
     {
         if (! isset($this->groups[$index])) {
             throw new InvalidArgumentException(
-                \sprintf('Unable to get none existent group: "%d"', $index)
+                sprintf('Unable to get none existent group: "%d"', $index)
             );
         }
 
@@ -127,7 +127,7 @@ class ValuesGroup implements \Serializable
     {
         if (! isset($this->fields[$name])) {
             throw new InvalidArgumentException(
-                \sprintf('Unable to get none existent field: "%s"', $name)
+                sprintf('Unable to get none existent field: "%s"', $name)
             );
         }
 
@@ -180,7 +180,7 @@ class ValuesGroup implements \Serializable
     public function setGroupLogical(string $groupLogical)
     {
         if (! \in_array($groupLogical, [self::GROUP_LOGICAL_OR, self::GROUP_LOGICAL_AND], true)) {
-            throw new InvalidArgumentException(\sprintf('Unsupported group logical "%s".', $groupLogical));
+            throw new InvalidArgumentException(sprintf('Unsupported group logical "%s".', $groupLogical));
         }
 
         $this->groupLogical = $groupLogical;
@@ -208,11 +208,11 @@ class ValuesGroup implements \Serializable
 
     public function serialize(): string
     {
-        return \serialize($this->__serialize());
+        return serialize($this->__serialize());
     }
 
     public function unserialize($data): void
     {
-        $this->__unserialize(\unserialize($data));
+        $this->__unserialize(unserialize($data));
     }
 }

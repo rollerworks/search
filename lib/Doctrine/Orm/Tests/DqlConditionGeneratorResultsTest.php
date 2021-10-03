@@ -28,6 +28,7 @@ final class DqlConditionGeneratorResultsTest extends ConditionGeneratorResultsTe
             ->from(ECommerceInvoice::class, 'I')
             ->join('I.customer', 'C')
             ->leftJoin('I.children', 'IP')
-            ->leftJoin('I.rows', 'R');
+            ->leftJoin('I.rows', 'R')
+        ;
     }
 }

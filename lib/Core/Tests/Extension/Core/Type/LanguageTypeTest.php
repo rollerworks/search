@@ -41,7 +41,8 @@ final class LanguageTypeTest extends SearchIntegrationTestCase
         FieldTransformationAssertion::assertThat($field)
             ->withInput('English', 'en')
             ->successfullyTransformsTo('en')
-            ->andReverseTransformsTo('English', 'en');
+            ->andReverseTransformsTo('English', 'en')
+        ;
 
         $view = $field->createView(new FieldSetView());
 

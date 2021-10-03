@@ -44,10 +44,10 @@ abstract class BaseDateTimeType extends AbstractFieldType
     protected function validateDateFormat(string $name, string $format): void
     {
         if ($format !== null
-            && (\mb_strpos($format, 'y') === false || \mb_strpos($format, 'M') === false || \mb_strpos($format, 'd') === false)
+            && (mb_strpos($format, 'y') === false || mb_strpos($format, 'M') === false || mb_strpos($format, 'd') === false)
         ) {
             throw new InvalidConfigurationException(
-                \sprintf(
+                sprintf(
                     'The "%s" option should contain the letters "y", "M" and "d". Its current value is "%s".',
                     $name,
                     $format

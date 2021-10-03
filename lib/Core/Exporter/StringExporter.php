@@ -63,7 +63,7 @@ abstract class StringExporter extends AbstractExporter
         }
 
         foreach ($valuesGroup->getGroups() as $group) {
-            $exportedGroup = '( ' . \trim($this->exportGroup($group, $fieldSet), ' ;') . ' ); ';
+            $exportedGroup = '( ' . trim($this->exportGroup($group, $fieldSet), ' ;') . ' ); ';
 
             if ($exportedGroup !== '(  ); ' && $group->getGroupLogical() === ValuesGroup::GROUP_LOGICAL_OR) {
                 $exportedGroups .= '*';
@@ -74,7 +74,7 @@ abstract class StringExporter extends AbstractExporter
 
         $result .= $exportedGroups;
 
-        return \trim($result);
+        return trim($result);
     }
 
     protected function modelToExported($value, FieldConfig $field): string
@@ -96,8 +96,8 @@ abstract class StringExporter extends AbstractExporter
     {
         $value = (string) $value;
 
-        if ($force || \preg_match('/[<>[\](),;~!*?=&*"\s]/u', $value)) {
-            return '"' . \str_replace('"', '""', $value) . '"';
+        if ($force || preg_match('/[<>[\](),;~!*?=&*"\s]/u', $value)) {
+            return '"' . str_replace('"', '""', $value) . '"';
         }
 
         return $value;
@@ -144,7 +144,7 @@ abstract class StringExporter extends AbstractExporter
             $exportedValues .= $this->getPatternMatchOperator($value) . ' ' . $this->exportValueAsString($value->getValue()) . ', ';
         }
 
-        return \rtrim($exportedValues, ', ');
+        return rtrim($exportedValues, ', ');
     }
 
     private function getPatternMatchOperator(PatternMatch $patternMatch): string
@@ -182,7 +182,7 @@ abstract class StringExporter extends AbstractExporter
 
             default:
                 throw new \RuntimeException(
-                    \sprintf(
+                    sprintf(
                         'Unsupported pattern-match type "%s" found. Please report this bug.',
                         $patternMatch->getType()
                     )

@@ -78,9 +78,9 @@ class SearchField implements FieldConfig
      */
     public function __construct(string $name, ResolvedFieldType $type, array $options = [])
     {
-        if (! \preg_match('/^_?[a-zA-Z][a-zA-Z0-9_\-]*$/D', $name)) {
+        if (! preg_match('/^_?[a-zA-Z][a-zA-Z0-9_\-]*$/D', $name)) {
             throw new InvalidArgumentException(
-                \sprintf(
+                sprintf(
                     'The name "%s" contains illegal characters. Name must start with a letter or underscore ' .
                     'and only contain letters, digits, numbers, underscores ("_") and hyphens ("-").',
                     $name
@@ -194,9 +194,9 @@ class SearchField implements FieldConfig
 
         if ($this->valueComparator === null) {
             foreach ($this->supportedValueTypes as $type => $supported) {
-                if ($supported && isset(\class_implements($type)[RequiresComparatorValueHolder::class])) {
+                if ($supported && isset(class_implements($type)[RequiresComparatorValueHolder::class])) {
                     throw new InvalidConfigurationException(
-                        \sprintf(
+                        sprintf(
                             'Supported value-type "%s" requires a value comparator but none is set for field "%s" with type "%s".',
                             $type,
                             $this->getName(),

@@ -133,7 +133,7 @@ abstract class SearchIntegrationTestCase extends TestCase
 
             // use array_merge to renumber indexes and prevent mismatches.
             foreach ($valuesBag->all() as $type => $values) {
-                foreach (\array_merge([], $values) as $value) {
+                foreach (array_merge([], $values) as $value) {
                     $newValuesBag->add($value);
                 }
             }

@@ -33,7 +33,7 @@ final class ChoiceToValueTransformer implements DataTransformer
     {
         $value = $this->choiceList->getValuesForChoices([$choice]);
 
-        return (string) \current($value);
+        return (string) current($value);
     }
 
     public function reverseTransform($value)
@@ -49,9 +49,9 @@ final class ChoiceToValueTransformer implements DataTransformer
                 return;
             }
 
-            throw new TransformationFailedException(\sprintf('The choice "%s" does not exist or is not unique', $value));
+            throw new TransformationFailedException(sprintf('The choice "%s" does not exist or is not unique', $value));
         }
 
-        return \current($choices);
+        return current($choices);
     }
 }

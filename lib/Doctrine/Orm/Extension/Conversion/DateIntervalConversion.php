@@ -33,6 +33,6 @@ final class DateIntervalConversion implements ValueConversion
         $value = clone $value;
         $value->locale('en');
 
-        return \sprintf("SEARCH_CAST_INTERVAL('%s', %s)", $value->forHumans(), $value->invert === 1 ? 'true' : 'false');
+        return sprintf("SEARCH_CAST_INTERVAL('%s', %s)", $value->forHumans(), $value->invert === 1 ? 'true' : 'false');
     }
 }

@@ -50,9 +50,7 @@ final class ArrayChoiceListTest extends AbstractChoiceListTest
     /** @test */
     public function create_choice_list_with_value_callback(): void
     {
-        $callback = static function ($choice) {
-            return ':' . $choice;
-        };
+        $callback = static fn ($choice) => ':' . $choice;
 
         $choiceList = new ArrayChoiceList([2 => 'foo', 7 => 'bar', 10 => 'baz'], $callback);
 
@@ -122,9 +120,7 @@ final class ArrayChoiceListTest extends AbstractChoiceListTest
     /** @test */
     public function compare_choices_by_identity_by_default(): void
     {
-        $callback = static function ($choice) {
-            return $choice->value;
-        };
+        $callback = static fn ($choice) => $choice->value;
 
         $obj1 = (object) ['value' => 'value1'];
         $obj2 = (object) ['value' => 'value2'];

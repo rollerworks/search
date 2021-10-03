@@ -47,7 +47,7 @@ final class CountryType extends AbstractFieldType implements ChoiceLoader
             return $this->choiceList;
         }
 
-        return $this->choiceList = new ArrayChoiceList(\array_flip(Countries::getNames()), $value);
+        return $this->choiceList = new ArrayChoiceList(array_flip(Countries::getNames()), $value);
     }
 
     public function isValuesConstant(): bool

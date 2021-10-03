@@ -89,12 +89,12 @@ final class MoneyToStringTransformer implements DataTransformer
         $withCurrency = true;
         $result = $value;
 
-        if (\mb_strpos($value, ' ') !== false) {
-            [$currency, $result] = \explode(' ', $value, 2);
+        if (mb_strpos($value, ' ') !== false) {
+            [$currency, $result] = explode(' ', $value, 2);
 
-            if (\mb_strlen($currency) !== 3) {
+            if (mb_strlen($currency) !== 3) {
                 throw new TransformationFailedException(
-                    \sprintf('Value does not contain a valid 3 character currency code, got "%s".', $currency)
+                    sprintf('Value does not contain a valid 3 character currency code, got "%s".', $currency)
                 );
             }
 

@@ -38,7 +38,8 @@ class OrderTypeExtension extends AbstractFieldTypeExtension
                     ValueConversion::class,
                     QueryConversion::class,
                 ]
-            );
+            )
+        ;
     }
 
     public function getExtendedType(): string

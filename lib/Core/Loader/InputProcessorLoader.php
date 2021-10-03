@@ -48,15 +48,9 @@ final class InputProcessorLoader
         return new self(
             new ClosureContainer(
                 [
-                    'rollerworks_search.input.json' => static function () use ($validator) {
-                        return new Input\JsonInput($validator);
-                    },
-                    'rollerworks_search.input.string_query' => static function () use ($validator) {
-                        return new Input\StringQueryInput($validator);
-                    },
-                    'rollerworks_search.input.norm_string_query' => static function () use ($validator) {
-                        return new Input\NormStringQueryInput($validator);
-                    },
+                    'rollerworks_search.input.json' => static fn () => new Input\JsonInput($validator),
+                    'rollerworks_search.input.string_query' => static fn () => new Input\StringQueryInput($validator),
+                    'rollerworks_search.input.norm_string_query' => static fn () => new Input\NormStringQueryInput($validator),
                 ]
             ),
             [
@@ -74,7 +68,7 @@ final class InputProcessorLoader
     {
         if (! isset($this->serviceIds[$name])) {
             throw new InvalidArgumentException(
-                \sprintf('Enable to load input-processor, "%s" is not registered as processor.', $name)
+                sprintf('Enable to load input-processor, "%s" is not registered as processor.', $name)
             );
         }
 

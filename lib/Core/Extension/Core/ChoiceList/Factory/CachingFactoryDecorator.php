@@ -52,7 +52,7 @@ final class CachingFactoryDecorator implements ChoiceListFactory
     public function createListFromChoices($choices, $value = null): ChoiceList
     {
         if ($choices instanceof \Traversable) {
-            $choices = \iterator_to_array($choices);
+            $choices = iterator_to_array($choices);
         }
 
         // The value is not validated on purpose. The decorated factory may
@@ -117,16 +117,16 @@ final class CachingFactoryDecorator implements ChoiceListFactory
     private static function generateHash($value, string $namespace = ''): string
     {
         if (\is_object($value)) {
-            $value = \spl_object_hash($value);
+            $value = spl_object_hash($value);
         } elseif (\is_array($value)) {
-            \array_walk_recursive($value, static function (&$v): void {
+            array_walk_recursive($value, static function (&$v): void {
                 if (\is_object($v)) {
-                    $v = \spl_object_hash($v);
+                    $v = spl_object_hash($v);
                 }
             });
         }
 
-        return \hash('sha256', $namespace . ':' . \serialize($value));
+        return hash('sha256', $namespace . ':' . serialize($value));
     }
 
     /**

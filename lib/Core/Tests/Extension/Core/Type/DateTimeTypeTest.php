@@ -40,7 +40,8 @@ final class DateTimeTypeTest extends SearchIntegrationTestCase
         FieldTransformationAssertion::assertThat($field)
             ->withInput('2010-06-02T03:04:00-10:00', '2010-06-02T03:04:00-10:00')
             ->successfullyTransformsTo($outputTime)
-            ->andReverseTransformsTo('2010-06-02T03:04:00-10:00', '2010-06-02T03:04:00-10:00');
+            ->andReverseTransformsTo('2010-06-02T03:04:00-10:00', '2010-06-02T03:04:00-10:00')
+        ;
 
         self::assertEquals('This value is not a valid datetime.', $field->getOption('invalid_message'));
     }
@@ -57,7 +58,8 @@ final class DateTimeTypeTest extends SearchIntegrationTestCase
         FieldTransformationAssertion::assertThat($field)
             ->withInput($outputTime->format('m*Y*d H:i'), $outputTime->format('c'))
             ->successfullyTransformsTo($outputTime)
-            ->andReverseTransformsTo('06*2010*02 13:12', '2010-06-02T13:12:00Z');
+            ->andReverseTransformsTo('06*2010*02 13:12', '2010-06-02T13:12:00Z')
+        ;
     }
 
     /** @test */
@@ -74,7 +76,8 @@ final class DateTimeTypeTest extends SearchIntegrationTestCase
         FieldTransformationAssertion::assertThat($field)
             ->withInput('Jun 2, 2010, 3:04 AM', '2010-06-02T03:04:00Z')
             ->successfullyTransformsTo($outputTime)
-            ->andReverseTransformsTo('Jun 2, 2010, 3:04 AM', '2010-06-02T03:04:00Z');
+            ->andReverseTransformsTo('Jun 2, 2010, 3:04 AM', '2010-06-02T03:04:00Z')
+        ;
     }
 
     /** @test */
@@ -86,15 +89,18 @@ final class DateTimeTypeTest extends SearchIntegrationTestCase
 
         FieldTransformationAssertion::assertThat($field)
             ->withInput('06*2010*02', '2010-06-02T13:12:00Z')
-            ->failsToTransforms();
+            ->failsToTransforms()
+        ;
 
         FieldTransformationAssertion::assertThat($field)
             ->withInput('06-2010-02', '2010-06*02T13:12:00Z')
-            ->failsToTransforms();
+            ->failsToTransforms()
+        ;
 
         FieldTransformationAssertion::assertThat($field)
             ->withInput('1 week + 2 years')
-            ->failsToTransforms();
+            ->failsToTransforms()
+        ;
     }
 
     /** @test */
@@ -111,7 +117,7 @@ final class DateTimeTypeTest extends SearchIntegrationTestCase
         self::assertArrayHasKey('timezone', $fieldView->vars);
         self::assertArrayHasKey('pattern', $fieldView->vars);
 
-        self::assertEquals(\date_default_timezone_get(), $fieldView->vars['timezone']);
+        self::assertEquals(date_default_timezone_get(), $fieldView->vars['timezone']);
         self::assertEquals('M/d/yy, h:mm a', $fieldView->vars['pattern']);
     }
 
@@ -125,12 +131,14 @@ final class DateTimeTypeTest extends SearchIntegrationTestCase
         FieldTransformationAssertion::assertThat($field)
             ->withInput('1 week 2 jaar', '1 week 2 years')
             ->successfullyTransformsTo(CarbonInterval::fromString('1 week 2 years'))
-            ->andReverseTransformsTo('2 jaar 1 week', '2 years 1 week');
+            ->andReverseTransformsTo('2 jaar 1 week', '2 years 1 week')
+        ;
 
         FieldTransformationAssertion::assertThat($field)
             ->withInput('-1 week + 2 jaar', '-1 week + 2 years')
             ->successfullyTransformsTo(CarbonInterval::fromString('1 week + 2 years')->invert())
-            ->andReverseTransformsTo('-2 jaar 1 week', '-2 years 1 week');
+            ->andReverseTransformsTo('-2 jaar 1 week', '-2 years 1 week')
+        ;
 
         self::assertEquals('This value is not a valid datetime or date interval.', $field->getOption('invalid_message'));
     }
@@ -145,12 +153,14 @@ final class DateTimeTypeTest extends SearchIntegrationTestCase
         FieldTransformationAssertion::assertThat($field)
             ->withInput('3 أيام ساعتين', '3 days 2 hours')
             ->successfullyTransformsTo(CarbonInterval::fromString('3 days 2 hours'))
-            ->andReverseTransformsTo('3 أيام ساعتين', '3 days 2 hours');
+            ->andReverseTransformsTo('3 أيام ساعتين', '3 days 2 hours')
+        ;
 
         FieldTransformationAssertion::assertThat($field)
             ->withInput('-3 أيام ساعتين', '-3 days 2 hours')
             ->successfullyTransformsTo(CarbonInterval::fromString('3 days 2 hours')->invert())
-            ->andReverseTransformsTo('-3 أيام ساعتين', '-3 days 2 hours');
+            ->andReverseTransformsTo('-3 أيام ساعتين', '-3 days 2 hours')
+        ;
     }
 
     /** @test */
@@ -163,7 +173,8 @@ final class DateTimeTypeTest extends SearchIntegrationTestCase
         FieldTransformationAssertion::assertThat($field)
             ->withInput('1 week + 2 jaar', '2Y1W')
             ->successfullyTransformsTo(CarbonInterval::fromString('1 week + 2 years'))
-            ->andReverseTransformsTo('2 jaar 1 week', '2 years 1 week');
+            ->andReverseTransformsTo('2 jaar 1 week', '2 years 1 week')
+        ;
     }
 
     /** @test */
@@ -183,17 +194,20 @@ final class DateTimeTypeTest extends SearchIntegrationTestCase
         FieldTransformationAssertion::assertThat($field)
             ->withInput('2 Juni 2010 3:04', '2010-06-02T03:04:00Z')
             ->successfullyTransformsTo($outputTime)
-            ->andReverseTransformsTo('2 jun. 2010 03:04', '2010-06-02T03:04:00Z');
+            ->andReverseTransformsTo('2 jun. 2010 03:04', '2010-06-02T03:04:00Z')
+        ;
 
         FieldTransformationAssertion::assertThat($field)
             ->withInput('1 week + 2 jaar', '2Y1W')
             ->successfullyTransformsTo(CarbonInterval::fromString('1 week + 2 years'))
-            ->andReverseTransformsTo('2 jaar 1 week', '2 years 1 week');
+            ->andReverseTransformsTo('2 jaar 1 week', '2 years 1 week')
+        ;
 
         FieldTransformationAssertion::assertThat($field)
             ->withInput('')
             ->successfullyTransformsTo(null)
-            ->andReverseTransformsTo('');
+            ->andReverseTransformsTo('')
+        ;
     }
 
     /** @test */

@@ -77,7 +77,8 @@ final class AgeConversionTest extends FunctionalDbalTestCase
                 ->addSimpleValue(new \DateTimeImmutable('2001-01-15', new \DateTimeZone('UTC')))
                 ->addSimpleValue(new \DateTimeImmutable('2001-10-15', new \DateTimeZone('UTC')))
             ->end()
-            ->getSearchCondition();
+            ->getSearchCondition()
+        ;
 
         $this->assertRecordsAreFound($condition, [1, 3]);
     }
@@ -89,7 +90,8 @@ final class AgeConversionTest extends FunctionalDbalTestCase
             ->field('birthday')
                 ->addSimpleValue(5)
             ->end()
-            ->getSearchCondition();
+            ->getSearchCondition()
+        ;
 
         $this->assertRecordsAreFound($condition, [4]);
     }

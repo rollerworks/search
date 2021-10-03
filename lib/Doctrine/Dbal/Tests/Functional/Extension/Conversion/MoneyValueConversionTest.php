@@ -84,7 +84,8 @@ final class MoneyValueConversionTest extends FunctionalDbalTestCase
                 ->addSimpleValue(new MoneyValue(Money::EUR('9000')))
                 ->addSimpleValue(new MoneyValue(Money::EUR('10000')))
             ->end()
-            ->getSearchCondition();
+            ->getSearchCondition()
+        ;
 
         $this->assertRecordsAreFound($condition, [3, 4]);
     }
@@ -97,7 +98,8 @@ final class MoneyValueConversionTest extends FunctionalDbalTestCase
                 ->addSimpleValue(new MoneyValue(Money::EUR('5000')))
                 ->addSimpleValue(new MoneyValue(Money::EUR('3000')))
             ->end()
-            ->getSearchCondition();
+            ->getSearchCondition()
+        ;
 
         $this->assertRecordsAreFound($condition, [1, 2]);
     }
@@ -109,7 +111,8 @@ final class MoneyValueConversionTest extends FunctionalDbalTestCase
             ->field('price')
                 ->add(new Range(new MoneyValue(Money::EUR('3000')), new MoneyValue(Money::EUR('5000')), true, true))
             ->end()
-            ->getSearchCondition();
+            ->getSearchCondition()
+        ;
 
         $this->assertRecordsAreFound($condition, [1, 2]);
     }

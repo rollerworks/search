@@ -127,29 +127,26 @@ class SearchExtension implements QueryCollectionExtensionInterface
 
         // NOTE: written like this so we only check if we have a normalizer once
         if ($normalizer !== null) {
-            $callable = static function (Document $document) use ($normalizer) {
-                return \call_user_func($normalizer, $document->getId());
-            };
+            $callable = static fn (Document $document) => \call_user_func($normalizer, $document->getId());
         } else {
-            $callable = static function (Document $document) {
-                return $document->getId();
-            };
+            $callable = static fn (Document $document) => $document->getId();
         }
-        $ids = \array_map($callable, $response->getDocuments());
+        $ids = array_map($callable, $response->getDocuments());
 
         // straight from FOS Elastica Bundle
         $rootAlias = $queryBuilder->getRootAliases()[0];
         $identifier = $this->getIdentifierNames($resourceClass);
 
         // TODO: hack, only works for non-composite PKs
-        $identifier = \current($identifier);
+        $identifier = current($identifier);
         $queryBuilder
             ->andWhere(
                 $queryBuilder
                     ->expr()
                         ->in($rootAlias . '.' . $identifier, ':ids')
             )
-            ->setParameter('ids', $ids);
+            ->setParameter('ids', $ids)
+        ;
 
         $this->generateOrderByClause($queryBuilder, $rootAlias . '.' . $identifier, $ids);
     }
@@ -176,17 +173,18 @@ class SearchExtension implements QueryCollectionExtensionInterface
         $last = 0;
 
         foreach ($ids as $idx => $id) {
-            $alias = \sprintf('id%1$s', $idx);
+            $alias = sprintf('id%1$s', $idx);
             $queryBuilder->setParameter($alias, $id);
-            $clause[] = \sprintf('WHEN %1$s = :%2$s THEN %3$d', $identifier, $alias, $idx);
+            $clause[] = sprintf('WHEN %1$s = :%2$s THEN %3$d', $identifier, $alias, $idx);
             ++$last;
         }
-        $clause[] = \sprintf('ELSE %1$d', $last);
+        $clause[] = sprintf('ELSE %1$d', $last);
         $clause[] = 'END';
         $clause[] = 'AS HIDDEN order_by';
 
         $queryBuilder
-            ->addSelect(\implode(' ', $clause))
-            ->orderBy('order_by', 'ASC');
+            ->addSelect(implode(' ', $clause))
+            ->orderBy('order_by', 'ASC')
+        ;
     }
 }

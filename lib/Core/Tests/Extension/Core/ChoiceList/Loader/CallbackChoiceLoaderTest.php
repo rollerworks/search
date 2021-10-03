@@ -51,13 +51,9 @@ final class CallbackChoiceLoaderTest extends TestCase
 
     public static function setUpBeforeClass(): void
     {
-        self::$loader = new CallbackChoiceLoader(static function () {
-            return self::$choices;
-        });
+        self::$loader = new CallbackChoiceLoader(static fn () => self::$choices);
 
-        self::$value = static function ($choice) {
-            return isset($choice->value) ? $choice->value : null;
-        };
+        self::$value = static fn ($choice) => $choice->value ?? null;
 
         self::$choices = [
             (object) ['value' => 'choice_one'],

@@ -56,12 +56,10 @@ final class SearchController
             return new Response('VALID: ' . ($query ?: 'EMPTY'));
         } catch (InvalidSearchConditionException $e) {
             return new Response(
-                'INVALID: <ul>' . \implode(
+                'INVALID: <ul>' . implode(
                     "\n",
-                    \array_map(
-                        static function (ConditionErrorMessage $e) {
-                            return '<li>' . $e->message . '</li>';
-                        },
+                    array_map(
+                        static fn (ConditionErrorMessage $e) => '<li>' . $e->message . '</li>',
                         $e->getErrors()
                     )
                 ) . '</ul>', 500

@@ -89,7 +89,7 @@ final class ConditionErrorMessage
     {
         return new self(
             $path,
-            \strtr($messageTemplate, $messageParameters),
+            strtr($messageTemplate, $messageParameters),
             $messageTemplate,
             $messageParameters,
             $messagePluralization,

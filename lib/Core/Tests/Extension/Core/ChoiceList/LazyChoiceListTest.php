@@ -59,12 +59,14 @@ final class LazyChoiceListTest extends TestCase
         $this->loader->expects(self::exactly(2))
             ->method('loadChoiceList')
             ->with($this->value)
-            ->willReturn($this->loadedList);
+            ->willReturn($this->loadedList)
+        ;
 
         // The same list is returned by the loader
         $this->loadedList->expects(self::exactly(2))
             ->method('getChoices')
-            ->willReturn(['RESULT']);
+            ->willReturn(['RESULT'])
+        ;
 
         self::assertSame(['RESULT'], $this->list->getChoices());
         self::assertSame(['RESULT'], $this->list->getChoices());
@@ -76,12 +78,14 @@ final class LazyChoiceListTest extends TestCase
         $this->loader->expects(self::exactly(2))
             ->method('loadChoiceList')
             ->with($this->value)
-            ->willReturn($this->loadedList);
+            ->willReturn($this->loadedList)
+        ;
 
         // The same list is returned by the loader
         $this->loadedList->expects(self::exactly(2))
             ->method('getValues')
-            ->willReturn(['RESULT']);
+            ->willReturn(['RESULT'])
+        ;
 
         self::assertSame(['RESULT'], $this->list->getValues());
         self::assertSame(['RESULT'], $this->list->getValues());
@@ -93,12 +97,14 @@ final class LazyChoiceListTest extends TestCase
         $this->loader->expects(self::exactly(2))
             ->method('loadChoiceList')
             ->with($this->value)
-            ->willReturn($this->loadedList);
+            ->willReturn($this->loadedList)
+        ;
 
         // The same list is returned by the loader
         $this->loadedList->expects(self::exactly(2))
             ->method('getStructuredValues')
-            ->willReturn(['RESULT']);
+            ->willReturn(['RESULT'])
+        ;
 
         self::assertSame(['RESULT'], $this->list->getStructuredValues());
         self::assertSame(['RESULT'], $this->list->getStructuredValues());
@@ -110,12 +116,14 @@ final class LazyChoiceListTest extends TestCase
         $this->loader->expects(self::exactly(2))
             ->method('loadChoiceList')
             ->with($this->value)
-            ->willReturn($this->loadedList);
+            ->willReturn($this->loadedList)
+        ;
 
         // The same list is returned by the loader
         $this->loadedList->expects(self::exactly(2))
             ->method('getOriginalKeys')
-            ->willReturn(['RESULT']);
+            ->willReturn(['RESULT'])
+        ;
 
         self::assertSame(['RESULT'], $this->list->getOriginalKeys());
         self::assertSame(['RESULT'], $this->list->getOriginalKeys());
@@ -127,7 +135,8 @@ final class LazyChoiceListTest extends TestCase
         $this->loader->expects(self::exactly(2))
             ->method('loadChoicesForValues')
             ->with(['a', 'b'])
-            ->willReturn(['RESULT']);
+            ->willReturn(['RESULT'])
+        ;
 
         self::assertSame(['RESULT'], $this->list->getChoicesForValues(['a', 'b']));
         self::assertSame(['RESULT'], $this->list->getChoicesForValues(['a', 'b']));
@@ -139,7 +148,8 @@ final class LazyChoiceListTest extends TestCase
         $this->loader->expects(self::exactly(2))
             ->method('loadValuesForChoices')
             ->with(['a', 'b'])
-            ->willReturn(['RESULT']);
+            ->willReturn(['RESULT'])
+        ;
 
         // load choice list
         $this->list->getChoices();

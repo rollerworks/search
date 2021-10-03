@@ -33,14 +33,14 @@ final class TimeTypeTest extends SearchIntegrationTestCase
 
         parent::setUp();
 
-        $this->defaultTimezone = \date_default_timezone_get();
+        $this->defaultTimezone = date_default_timezone_get();
     }
 
     protected function tearDown(): void
     {
         parent::tearDown();
 
-        \date_default_timezone_set($this->defaultTimezone);
+        date_default_timezone_set($this->defaultTimezone);
     }
 
     /** @test */
@@ -53,7 +53,8 @@ final class TimeTypeTest extends SearchIntegrationTestCase
         FieldTransformationAssertion::assertThat($field)
             ->withInput('03:04')
             ->successfullyTransformsTo($outputTime)
-            ->andReverseTransformsTo('03:04');
+            ->andReverseTransformsTo('03:04')
+        ;
     }
 
     /** @test */
@@ -66,7 +67,8 @@ final class TimeTypeTest extends SearchIntegrationTestCase
         FieldTransformationAssertion::assertThat($field)
             ->withInput('03:04:05')
             ->successfullyTransformsTo($outputTime)
-            ->andReverseTransformsTo('03:04:05');
+            ->andReverseTransformsTo('03:04:05')
+        ;
     }
 
     /** @test */

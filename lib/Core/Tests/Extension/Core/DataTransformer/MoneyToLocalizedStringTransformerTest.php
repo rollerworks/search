@@ -98,7 +98,7 @@ final class MoneyToLocalizedStringTransformerTest extends TestCase
             $from = new MoneyValue($this->parseMoneyAsDecimal($from), false);
         }
 
-        $to = \preg_replace('#(\s?\p{Sc}\s?)#u', '', $to);
+        $to = preg_replace('#(\s?\p{Sc}\s?)#u', '', $to);
 
         self::assertEquals($to, $transformer->transform($from));
     }
@@ -180,7 +180,7 @@ final class MoneyToLocalizedStringTransformerTest extends TestCase
 
         \Locale::setDefault($locale);
 
-        $from = \preg_replace('#(\s?\p{Sc}\s?)#u', '', $from);
+        $from = preg_replace('#(\s?\p{Sc}\s?)#u', '', $from);
         $transformer = new MoneyToLocalizedStringTransformer('USD');
 
         if ($to !== null) {

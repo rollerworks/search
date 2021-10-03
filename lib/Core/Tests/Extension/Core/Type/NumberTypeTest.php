@@ -32,22 +32,26 @@ final class NumberTypeTest extends SearchIntegrationTestCase
         FieldTransformationAssertion::assertThat($field)
             ->withInput('1,678', '1.678')
             ->successfullyTransformsTo('1.678')
-            ->andReverseTransformsTo('1,678', '1.678');
+            ->andReverseTransformsTo('1,678', '1.678')
+        ;
 
         FieldTransformationAssertion::assertThat($field)
             ->withInput('1', '1')
             ->successfullyTransformsTo('1')
-            ->andReverseTransformsTo('1', '1');
+            ->andReverseTransformsTo('1', '1')
+        ;
 
         FieldTransformationAssertion::assertThat($field)
             ->withInput('01', '01')
             ->successfullyTransformsTo('1')
-            ->andReverseTransformsTo('1', '1');
+            ->andReverseTransformsTo('1', '1')
+        ;
 
         FieldTransformationAssertion::assertThat($field)
             ->withInput('-1')
             ->successfullyTransformsTo('-1')
-            ->andReverseTransformsTo('-1');
+            ->andReverseTransformsTo('-1')
+        ;
     }
 
     /** @test */
@@ -57,7 +61,8 @@ final class NumberTypeTest extends SearchIntegrationTestCase
 
         FieldTransformationAssertion::assertThat($field)
             ->withInput('foo')
-            ->failsToTransforms();
+            ->failsToTransforms()
+        ;
     }
 
     /** @test */
@@ -68,12 +73,14 @@ final class NumberTypeTest extends SearchIntegrationTestCase
         FieldTransformationAssertion::assertThat($field)
             ->withInput('12345,67890', '12345.67890')
             ->successfullyTransformsTo('12345.67890')
-            ->andReverseTransformsTo('12345,679', '12345.67890');
+            ->andReverseTransformsTo('12345,679', '12345.67890')
+        ;
 
         FieldTransformationAssertion::assertThat($field)
             ->withInput('12345,679', '12345.679')
             ->successfullyTransformsTo('12345.679')
-            ->andReverseTransformsTo('12345,679', '12345.679');
+            ->andReverseTransformsTo('12345,679', '12345.679')
+        ;
     }
 
     /** @test */
@@ -86,12 +93,14 @@ final class NumberTypeTest extends SearchIntegrationTestCase
         FieldTransformationAssertion::assertThat($field)
             ->withInput('١٢٣٤٥٫٦٧٨٩٠', '12345.67890')
             ->successfullyTransformsTo('12345.6789')
-            ->andReverseTransformsTo('١٢٣٤٥٫٦٧٩', '12345.6789');
+            ->andReverseTransformsTo('١٢٣٤٥٫٦٧٩', '12345.6789')
+        ;
 
         FieldTransformationAssertion::assertThat($field)
             ->withInput('١٢٣٤٥٫٦٧٩', '12345.679')
             ->successfullyTransformsTo('12345.679')
-            ->andReverseTransformsTo('١٢٣٤٥٫٦٧٩', '12345.679');
+            ->andReverseTransformsTo('١٢٣٤٥٫٦٧٩', '12345.679')
+        ;
     }
 
     /** @test */
@@ -102,12 +111,14 @@ final class NumberTypeTest extends SearchIntegrationTestCase
         FieldTransformationAssertion::assertThat($field)
             ->withInput('12.345,679', '12345.679')
             ->successfullyTransformsTo('12345.679')
-            ->andReverseTransformsTo('12.345,679', '12345.679');
+            ->andReverseTransformsTo('12.345,679', '12345.679')
+        ;
 
         FieldTransformationAssertion::assertThat($field)
             ->withInput('12345,679', '12345.679')
             ->successfullyTransformsTo('12345.679')
-            ->andReverseTransformsTo('12.345,679', '12345.679');
+            ->andReverseTransformsTo('12.345,679', '12345.679')
+        ;
     }
 
     /** @test */
@@ -118,12 +129,14 @@ final class NumberTypeTest extends SearchIntegrationTestCase
         FieldTransformationAssertion::assertThat($field)
             ->withInput('12345,67890', '12345.67890')
             ->successfullyTransformsTo('12345.68')
-            ->andReverseTransformsTo('12345,68', '12345.68');
+            ->andReverseTransformsTo('12345,68', '12345.68')
+        ;
 
         FieldTransformationAssertion::assertThat($field)
             ->withInput('12345,67', '12345.67')
             ->successfullyTransformsTo('12345.67')
-            ->andReverseTransformsTo('12345,67', '12345.67');
+            ->andReverseTransformsTo('12345,67', '12345.67')
+        ;
     }
 
     /** @test */
@@ -136,12 +149,14 @@ final class NumberTypeTest extends SearchIntegrationTestCase
         FieldTransformationAssertion::assertThat($field)
             ->withInput('12345,54321', '12345.54321')
             ->successfullyTransformsTo('12346')
-            ->andReverseTransformsTo('12346');
+            ->andReverseTransformsTo('12346')
+        ;
 
         FieldTransformationAssertion::assertThat($field)
             ->withInput('12345')
             ->successfullyTransformsTo('12345')
-            ->andReverseTransformsTo('12345');
+            ->andReverseTransformsTo('12345')
+        ;
     }
 
     /** @test */
