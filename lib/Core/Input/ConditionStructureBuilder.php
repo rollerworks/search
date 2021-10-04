@@ -369,6 +369,26 @@ class ConditionStructureBuilder implements StructureBuilder
         try {
             return $this->inputTransformer->reverseTransform($value);
         } catch (TransformationFailedException $e) {
+            $this->addError($this->transformationExceptionToError($e, $path));
+
+            return null;
+        }
+    }
+
+    protected function transformationExceptionToError($e, string $path): ConditionErrorMessage
+    {
+        $invalidMessage = $e->getInvalidMessage();
+
+        if ($invalidMessage !== null) {
+            $error = new ConditionErrorMessage(
+                $path,
+                $invalidMessage,
+                $invalidMessage,
+                $e->getInvalidMessageParameters(),
+                null,
+                $e
+            );
+        } else {
             $error = new ConditionErrorMessage(
                 $path,
                 $this->fieldConfig->getOption('invalid_message', $e->getMessage()),
@@ -377,11 +397,9 @@ class ConditionStructureBuilder implements StructureBuilder
                 null,
                 $e
             );
-
-            $this->addError($error);
-
-            return null;
         }
+
+        return $error;
     }
 
     protected function addError(ConditionErrorMessage $error): void

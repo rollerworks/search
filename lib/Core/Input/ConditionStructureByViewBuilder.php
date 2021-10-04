@@ -59,16 +59,7 @@ final class ConditionStructureByViewBuilder extends ConditionStructureBuilder
         try {
             return $this->inputTransformer->reverseTransform($value);
         } catch (TransformationFailedException $e) {
-            $error = new ConditionErrorMessage(
-                $path,
-                $this->fieldConfig->getOption('invalid_message', $e->getMessage()),
-                $this->fieldConfig->getOption('invalid_message', $e->getMessage()),
-                $this->fieldConfig->getOption('invalid_message_parameters', []),
-                null,
-                $e
-            );
-
-            $this->addError($error);
+            $this->addError($this->transformationExceptionToError($e, $path));
 
             return null;
         }
