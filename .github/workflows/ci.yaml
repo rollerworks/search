@@ -113,6 +113,7 @@ jobs:
                     php-version: '7.4'
                     extensions: mbstring, xml, ctype, iconv, intl, bcmath, pdo_sqlite, dom, filter, json, pgsql, pdo, pdo_pgsql, pdo_mysql
                     coverage: xdebug
+                    tools: cs2pr
 
             # —— Composer 🧙‍️ —————————————————————————————————————————————————————————
             -
