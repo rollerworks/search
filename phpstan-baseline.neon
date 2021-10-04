@@ -11,21 +11,6 @@ parameters:
 			path: lib/ApiPlatform/Serializer/InvalidSearchConditionNormalizer.php
 
 		-
-			message: "#^Class ApiPlatform\\\\Core\\\\Tests\\\\Fixtures\\\\TestBundle\\\\Entity\\\\Dummy not found\\.$#"
-			count: 4
-			path: lib/ApiPlatform/Tests/Doctrine/Orm/Extension/SearchExtensionTest.php
-
-		-
-			message: "#^Class ApiPlatform\\\\Core\\\\Tests\\\\Fixtures\\\\TestBundle\\\\Entity\\\\RelatedDummy not found\\.$#"
-			count: 9
-			path: lib/ApiPlatform/Tests/Doctrine/Orm/Extension/SearchExtensionTest.php
-
-		-
-			message: "#^Class ApiPlatform\\\\Core\\\\Tests\\\\Fixtures\\\\TestBundle\\\\Entity\\\\ThirdLevel not found\\.$#"
-			count: 2
-			path: lib/ApiPlatform/Tests/Doctrine/Orm/Extension/SearchExtensionTest.php
-
-		-
 			message: "#^Method Rollerworks\\\\Component\\\\Search\\\\ApiPlatform\\\\Tests\\\\Mock\\\\FieldSetStub\\:\\:get\\(\\) should return Rollerworks\\\\Component\\\\Search\\\\Field\\\\FieldConfig but return statement is missing\\.$#"
 			count: 1
 			path: lib/ApiPlatform/Tests/Mock/FieldSetStub.php
@@ -254,6 +239,11 @@ parameters:
 			message: "#^Method Rollerworks\\\\Component\\\\Search\\\\Tests\\\\Field\\\\ResolvedFieldTypeTest\\:\\:getMockFieldType\\(\\) should return PHPUnit\\\\Framework\\\\MockObject\\\\MockObject&Rollerworks\\\\Component\\\\Search\\\\Field\\\\FieldType but returns PHPUnit\\\\Framework\\\\MockObject\\\\MockObject\\.$#"
 			count: 1
 			path: lib/Core/Tests/Field/ResolvedFieldTypeTest.php
+
+		-
+			message: "#^Variable \\$this in isset\\(\\) always exists and is not nullable\\.$#"
+			count: 1
+			path: lib/Core/Tests/GenericFieldSetBuilderTest.php
 
 		-
 			message: "#^Method Rollerworks\\\\Component\\\\Search\\\\Tests\\\\GenericFieldSetTest\\:\\:createFieldMock\\(\\) should return PHPUnit_Framework_MockObject_MockObject but returns PHPUnit\\\\Framework\\\\MockObject\\\\MockObject&Rollerworks\\\\Component\\\\Search\\\\Field\\\\FieldConfig\\.$#"
