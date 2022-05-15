@@ -148,7 +148,7 @@ final class MoneyToLocalizedStringTransformer extends NumberToLocalizedStringTra
      */
     private function addCurrencySymbol(string $value, ?string $currency = null): string
     {
-        $currency = $currency ?? $this->defaultCurrency;
+        $currency ??= $this->defaultCurrency;
         $locale = \Locale::getDefault();
 
         if (! isset(self::$patterns[$locale])) {

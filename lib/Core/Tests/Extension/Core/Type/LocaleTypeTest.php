@@ -27,7 +27,7 @@ final class LocaleTypeTest extends SearchIntegrationTestCase
 {
     protected function setUp(): void
     {
-        IntlTestHelper::requireIntl($this);
+        IntlTestHelper::requireIntl($this, '70.1');
 
         parent::setUp();
     }

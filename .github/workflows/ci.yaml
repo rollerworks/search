@@ -19,7 +19,7 @@ jobs:
         strategy:
             fail-fast: false
             matrix:
-                php-versions: ['7.4', '8.0']
+                php-versions: ['8.0', '8.1']
 
         services:
             # https://docs.docker.com/samples/library/postgres/
@@ -81,10 +81,8 @@ jobs:
                 run: |
                     rm -f composer.lock
                     composer global require symfony/flex
+                    composer install --no-progress --no-interaction --no-suggest --optimize-autoloader --ansi
 
-                    # ElasticaBundle is not compatible with PHP 8 yet.
-                    if [ "${{ matrix.php-versions }}" = "8.0" ]; then composer install --no-progress --no-interaction --no-suggest --optimize-autoloader --ansi --ignore-platform-req=php; fi
-                    if [ "${{ matrix.php-versions }}" != "8.0" ]; then composer install --no-progress --no-interaction --no-suggest --optimize-autoloader --ansi; fi
             ## —— Tests ✅ ———————————————————————————————————————————————————————————
             -
                 name: Run Tests
@@ -110,7 +108,7 @@ jobs:
                 name: Setup PHP, extensions and composer with shivammathur/setup-php
                 uses: shivammathur/setup-php@v2
                 with:
-                    php-version: '7.4'
+                    php-version: '8.1'
                     extensions: mbstring, xml, ctype, iconv, intl, bcmath, pdo_sqlite, dom, filter, json, pgsql, pdo, pdo_pgsql, pdo_mysql
                     coverage: xdebug
                     tools: cs2pr

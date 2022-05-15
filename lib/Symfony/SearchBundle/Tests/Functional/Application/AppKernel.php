@@ -62,7 +62,7 @@ class AppKernel extends Kernel
         return $class;
     }
 
-    public function registerBundles()
+    public function registerBundles(): iterable
     {
         $bundles = [
             new FrameworkBundle(),

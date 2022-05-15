@@ -27,7 +27,7 @@ final class TimezoneTypeTest extends SearchIntegrationTestCase
 {
     protected function setUp(): void
     {
-        IntlTestHelper::requireIntl($this);
+        IntlTestHelper::requireIntl($this, '70.1');
 
         parent::setUp();
     }

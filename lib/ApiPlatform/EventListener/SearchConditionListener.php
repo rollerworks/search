@@ -145,7 +145,7 @@ final class SearchConditionListener
                 throw new RuntimeException(sprintf('Processor option "%s" is not supported for Resource "%s".', $option, $resourceClass));
             }
 
-            if (ctype_digit($value)) {
+            if (is_scalar($value) && ctype_digit((string) $value)) {
                 $value = (int) $value;
             }
 
@@ -161,11 +161,11 @@ final class SearchConditionListener
             throw new UnexpectedTypeException($input, 'string');
         }
 
-        $format = '{' === ($input[0] ?? 'n') ? 'json' : 'norm_string_query';
+        $format = ($input[0] ?? 'n') === '{' ? 'json' : 'norm_string_query';
 
         $inputProcessor = $this->inputProcessorLoader->get($format);
 
-        if ($this->cache !== null && null !== $ttl = $config->getCacheTTL()) {
+        if ($this->cache !== null && ($ttl = $config->getCacheTTL()) !== null) {
             $inputProcessor = new CachingInputProcessor(
                 $this->cache,
                 $this->searchFactory->getSerializer(),
