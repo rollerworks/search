@@ -1,0 +1,13 @@
+---------------------------------------------------------------------------
+
+by sstok at 2022-05-15T12:05:22Z
+
+`TypeError: Return value of Rollerworks\Component\Search\Loader\ClosureContainer::get() must be an instance of Rollerworks\Component\Search\Loader\mixed, instance of Rollerworks\Component\Search\Input\StringQueryInput returned`
+
+Ah yes... returning back to programming after 5 months of absence only to be reminded of the very reason why I took "some" time of...
+
+---------------------------------------------------------------------------
+
+by sstok at 2022-05-17T07:49:40Z
+
+The `mixed` type is only available with PHP 8 and up. I guess it's time to drop support for PHP 7.4.
