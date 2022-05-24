@@ -25,7 +25,6 @@ final class BootTest extends FunctionalTestCase
     public function it_can_boot_the_application(): void
     {
         $client = self::newClient();
-        $client->getKernel()->boot();
 
         self::assertInstanceOf(SearchFactory::class, $factory = $client->getContainer()->get('rollerworks_search.factory'));
         $factory->createFieldSet(UserFieldSet::class);

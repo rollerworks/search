@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Extension\Core\ChoiceList\View;
 
+use Traversable;
+
 /**
  * Represents a group of choices in templates.
  *
@@ -44,7 +46,7 @@ class ChoiceGroupView implements \IteratorAggregate
     /**
      * @return \ArrayIterator|ChoiceGroupView[]|ChoiceView[]
      */
-    public function getIterator()
+    public function getIterator(): Traversable
     {
         return new \ArrayIterator($this->choices);
     }

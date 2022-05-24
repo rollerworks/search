@@ -1,7 +1,8 @@
 {
     "name": "rollerworks/search-bundle",
-    "type": "symfony-bundle",
     "description": "RollerworksSearch Bundle",
+    "license": "MIT",
+    "type": "symfony-bundle",
     "keywords": [
         "filter",
         "search",
@@ -9,7 +10,6 @@
         "symfony",
         "bundle"
     ],
-    "license": "MIT",
     "authors": [
         {
             "name": "Sebastiaan Stok",
@@ -17,11 +17,23 @@
         }
     ],
     "require": {
-        "php": ">=7.4",
+        "php": ">=8.0",
         "psr/simple-cache": "^1.0.0",
         "rollerworks/search": "^2.0@dev,>=2.0.0-ALPHA23",
-        "symfony/framework-bundle": "^4.4 || ^5.0",
-        "symfony/twig-bundle": "^4.4 || ^5.0"
+        "symfony/framework-bundle": "^6.0",
+        "symfony/twig-bundle": "^6.0"
+    },
+    "require-dev": {
+        "matthiasnoback/symfony-dependency-injection-test": "^2.0.0",
+        "matthiasnoback/symfony-service-definition-validator": "^1.2.8",
+        "phpunit/phpunit": "^6.5.4",
+        "rollerworks/search-symfony-validator": "^2.0@dev,>=2.0.0-BETA1",
+        "symfony/asset": "^6.0",
+        "symfony/browser-kit": "^6.0",
+        "symfony/dom-crawler": "^6.0",
+        "symfony/phpunit-bridge": "^6.0",
+        "symfony/routing": "^6.0",
+        "symfony/templating": "^4.4 || ^5.0"
     },
     "conflict": {
         "doctrine/doctrine-bundle": "<1.1",
@@ -29,26 +41,8 @@
         "rollerworks/search-doctrine-orm": "<2.0.0-BETA1",
         "rollerworks/search-symfony-validator": "<2.0.0-BETA1"
     },
-    "require-dev": {
-        "matthiasnoback/symfony-dependency-injection-test": "^2.0.0",
-        "matthiasnoback/symfony-service-definition-validator": "^1.2.8",
-        "phpunit/phpunit": "^6.5.4",
-        "rollerworks/search-symfony-validator": "^2.0@dev,>=2.0.0-BETA1",
-        "symfony/asset": "^4.4 || ^5.0",
-        "symfony/browser-kit": "^4.4 || ^5.0",
-        "symfony/dom-crawler": "^4.4 || ^5.0",
-        "symfony/phpunit-bridge": "^4.4 || ^5.0",
-        "symfony/routing": "^4.4 || ^5.0",
-        "symfony/templating": "^4.4 || ^5.0"
-    },
-    "config": {
-        "sort-packages": true
-    },
-    "extra": {
-        "branch-alias": {
-            "dev-master": "2.0-dev"
-        }
-    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
     "autoload": {
         "psr-4": {
             "Rollerworks\\Bundle\\SearchBundle\\": ""
@@ -62,6 +56,12 @@
             "Rollerworks\\Bundle\\SearchBundle\\Tests\\": "Tests/"
         }
     },
-    "minimum-stability": "dev",
-    "prefer-stable": true
+    "config": {
+        "sort-packages": true
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "2.0-dev"
+        }
+    }
 }

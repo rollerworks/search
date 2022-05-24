@@ -110,7 +110,7 @@ final class MoneyToStringTransformer implements DataTransformer
 
         try {
             return new MoneyValue($this->moneyParser->parse($result, $currency), $withCurrency);
-        } catch (ParserException | UnknownCurrencyException $e) {
+        } catch (ParserException|UnknownCurrencyException $e) {
             throw new TransformationFailedException($e->getMessage(), 0, $e);
         }
     }

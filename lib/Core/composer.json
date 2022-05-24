@@ -1,14 +1,13 @@
 {
     "name": "rollerworks/search",
-    "type": "library",
     "description": "RollerworksSearch provides you with a powerful search system",
+    "license": "MIT",
+    "type": "library",
     "keywords": [
         "rollerworks",
         "filter",
         "search"
     ],
-    "homepage": "https://rollerworks.github.io/",
-    "license": "MIT",
     "authors": [
         {
             "name": "Sebastiaan Stok",
@@ -19,31 +18,27 @@
             "homepage": "https://github.com/rollerworks/search/contributors"
         }
     ],
+    "homepage": "https://rollerworks.github.io/",
     "require": {
-        "php": ">=7.4",
+        "php": ">=8.0",
         "nesbot/carbon": "^2.38",
-        "psr/container": "^1.0.0",
-        "symfony/intl": "^4.4 || ^5.0",
-        "symfony/options-resolver": "^4.4 || ^5.0",
-        "symfony/property-access": "^4.4 || ^5.0",
-        "symfony/string": "^4.4 || ^5.0"
-    },
-    "conflict": {
-        "moneyphp/money": "<3.2.0"
+        "psr/container": "^1.1|^2.0",
+        "symfony/intl": "^6.0",
+        "symfony/options-resolver": "^6.0",
+        "symfony/property-access": "^6.0",
+        "symfony/string": "^6.0"
     },
     "require-dev": {
         "moneyphp/money": "^3.2.0 || ^4.0",
         "phpunit/phpunit": "^9.5",
-        "symfony/phpunit-bridge": "^4.4 || ^5.0",
-        "symfony/var-dumper": "^4.4 || ^5.0"
+        "symfony/phpunit-bridge": "^6.0",
+        "symfony/var-dumper": "^6.0"
+    },
+    "conflict": {
+        "moneyphp/money": "<3.2.0"
     },
     "suggest": {
         "moneyphp/money": "To use the MoneyType"
-    },
-    "extra": {
-        "branch-alias": {
-            "dev-master": "2.0-dev"
-        }
     },
     "autoload": {
         "psr-4": {
@@ -56,6 +51,11 @@
     "autoload-dev": {
         "psr-4": {
             "Rollerworks\\Component\\Search\\Tests\\": "Tests/"
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "2.0-dev"
         }
     }
 }

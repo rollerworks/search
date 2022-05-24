@@ -40,7 +40,7 @@ final class InvalidSearchConditionNormalizer implements NormalizerInterface
         $this->serializePayloadFields = $serializePayloadFields;
     }
 
-    public function normalize($object, string $format = null, array $context = [])
+    public function normalize($object, string $format = null, array $context = []): array
     {
         $list = new ConstraintViolationList();
 

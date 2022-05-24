@@ -27,7 +27,7 @@ final class CountryTypeTest extends SearchIntegrationTestCase
 {
     protected function setUp(): void
     {
-        IntlTestHelper::requireIntl($this);
+        IntlTestHelper::requireIntl($this, '70.1');
 
         parent::setUp();
     }
@@ -35,7 +35,7 @@ final class CountryTypeTest extends SearchIntegrationTestCase
     /** @test */
     public function countries_are_selectable(): void
     {
-        $field = $field = $this->getFactory()->createField('choice', CountryType::class);
+        $field = $this->getFactory()->createField('choice', CountryType::class);
         $field->finalizeConfig();
 
         FieldTransformationAssertion::assertThat($field)
@@ -58,7 +58,7 @@ final class CountryTypeTest extends SearchIntegrationTestCase
     /** @test */
     public function unknown_country_is_not_included(): void
     {
-        $field = $field = $this->getFactory()->createField('choice', CountryType::class);
+        $field = $this->getFactory()->createField('choice', CountryType::class);
         $field->finalizeConfig();
 
         $view = $field->createView(new FieldSetView());

@@ -90,7 +90,7 @@ final class SearchExtension implements QueryCollectionExtensionInterface
             ArrayKeysValidator::assertOnlyKeys($config, ['join', 'entity', 'type', 'conditionType', 'condition', 'index'], $path);
             ArrayKeysValidator::assertKeysExists($config, ['join', 'entity'], $path);
 
-            if (! method_exists($queryBuilder, ($config['type'] = $config['type'] ?? 'left') . 'Join')) {
+            if (! method_exists($queryBuilder, ($config['type'] ??= 'left') . 'Join')) {
                 throw new RuntimeException(sprintf('Invalid value for "%s", type "%s" is not supported. Use left, right or inner.', $path . '[type]', $config['type']));
             }
 

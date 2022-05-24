@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Tests\Doctrine\Dbal\Mocks;
 
+use Doctrine\DBAL\Platforms\AbstractPlatform;
+
 class ConnectionMock extends \Doctrine\DBAL\Connection
 {
     private $_fetchOneResult;
@@ -34,7 +36,7 @@ class ConnectionMock extends \Doctrine\DBAL\Connection
     /**
      * @override
      */
-    public function getDatabasePlatform()
+    public function getDatabasePlatform(): AbstractPlatform
     {
         return $this->_platformMock;
     }
@@ -52,7 +54,7 @@ class ConnectionMock extends \Doctrine\DBAL\Connection
      *
      * @param mixed|null $seqName
      */
-    public function lastInsertId($seqName = null)
+    public function lastInsertId($seqName = null): string|int|false
     {
         return $this->_lastInsertId;
     }
@@ -60,7 +62,7 @@ class ConnectionMock extends \Doctrine\DBAL\Connection
     /**
      * @override
      */
-    public function fetchColumn($statement, array $params = [], $column = 0, array $types = [])
+    public function fetchColumn($statement, array $params = [], $column = 0, array $types = []): mixed
     {
         return $this->_fetchOneResult;
     }
@@ -70,7 +72,7 @@ class ConnectionMock extends \Doctrine\DBAL\Connection
      *
      * @param mixed|null $type
      */
-    public function quote($input, $type = null)
+    public function quote($input, $type = null): mixed
     {
         if (\is_string($input)) {
             return "'" . $input . "'";
@@ -96,7 +98,7 @@ class ConnectionMock extends \Doctrine\DBAL\Connection
         $this->_lastInsertId = $id;
     }
 
-    public function getInserts()
+    public function getInserts(): array
     {
         return $this->_inserts;
     }

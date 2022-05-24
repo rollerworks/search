@@ -23,7 +23,6 @@ use Rollerworks\Component\Search\ApiPlatform\Tests\Fixtures\BookFieldSet;
 use Rollerworks\Component\Search\ApiPlatform\Tests\Fixtures\Dummy;
 use Rollerworks\Component\Search\ApiPlatform\Tests\Mock\SpyingInputProcessor;
 use Rollerworks\Component\Search\ApiPlatform\Tests\Mock\StubInputProcessor;
-use Rollerworks\Component\Search\Exception\UnexpectedTypeException;
 use Rollerworks\Component\Search\InputProcessor;
 use Rollerworks\Component\Search\Loader\ClosureContainer;
 use Rollerworks\Component\Search\Loader\InputProcessorLoader;
@@ -140,49 +139,6 @@ final class SearchConditionListenerTest extends SearchIntegrationTestCase
 
         $config = $inputProcessor->getConfig();
         self::assertEquals(BookFieldSet::class, $config->getFieldSet()->getSetName());
-    }
-
-    /**
-     * @test
-     * @group legacy
-     */
-    public function it_requires_a_string_search_condition(): void
-    {
-        $dummyMetadata = new ResourceMetadata(
-            'dummy',
-            'dummy',
-            '#dummy',
-            [],
-            [],
-            [
-                'rollerworks_search' => [
-                    'contexts' => [
-                        '_any' => [
-                            'fieldset' => BookFieldSet::class,
-                        ],
-                    ],
-                ],
-            ]
-        );
-
-        $httpKernel = $this->createMock(HttpKernelInterface::class);
-        $resourceMetadataFactory = $this->createResourceMetadata($dummyMetadata);
-
-        $request = new Request(['search' => ['foobar' => 'he']], [], ['_api_resource_class' => Dummy::class]);
-        $eventDispatcher = $this->expectingNoCallEventDispatcher();
-
-        $inputProcessor = new SpyingInputProcessor();
-        $listener = new SearchConditionListener(
-            $this->getFactory(),
-            $this->createProcessorLoader($inputProcessor, 'json'),
-            $resourceMetadataFactory,
-            $eventDispatcher
-        );
-
-        $this->expectException(UnexpectedTypeException::class);
-        $this->expectExceptionMessage('Expected argument of type "string", "array" given');
-
-        $listener->onKernelRequest($event = new RequestEvent($httpKernel, $request, HttpKernelInterface::MASTER_REQUEST));
     }
 
     /** @test */

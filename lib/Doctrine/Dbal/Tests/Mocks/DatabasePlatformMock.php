@@ -13,9 +13,10 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Tests\Doctrine\Dbal\Mocks;
 
-use Doctrine\DBAL\DBALException;
+use Doctrine\DBAL\Exception as DBALException;
+use Doctrine\DBAL\Platforms\AbstractPlatform;
 
-class DatabasePlatformMock extends \Doctrine\DBAL\Platforms\AbstractPlatform
+class DatabasePlatformMock extends AbstractPlatform
 {
     private $_sequenceNextValSql = '';
     private $_prefersIdentityColumns = true;
@@ -24,7 +25,7 @@ class DatabasePlatformMock extends \Doctrine\DBAL\Platforms\AbstractPlatform
     /**
      * @override
      */
-    public function prefersIdentityColumns()
+    public function prefersIdentityColumns(): bool
     {
         return $this->_prefersIdentityColumns;
     }
@@ -32,49 +33,49 @@ class DatabasePlatformMock extends \Doctrine\DBAL\Platforms\AbstractPlatform
     /**
      * @override
      */
-    public function prefersSequences()
+    public function prefersSequences(): bool
     {
         return $this->_prefersSequences;
     }
 
     /** @override */
-    public function getSequenceNextValSQL($sequenceName)
+    public function getSequenceNextValSQL($sequenceName): string
     {
         return $this->_sequenceNextValSql;
     }
 
     /** @override */
-    public function getBooleanTypeDeclarationSQL(array $field): void
+    public function getBooleanTypeDeclarationSQL(array $field): string
     {
     }
 
     /** @override */
-    public function getIntegerTypeDeclarationSQL(array $field): void
+    public function getIntegerTypeDeclarationSQL(array $field): string
     {
     }
 
     /** @override */
-    public function getBigIntTypeDeclarationSQL(array $field): void
+    public function getBigIntTypeDeclarationSQL(array $field): string
     {
     }
 
     /** @override */
-    public function getSmallIntTypeDeclarationSQL(array $field): void
+    public function getSmallIntTypeDeclarationSQL(array $field): string
     {
     }
 
     /** @override */
-    protected function _getCommonIntegerTypeDeclarationSQL(array $columnDef): void
+    protected function _getCommonIntegerTypeDeclarationSQL(array $columnDef): string
     {
     }
 
     /** @override */
-    public function getVarcharTypeDeclarationSQL(array $field): void
+    public function getVarcharTypeDeclarationSQL(array $field): string
     {
     }
 
     /** @override */
-    public function getClobTypeDeclarationSQL(array $field): void
+    public function getClobTypeDeclarationSQL(array $field): string
     {
     }
 
@@ -95,7 +96,7 @@ class DatabasePlatformMock extends \Doctrine\DBAL\Platforms\AbstractPlatform
         $this->_sequenceNextValSql = $sql;
     }
 
-    public function getName()
+    public function getName(): string
     {
         return 'mock';
     }
@@ -104,7 +105,7 @@ class DatabasePlatformMock extends \Doctrine\DBAL\Platforms\AbstractPlatform
     {
     }
 
-    protected function getVarcharTypeDeclarationSQLSnippet($length, $fixed): void
+    protected function getVarcharTypeDeclarationSQLSnippet($length, $fixed): string
     {
     }
 

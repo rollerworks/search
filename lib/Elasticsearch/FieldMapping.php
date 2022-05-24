@@ -171,7 +171,18 @@ final class FieldMapping implements \Serializable
         return $conditions;
     }
 
-    public function serialize()
+    public function __serialize()
+    {
+        return [
+            'field_name' => $this->fieldName,
+            'index_name' => $this->indexName,
+            'type_name' => $this->typeName,
+            'property_name' => $this->propertyName,
+            'nested' => $this->nested,
+        ];
+    }
+
+    public function serialize(): ?string
     {
         return serialize(
             [
@@ -182,6 +193,11 @@ final class FieldMapping implements \Serializable
                 'nested' => $this->nested,
             ]
         );
+    }
+
+    public function __unserialize($serialized): void
+    {
+        // no-op
     }
 
     public function unserialize($serialized): void

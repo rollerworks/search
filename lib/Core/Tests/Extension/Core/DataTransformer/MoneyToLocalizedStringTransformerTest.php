@@ -67,7 +67,7 @@ final class MoneyToLocalizedStringTransformerTest extends TestCase
     public function transform($from, $to, $locale): void
     {
         // Since we test against other locales, we need the full implementation
-        IntlTestHelper::requireFullIntl($this);
+        IntlTestHelper::requireFullIntl($this, '70.1');
 
         \Locale::setDefault($locale);
 
@@ -88,7 +88,7 @@ final class MoneyToLocalizedStringTransformerTest extends TestCase
     public function transform_without_currency($from, $to, $locale): void
     {
         // Since we test against other locales, we need the full implementation
-        IntlTestHelper::requireFullIntl($this);
+        IntlTestHelper::requireFullIntl($this, '70.1');
 
         \Locale::setDefault($locale);
 
@@ -107,7 +107,7 @@ final class MoneyToLocalizedStringTransformerTest extends TestCase
     public function transform_without_currency_and_different_default_currency(): void
     {
         // Since we test against other locales, we need the full implementation
-        IntlTestHelper::requireFullIntl($this);
+        IntlTestHelper::requireFullIntl($this, '70.1');
 
         \Locale::setDefault('de_DE');
 
@@ -137,7 +137,7 @@ final class MoneyToLocalizedStringTransformerTest extends TestCase
     public function transform_with_grouping($from, $to, $locale): void
     {
         // Since we test against other locales, we need the full implementation
-        IntlTestHelper::requireFullIntl($this);
+        IntlTestHelper::requireFullIntl($this, '70.1');
 
         \Locale::setDefault($locale);
 
@@ -176,7 +176,7 @@ final class MoneyToLocalizedStringTransformerTest extends TestCase
     public function reverse_transform_without_currency($to, $from, $locale): void
     {
         // Since we test against other locales, we need the full implementation
-        IntlTestHelper::requireFullIntl($this);
+        IntlTestHelper::requireFullIntl($this, '70.1');
 
         \Locale::setDefault($locale);
 
@@ -216,7 +216,7 @@ final class MoneyToLocalizedStringTransformerTest extends TestCase
     public function reverse_transform_with_grouping_and_fixed_spaces(): void
     {
         // Since we test against other locales, we need the full implementation
-        IntlTestHelper::requireFullIntl($this);
+        IntlTestHelper::requireFullIntl($this, '70.1');
 
         \Locale::setDefault('ru');
 
@@ -232,7 +232,7 @@ final class MoneyToLocalizedStringTransformerTest extends TestCase
     public function reverse_transform_with_grouping_but_without_group_separator(): void
     {
         // Since we test against "de_AT", we need the full implementation
-        IntlTestHelper::requireFullIntl($this);
+        IntlTestHelper::requireFullIntl($this, '70.1');
 
         \Locale::setDefault('de_AT');
 
@@ -254,7 +254,7 @@ final class MoneyToLocalizedStringTransformerTest extends TestCase
     public function decimal_separator_may_be_dot_if_grouping_separator_is_not_dot(): void
     {
         // Since we test against other locales, we need the full implementation
-        IntlTestHelper::requireFullIntl($this);
+        IntlTestHelper::requireFullIntl($this, '70.1');
 
         \Locale::setDefault('fr');
         $transformer = new MoneyToLocalizedStringTransformer('EUR', true);

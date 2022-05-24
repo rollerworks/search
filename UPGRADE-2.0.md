@@ -1,3 +1,10 @@
+UPGRADE FROM 2.0-BETA2 to 2.0-BETA3
+===================================
+
+ * Support for PHP < 8.0 was dropped.
+ 
+ * Support for Symfony 5 was dropped.
+
 UPGRADE FROM 2.0-BETA1 to 2.0-BETA2
 ===================================
 
