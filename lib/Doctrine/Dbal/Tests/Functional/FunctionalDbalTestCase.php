@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Tests\Doctrine\Dbal\Functional;
 
+use Doctrine\DBAL\Logging\DebugStack;
+use Doctrine\DBAL\Query\QueryBuilder;
 use Doctrine\DBAL\Schema\Schema as DbSchema;
 use Doctrine\DBAL\Schema\Synchronizer\SingleDatabaseSynchronizer;
 use Doctrine\Tests\TestUtil;
@@ -20,6 +22,7 @@ use PHPUnit\Framework\AssertionFailedError;
 use PHPUnit\Framework\Exception;
 use PHPUnit\Framework\Warning;
 use Rollerworks\Component\Search\Doctrine\Dbal\ConditionGenerator;
+use Rollerworks\Component\Search\Doctrine\Dbal\Test\QueryBuilderAssertion;
 use Rollerworks\Component\Search\SearchCondition;
 use Rollerworks\Component\Search\Tests\Doctrine\Dbal\DbalTestCase;
 use Rollerworks\Component\Search\Tests\Doctrine\Dbal\SchemaRecord;
@@ -39,7 +42,7 @@ abstract class FunctionalDbalTestCase extends DbalTestCase
     protected $conn;
 
     /**
-     * @var \Doctrine\DBAL\Logging\DebugStack|null
+     * @var DebugStack|null
      */
     protected $sqlLoggerStack;
 
@@ -89,7 +92,7 @@ abstract class FunctionalDbalTestCase extends DbalTestCase
         }
 
         $this->conn = self::$sharedConn;
-        $this->sqlLoggerStack = new \Doctrine\DBAL\Logging\DebugStack();
+        $this->sqlLoggerStack = new DebugStack();
         $this->conn->getConfiguration()->setSQLLogger($this->sqlLoggerStack);
     }
 
@@ -127,10 +130,8 @@ abstract class FunctionalDbalTestCase extends DbalTestCase
 
     /**
      * Returns the string for the ConditionGenerator.
-     *
-     * @return string
      */
-    protected function getQuery()
+    protected function getQuery(): QueryBuilder
     {
     }
 
@@ -146,24 +147,24 @@ abstract class FunctionalDbalTestCase extends DbalTestCase
      */
     protected function assertRecordsAreFound(SearchCondition $condition, array $ids): void
     {
-        $conditionGenerator = $this->getDbalFactory()->createConditionGenerator($this->conn, $condition);
+        $conditionGenerator = $this->getDbalFactory()->createConditionGenerator($this->getQuery(), $condition);
         $this->configureConditionGenerator($conditionGenerator);
 
-        $whereClause = $conditionGenerator->getWhereClause();
-        $statement = $this->conn->prepare($this->getQuery() . $whereClause);
+        $qb = $conditionGenerator->getQueryBuilder();
+
+        $conditionGenerator->apply();
+        $result = $qb->execute();
 
         $paramsString = '';
         $platform = $this->conn->getDatabasePlatform();
 
-        foreach ($conditionGenerator->getParameters() as $name => [$value, $type]) {
-            $statement->bindValue($name, $value, $type);
+        foreach ($qb->getParameters() as $name => $value) {
+            $type = $qb->getParameterType($name);
 
             $paramsString .= sprintf("%s = '%s'\n", $name, $type === null ? (\is_scalar($value) ? (string) $value : get_debug_type($value)) : $type->convertToDatabaseValue($value, $platform));
         }
 
-        $statement->execute();
-
-        $rows = $statement->fetchAll(\PDO::FETCH_ASSOC);
+        $rows = $result->fetchAllAssociative();
         $idRows = array_map(
             static fn ($value) => $value['id'],
             $rows
@@ -175,36 +176,37 @@ abstract class FunctionalDbalTestCase extends DbalTestCase
         static::assertEquals(
             $ids,
             array_merge([], array_unique($idRows)),
-            sprintf("Found these records instead: \n%s\nWith WHERE-clause: %s\nAnd params: %s", print_r($rows, true), $whereClause, $paramsString)
+            sprintf("Found these records instead: \n%s\nWith Query: %s\nAnd params: %s", print_r($rows, true), $qb->getSQL(), $paramsString)
         );
     }
 
+    /**
+     * @param SearchCondition|ConditionGenerator $conditionOrWhere
+     */
     protected function assertQueryIsExecutable($conditionOrWhere, string $expectedSql = '', ?array $parameters = null): void
     {
         if ($conditionOrWhere instanceof SearchCondition) {
-            $conditionGenerator = $this->getDbalFactory()->createConditionGenerator($this->conn, $conditionOrWhere);
+            $conditionGenerator = $this->getDbalFactory()->createConditionGenerator($this->getQuery(), $conditionOrWhere);
             $this->configureConditionGenerator($conditionGenerator);
         } else {
             $conditionGenerator = $conditionOrWhere;
         }
 
-        $whereClause = $conditionGenerator->getWhereClause();
-        $statement = $this->conn->prepare($this->getQuery() . $whereClause);
-
-        $conditionGenerator->bindParameters($statement);
-        $statement->execute();
-
-        static::assertNotNull($statement);
+        $qb = $conditionGenerator->getQueryBuilder();
 
         if ($expectedSql !== '') {
-            $expectedSql = preg_replace('/\s+/', ' ', trim($expectedSql));
+            QueryBuilderAssertion::assertQueryBuilderEquals(
+                $conditionGenerator,
+                $expectedSql,
+                $parameters
+            );
+        } else {
+            $conditionGenerator->apply();
 
-            static::assertEquals($expectedSql, preg_replace('/\s+/', ' ', trim($whereClause)));
+            $this->addToAssertionCount(1);
         }
 
-        if ($parameters !== null) {
-            static::assertEquals($parameters, $conditionGenerator->getParameters()->toArray());
-        }
+        $qb->execute();
     }
 
     protected function onNotSuccessfulTest(\Throwable $e): void

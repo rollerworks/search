@@ -84,7 +84,7 @@ like PostgreSQL, MySQL, MSSQL, or Oracle OCI.
 
 .. caution::
 
-    A ConditionGenerator is configured with a database connection and SearchCondition.
+    A ConditionGenerator is configured with a Doctrine DBAL QueryBuilder and SearchCondition.
     So reusing a ConditionGenerator is not possible.
 
     Secondly, the generated query is only valid for the give Database driver.
@@ -95,13 +95,13 @@ First create a ``ConditionGenerator``::
 
     // ...
 
-    // Doctrine\DBAL\Connection object
-    $connection = ...;
+    // Doctrine\DBAL\Query\QueryBuilder object
+    $qb = ...;
 
     // Rollerworks\Component\Search\SearchCondition object
     $searchCondition = ...;
 
-    $conditionGenerator = $doctrineDbalFactory->createConditionGenerator($connection, $searchCondition);
+    $conditionGenerator = $doctrineDbalFactory->createConditionGenerator($qb, $searchCondition);
 
 Before the condition can be generated, the ConditionGenerator needs to know how
 your fields are mapped to which columns and table/schema. To configure this
@@ -140,6 +140,8 @@ field-to-column mapping, use the ``setField`` method on the ConditionGenerator:
 The first parameter is the search field-name as registered in the provided FieldSet
 (with optionally a mapping-name to allow mapping a field to multiple columns).
 
+Order fields must be prefixed with ``@`` as their actual name, either ``@id``.
+
 Followed by the database column-name (without any quoting), the table alias that
 corresponds with the table alias in the Query, and last the dbal-type
 (as provided by Doctrine DBAL).
@@ -170,66 +172,36 @@ Generating the Condition
 .. code-block:: php
     :linenos:
 
-    // Doctrine\DBAL\Connection object
-    $connection = ...;
+    // Doctrine\DBAL\Query\QueryBuilder object
+    $qb = $connection->createQueryBuilder();
 
     // ...
 
-    $query = '
-        SELECT
-            u.name AS user_name,
-            u.id AS user_id
-        FROM
-            users AS u
-        LEFT JOIN
-            contacts as c
-        ON
-            u.id = u.user_id
-    ';
+    $qb
+        ->select('u.name AS user_name', 'u.id AS user_id')
+        ->from('users', 'u')
+        ->leftJoin('u', 'contacts', 'c', 'c.user_id = u.id')
+    ;
+
+    $conditionGenerator = $doctrineDbalFactory->createConditionGenerator($qb, $searchCondition);
 
     // Set the field to column mapping
     $conditionGenerator->setField('user_id', 'u', 'id', 'integer');
     $conditionGenerator->setField('user_name', 'u', 'name', 'string');
     $conditionGenerator->setField('contact_name', 'c', 'name', 'string');
 
-    // A ' WHERE ' string is placed before the generated condition,
-    // but only when there is actual condition generated, else it returns an empty string.
-    $whereClause = $conditionGenerator->getWhereClause(' WHERE ');
-
-    // Add the Where-clause
-    $query .= $whereClause;
-
-    $statement = $connection->prepare($query);
-    $conditionGenerator->bindParameters($statement);
-    $statement->execute();
+    // Apply the condition (with ordering, if any) to the QueryBuilder
+    $conditionGenerator->apply();
 
     // Get all the records
     // See http://docs.doctrine-project.org/projects/doctrine-dbal/en/latest/reference/data-retrieval-and-manipulation.html#data-retrieval
-    $rows = $statement->fetchAll(\PDO::FETCH_ASSOC);
+    $result = $qb->execute();
 
 .. tip::
 
     To prevent certain users from getting results they are not allowed to
-    see you can combine the generated Where-clause with a primary AND-condition.
-
-    The entire generated condition is already wrapped inside a group.
-
-    .. code-block:: php
-
-        $query = 'SELECT u.name AS name, u.id AS id FROM users AS u WHERE id = ?';
-        $conditionGenerator = ...;
-
-        $whereClause = $conditionGenerator->getWhereClause(' AND ');
-
-        // Add the Where-clause
-        $query .= $whereClause;
-
-        $statement = $connection->prepare($query);
-        $conditionGenerator->bindParameters($statement);
-        $statement->bindValue(1, $id);
-        $statement->execute();
-
-    Or you can use a :ref:`pre_condition`.
+    see you can add an addition and-condition the QueryBuilder
+    or you can use a :ref:`pre_condition` for better portability.
 
 Mapping a field to multiple columns
 ***********************************
@@ -244,22 +216,11 @@ with only the first and/or last name.
 
 .. code-block:: php
 
-    $query = 'SELECT u.name AS name, u.id AS id FROM users AS u';
-
     $conditionGenerator = $doctrineDbalFactory->createConditionGenerator($connection, $searchCondition);
     $conditionGenerator->setField('name#first', 'first', 'u', 'string');
     $conditionGenerator->setField('name#last', 'last', 'u', 'string');
     $conditionGenerator->setField('first-name', 'first', 'u', 'string');
     $conditionGenerator->setField('last-name', 'last', 'u', 'string');
-
-    $whereClause = $conditionGenerator->getWhereClause('WHERE');
-
-    // Add the Where-clause
-    $query .= $whereClause;
-
-    $statement = $connection->prepare($query);
-    $conditionGenerator->bindParameters($statement);
-    $statement->execute();
 
 Caching the Where-clause
 ~~~~~~~~~~~~~~~~~~~~~~~~
@@ -276,24 +237,13 @@ and can be configured very similar::
 
     // ...
 
-    $query = 'SELECT u.name AS name, u.id AS id FROM users AS u';
-    $conditionGenerator = $doctrineDbalFactory->createConditionGenerator($connection, $searchCondition);
-
-    // The first parameter is the original ConditionGenerator as described above
-    // The second parameter is the cache lifetime in seconds, null will use the Cache default
-    $cacheConditionGenerator = $doctrineDbalFactory->createCachedConditionGenerator($conditionGenerator, null);
+    // The third parameter is the cache lifetime in as supported by PSR-16
+    $cacheConditionGenerator = $doctrineDbalFactory->createCachedConditionGenerator($qb, $conditionGenerator, null);
     $cacheConditionGenerator->setField('first-name', 'first', 'u', 'string');
     $cacheConditionGenerator->setField('last-name', 'last', 'u', 'string');
 
-    // The ' WHERE ' value is placed before the generated where-clause,
-    // but only when there is actual where-clause, else it returns an empty string.
-    $whereClause = $cacheConditionGenerator->getWhereClause(' WHERE ');
-
-    // Add the Where-clause
-    $query .= $whereClause;
-
-    $statement = $connection->prepare($query);
-    $cacheConditionGenerator->bindParameters($statement);
+    // Apply the condition (with ordering, if any) to the QueryBuilder
+    $cacheConditionGenerator->apply();
 
 The cache-key is a hashed (sha256) combination of the SearchCondition
 (root ValuesGroup and FieldSet set-name) and configured field mappings.

@@ -13,16 +13,12 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Doctrine\Dbal;
 
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\Statement;
-use Doctrine\DBAL\Types\Type as MappingType;
-use Rollerworks\Component\Search\Doctrine\Dbal\Query\QueryField;
+use Doctrine\DBAL\Query\QueryBuilder;
 use Rollerworks\Component\Search\Doctrine\Dbal\Query\QueryGenerator;
 use Rollerworks\Component\Search\Doctrine\Dbal\QueryPlatform\AbstractQueryPlatform;
 use Rollerworks\Component\Search\Doctrine\Dbal\QueryPlatform\SqlQueryPlatform;
 use Rollerworks\Component\Search\Exception\BadMethodCallException;
-use Rollerworks\Component\Search\FieldSet;
 use Rollerworks\Component\Search\SearchCondition;
 
 /**
@@ -40,108 +36,32 @@ use Rollerworks\Component\Search\SearchCondition;
  *    they receive the db-type and connection information for the conversion process.
  *  * Conversions apply at the SQL level, meaning they must be platform specific.
  *  * SQL conversions must be properly escaped to prevent SQL injections.
- *
- * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
 final class SqlConditionGenerator implements ConditionGenerator
 {
-    /**
-     * @var SearchCondition
-     */
-    private $searchCondition;
+    private QueryBuilder $qb;
+    private SearchCondition $searchCondition;
+    private FieldConfigurationSet $fieldsConfig;
+    private bool $isApplied = false;
 
-    /**
-     * @var FieldSet
-     */
-    private $fieldSet;
-
-    /**
-     * @var string
-     */
-    private $whereClause;
-
-    /**
-     * @var array[]
-     */
-    private $fields = [];
-
-    /**
-     * @var Connection
-     */
-    private $connection;
-
-    /**
-     * @var ArrayCollection
-     */
-    private $parameters;
-
-    public function __construct(Connection $connection, SearchCondition $searchCondition)
+    public function __construct(QueryBuilder $queryBuilder, SearchCondition $searchCondition)
     {
+        $this->qb = $queryBuilder;
         $this->searchCondition = $searchCondition;
-        $this->fieldSet = $searchCondition->getFieldSet();
-        $this->connection = $connection;
-        $this->parameters = new ArrayCollection();
+        $this->fieldsConfig = new FieldConfigurationSet($searchCondition->getFieldSet());
     }
 
     public function setField(string $fieldName, string $column, string $alias = null, string $type = 'string'): self
     {
-        if ($this->whereClause) {
+        if ($this->isApplied) {
             throw new BadMethodCallException(
-                'ConditionGenerator configuration methods cannot be accessed anymore once the where-clause is generated.'
+                'ConditionGenerator configuration cannot be changed anymore once the condition is applied.'
             );
         }
 
-        $mappingIdx = null;
-
-        if (mb_strpos($fieldName, '#') !== false) {
-            [$fieldName, $mappingIdx] = explode('#', $fieldName, 2);
-            unset($this->fields[$fieldName][null]);
-        } else {
-            $this->fields[$fieldName] = [];
-        }
-
-        $this->fields[$fieldName][$mappingIdx] = new QueryField(
-            $fieldName . ($mappingIdx !== null ? "#{$mappingIdx}" : ''),
-            $this->fieldSet->get($fieldName),
-            MappingType::getType($type),
-            $column,
-            $alias
-        );
+        $this->fieldsConfig->setField($fieldName, $column, $alias, $type);
 
         return $this;
-    }
-
-    public function getWhereClause(string $prependQuery = ''): string
-    {
-        if ($this->whereClause === null) {
-            $queryGenerator = new QueryGenerator($this->connection, $this->getQueryPlatform(), $this->fields);
-
-            $this->whereClause = $queryGenerator->getWhereClause($this->searchCondition);
-            $this->parameters = $queryGenerator->getParameters();
-        }
-
-        if ($this->whereClause !== '') {
-            return $prependQuery . $this->whereClause;
-        }
-
-        return '';
-    }
-
-    public function bindParameters(Statement $statement): void
-    {
-        foreach ($this->parameters as $name => [$value, $type]) {
-            $statement->bindValue($name, $value, $type);
-        }
-    }
-
-    public function getParameters(): ArrayCollection
-    {
-        return $this->parameters;
-    }
-
-    public function getFieldsMapping(): array
-    {
-        return $this->fields;
     }
 
     public function getSearchCondition(): SearchCondition
@@ -149,15 +69,50 @@ final class SqlConditionGenerator implements ConditionGenerator
         return $this->searchCondition;
     }
 
-    private function getQueryPlatform(): AbstractQueryPlatform
+    public function getQueryBuilder(): QueryBuilder
     {
-        $dbPlatform = ucfirst($this->connection->getDatabasePlatform()->getName());
+        return $this->qb;
+    }
+
+    public function apply(): void
+    {
+        if ($this->isApplied) {
+            trigger_error('SearchCondition was already applied. Ignoring operation.', \E_USER_WARNING);
+
+            return;
+        }
+
+        $this->isApplied = true;
+        $fields = $this->fieldsConfig->fields;
+
+        QueryGenerator::applySortingTo($this->searchCondition->getPrimaryCondition()?->getOrder(), $this->qb, $fields);
+        QueryGenerator::applySortingTo($this->searchCondition->getOrder(), $this->qb, $fields);
+
+        $connection = $this->qb->getConnection();
+        $generator = new QueryGenerator($connection, self::getQueryPlatform($connection), $fields);
+        $whereClause = $generator->getWhereClause($this->searchCondition);
+
+        if ($whereClause !== '') {
+            $this->qb->andWhere($whereClause);
+
+            foreach ($generator->getParameters() as $name => [$value, $type]) {
+                $this->qb->setParameter($name, $value, $type);
+            }
+        }
+    }
+
+    /**
+     * @internal
+     */
+    public static function getQueryPlatform(Connection $connection): AbstractQueryPlatform
+    {
+        $dbPlatform = ucfirst($connection->getDatabasePlatform()->getName());
         $platformClass = 'Rollerworks\\Component\\Search\\Doctrine\\Dbal\\QueryPlatform\\' . $dbPlatform . 'QueryPlatform';
 
         if (! class_exists($platformClass)) {
             $platformClass = SqlQueryPlatform::class;
         }
 
-        return new $platformClass($this->connection);
+        return new $platformClass($connection);
     }
 }

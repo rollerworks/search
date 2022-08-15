@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Doctrine\Dbal;
 
-use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Query\QueryBuilder;
 use Psr\SimpleCache\CacheInterface as Cache;
 use Rollerworks\Component\Search\SearchCondition;
 
@@ -36,16 +36,14 @@ final class DoctrineDbalFactory
      * Creates a new SqlConditionGenerator for the SearchCondition.
      *
      * Conversions are applied using the 'doctrine_dbal_conversion' option.
-     *
-     * @param Connection $connection Doctrine DBAL Connection
      */
-    public function createConditionGenerator(Connection $connection, SearchCondition $searchCondition): ConditionGenerator
+    public function createConditionGenerator(QueryBuilder $queryBuilder, SearchCondition $searchCondition): ConditionGenerator
     {
-        return new SqlConditionGenerator($connection, $searchCondition);
+        return new SqlConditionGenerator($queryBuilder, $searchCondition);
     }
 
     /**
-     * Creates a new CachedConditionGenerator instance for the given ConditionGenerator.
+     * Creates a new CachedConditionGenerator for the SearchCondition.
      *
      * Note: When no cache driver was configured the original ConditionGenerator
      * is returned instead.
@@ -54,12 +52,12 @@ final class DoctrineDbalFactory
      *                                    the driver supports TTL then the library may set a default value
      *                                    for it or let the driver take care of that.
      */
-    public function createCachedConditionGenerator(ConditionGenerator $conditionGenerator, $ttl = 0): ConditionGenerator
+    public function createCachedConditionGenerator(QueryBuilder $queryBuilder, SearchCondition $searchCondition, $ttl = 0): ConditionGenerator
     {
         if ($this->cacheDriver === null) {
-            return $conditionGenerator;
+            return new SqlConditionGenerator($queryBuilder, $searchCondition);
         }
 
-        return new CachedConditionGenerator($conditionGenerator, $this->cacheDriver, $ttl);
+        return new CachedConditionGenerator($queryBuilder, $searchCondition, $this->cacheDriver, $ttl);
     }
 }

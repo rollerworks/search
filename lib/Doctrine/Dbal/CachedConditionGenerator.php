@@ -13,14 +13,15 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Doctrine\Dbal;
 
-use Doctrine\DBAL\Statement;
+use Doctrine\DBAL\Query\QueryBuilder;
 use Psr\SimpleCache\CacheInterface as Cache;
+use Rollerworks\Component\Search\Doctrine\Dbal\Query\QueryGenerator;
 use Rollerworks\Component\Search\SearchCondition;
 
 /**
  * Handles caching of a Doctrine DBAL ConditionGenerator.
  *
- * Instead of using the ConditionGenerator directly you should use the
+ * Instead of using the ConditionGenerator directly you use the
  * CachedConditionGenerator as all related calls are delegated.
  *
  * The cache-key is a hashed (sha256) combination of the SearchCondition
@@ -28,106 +29,74 @@ use Rollerworks\Component\Search\SearchCondition;
  *
  * Caution: Any noticeable changes to your (FieldSet's) configuration
  * should purge all cached entries.
- *
- * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
 final class CachedConditionGenerator extends AbstractCachedConditionGenerator implements ConditionGenerator
 {
-    /**
-     * @var ConditionGenerator
-     */
-    private $conditionGenerator;
+    private QueryBuilder $qb;
+    private FieldConfigurationSet $fieldsConfig;
 
     /**
-     * @var string
+     * @param mixed|null $ttl
      */
-    private $whereClause;
-
-    /**
-     * @param ConditionGenerator $conditionGenerator The actual ConditionGenerator to use when no cache exists
-     * @param mixed|null         $ttl
-     */
-    public function __construct(ConditionGenerator $conditionGenerator, Cache $cacheDriver, $ttl = null)
+    public function __construct(QueryBuilder $queryBuilder, SearchCondition $searchCondition, Cache $cacheDriver, $ttl = null)
     {
-        parent::__construct($cacheDriver, $ttl);
-        $this->conditionGenerator = $conditionGenerator;
-    }
+        parent::__construct($cacheDriver, $searchCondition, $ttl);
 
-    /**
-     * @see SqlConditionGenerator::getWhereClause()
-     *
-     * @param string $prependQuery Prepends this string to the where-clause
-     *                             (" WHERE " or " AND " for example)
-     */
-    public function getWhereClause(string $prependQuery = ''): string
-    {
-        if ($this->whereClause === null) {
-            $cacheKey = $this->getCacheKey();
-            $cached = $this->getFromCache($cacheKey);
-
-            if ($cached !== null) {
-                $this->whereClause = $cached[0];
-                $this->parameters = $cached[1];
-            } else {
-                $this->whereClause = $this->conditionGenerator->getWhereClause();
-                $this->parameters = $this->conditionGenerator->getParameters();
-
-                $this->cacheDriver->set(
-                    $cacheKey,
-                    [$this->whereClause, $this->packParameters($this->parameters)],
-                    $this->cacheLifeTime
-                );
-            }
-        }
-
-        if ($this->whereClause !== '') {
-            return $prependQuery . $this->whereClause;
-        }
-
-        return '';
-    }
-
-    public function bindParameters(Statement $statement): void
-    {
-        foreach ($this->parameters as $name => [$value, $type]) {
-            $statement->bindValue($name, $value, $type);
-        }
-    }
-
-    public function getSearchCondition(): SearchCondition
-    {
-        return $this->conditionGenerator->getSearchCondition();
+        $this->qb = $queryBuilder;
+        $this->fieldsConfig = new FieldConfigurationSet($searchCondition->getFieldSet());
     }
 
     public function setField(string $fieldName, string $column, string $alias = null, string $type = 'string')
     {
-        $this->conditionGenerator->setField($fieldName, $column, $alias, $type);
+        $this->fieldsConfig->setField($fieldName, $column, $alias, $type);
 
         return $this;
     }
 
-    public function getFieldsMapping(): array
+    public function apply(): void
     {
-        return $this->conditionGenerator->getFieldsMapping();
-    }
+        if ($this->isApplied) {
+            trigger_error('SearchCondition was already applied. Ignoring operation.', \E_USER_WARNING);
 
-    private function getCacheKey(): string
-    {
-        if ($this->cacheKey === null) {
-            $searchCondition = $this->conditionGenerator->getSearchCondition();
-
-            $this->cacheKey = hash(
-                'sha256',
-                $searchCondition->getFieldSet()->getSetName() .
-                "\n" .
-                serialize($searchCondition->getValuesGroup()) .
-                "\n" .
-                serialize($searchCondition->getPrimaryCondition()) .
-                "\n" .
-                serialize($this->conditionGenerator->getFieldsMapping())
-            );
+            return;
         }
 
-        return $this->cacheKey;
+        $this->isApplied = true;
+
+        $fields = $this->fieldsConfig->fields;
+        $cacheKey = $this->getCacheKey($fields);
+        $cached = $this->getFromCache($cacheKey);
+
+        // Note that ordering is not part of the cache as this only applies at the root level
+        // And is handled by QueryBuilder itself, making it possible to reuse the same condition
+        // with a different ordering.
+
+        if ($cached !== null) {
+            [$whereClause, $parameters] = $cached;
+        } else {
+            $connection = $this->qb->getConnection();
+            $generator = new QueryGenerator($connection, SqlConditionGenerator::getQueryPlatform($connection), $fields);
+
+            $whereClause = $generator->getWhereClause($this->searchCondition);
+            $parameters = $generator->getParameters();
+
+            $this->storeInCache($whereClause, $cacheKey, $parameters);
+        }
+
+        QueryGenerator::applySortingTo($this->searchCondition->getPrimaryCondition()?->getOrder(), $this->qb, $fields);
+        QueryGenerator::applySortingTo($this->searchCondition->getOrder(), $this->qb, $fields);
+
+        if ($whereClause !== '') {
+            $this->qb->andWhere($whereClause);
+
+            foreach ($parameters as $name => [$value, $type]) {
+                $this->qb->setParameter($name, $value, $type);
+            }
+        }
+    }
+
+    public function getQueryBuilder(): QueryBuilder
+    {
+        return $this->qb;
     }
 }

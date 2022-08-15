@@ -13,8 +13,7 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Doctrine\Dbal;
 
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\DBAL\Statement;
+use Doctrine\DBAL\Query\QueryBuilder;
 use Rollerworks\Component\Search\Exception\BadMethodCallException;
 use Rollerworks\Component\Search\Exception\UnknownFieldException;
 use Rollerworks\Component\Search\SearchCondition;
@@ -31,29 +30,9 @@ use Rollerworks\Component\Search\SearchCondition;
 interface ConditionGenerator
 {
     /**
-     * Returns the generated where-clause.
-     *
-     * The Where-clause is wrapped inside a group so it can be safely used
-     * with other conditions.
-     *
-     * @param string $prependQuery Prepend before the generated WHERE clause
-     *                             Eg. " WHERE " or " AND ", ignored when WHERE
-     *                             clause is empty.
+     * Apply the SearchCondition to the QueryBuilder (as an AND-WHERE).
      */
-    public function getWhereClause(string $prependQuery = ''): string;
-
-    /**
-     * Binds the WHERE-statement parameters at the Doctrine DBAL Statement.
-     *
-     * Note: PDO directly is not supported due to a limitation in how
-     * types are handled.
-     */
-    public function bindParameters(Statement $statement): void;
-
-    /**
-     * Returns the value-parameters (to be used when executing).
-     */
-    public function getParameters(): ArrayCollection;
+    public function apply(): void;
 
     /**
      * Set the search field to database table-column mapping configuration.
@@ -86,15 +65,7 @@ interface ConditionGenerator
      */
     public function setField(string $fieldName, string $column, string $alias = null, string $type = 'string');
 
-    /**
-     * Returns the assigned SearchCondition.
-     */
     public function getSearchCondition(): SearchCondition;
 
-    /**
-     * Returns the configured field to columns mapping.
-     *
-     * @return array[] [field-name][mapping-name] => {QueryField}
-     */
-    public function getFieldsMapping(): array;
+    public function getQueryBuilder(): QueryBuilder;
 }

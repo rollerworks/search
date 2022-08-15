@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Tests\Doctrine\Dbal\Functional\Extension\Conversion;
 
+use Doctrine\DBAL\Query\QueryBuilder;
 use Doctrine\DBAL\Schema\Schema as DbSchema;
 use Money\Money;
 use Rollerworks\Component\Search\Doctrine\Dbal\ConditionGenerator;
@@ -55,9 +56,12 @@ final class MoneyValueConversionTest extends FunctionalDbalTestCase
         ];
     }
 
-    protected function getQuery()
+    protected function getQuery(): QueryBuilder
     {
-        return 'SELECT id FROM product AS p WHERE ';
+        return $this->conn->createQueryBuilder()
+            ->select('id')
+            ->from('product', 'p')
+        ;
     }
 
     protected function configureConditionGenerator(ConditionGenerator $conditionGenerator): void

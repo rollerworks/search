@@ -16,28 +16,15 @@ namespace Rollerworks\Component\Search\Doctrine\Dbal;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\DBAL\Types\Type;
 use Psr\SimpleCache\CacheInterface as Cache;
+use Rollerworks\Component\Search\SearchCondition;
 
 abstract class AbstractCachedConditionGenerator
 {
-    /**
-     * @var Cache
-     */
-    protected $cacheDriver;
-
-    /**
-     * @var \DateInterval|int|null
-     */
-    protected $cacheLifeTime;
-
-    /**
-     * @var string|null
-     */
-    protected $cacheKey;
-
-    /**
-     * @var ArrayCollection
-     */
-    protected $parameters;
+    protected Cache $cacheDriver;
+    protected int|null|\DateInterval $cacheLifeTime;
+    protected SearchCondition $searchCondition;
+    protected ?string $cacheKey = null;
+    protected bool $isApplied = false;
 
     /**
      * @param Cache                  $cacheDriver PSR-16 SimpleCache instance. Use a custom pool to ease
@@ -46,11 +33,37 @@ abstract class AbstractCachedConditionGenerator
      *                                            the driver supports TTL then the library may set a default
      *                                            value for it or let the driver take care of that.
      */
-    protected function __construct(Cache $cacheDriver, $ttl = null)
+    protected function __construct(Cache $cacheDriver, SearchCondition $searchCondition, $ttl = null)
     {
         $this->cacheDriver = $cacheDriver;
         $this->cacheLifeTime = $ttl;
-        $this->parameters = new ArrayCollection();
+        $this->searchCondition = $searchCondition;
+    }
+
+    public function getSearchCondition(): SearchCondition
+    {
+        return $this->searchCondition;
+    }
+
+    protected function getCacheKey(array $config, string $prefix = 'sql'): string
+    {
+        if ($this->cacheKey === null) {
+            $searchCondition = $this->getSearchCondition();
+
+            $this->cacheKey = hash(
+                'sha256',
+                $prefix .
+                $searchCondition->getFieldSet()->getSetName() .
+                "\n" .
+                serialize($searchCondition->getValuesGroup()) .
+                "\n" .
+                serialize($searchCondition->getPrimaryCondition()?->getValuesGroup()) .
+                "\n" .
+                serialize($config)
+            );
+        }
+
+        return $this->cacheKey;
     }
 
     protected function getFromCache(string $cacheKey): ?array
@@ -65,12 +78,12 @@ abstract class AbstractCachedConditionGenerator
             $cached[1] = $this->unpackParameters($cached[1]);
 
             return $cached;
-        } catch (\Throwable $e) {
+        } catch (\Throwable) {
             return null;
         }
     }
 
-    protected function unpackParameters(array $provided): ArrayCollection
+    private function unpackParameters(array $provided): ArrayCollection
     {
         $parameters = new ArrayCollection();
 
@@ -81,19 +94,27 @@ abstract class AbstractCachedConditionGenerator
         return $parameters;
     }
 
-    protected function packParameters(ArrayCollection $provided): array
+    protected function storeInCache(string $whereClause, string $cacheKey, ArrayCollection $parameters): void
+    {
+        if ($whereClause === '') {
+            return;
+        }
+
+        $this->cacheDriver->set(
+            $cacheKey,
+            [$whereClause, $this->packParameters($parameters)],
+            $this->cacheLifeTime
+        );
+    }
+
+    private function packParameters(ArrayCollection $provided): array
     {
         $parameters = [];
 
         foreach ($provided as $name => [$value, $type]) {
-            $parameters[$name] = [$value, $type === null ? null : $type->getName()];
+            $parameters[$name] = [$value, $type?->getName()];
         }
 
         return $parameters;
-    }
-
-    public function getParameters(): ArrayCollection
-    {
-        return $this->parameters;
     }
 }
