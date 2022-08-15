@@ -309,7 +309,7 @@ final class CachedDqlConditionGeneratorTest extends OrmTestCase
 
     private function createCachedConditionGenerator(CacheInterface $cacheDriver, SearchCondition $searchCondition, ?QueryBuilder $qb = null): CachedDqlConditionGenerator
     {
-        $conditionGenerator = new CachedDqlConditionGenerator(($qb ?? $this->query), $searchCondition, $cacheDriver, 60);
+        $conditionGenerator = new CachedDqlConditionGenerator($qb ?? $this->query, $searchCondition, $cacheDriver, 60);
         $conditionGenerator->setDefaultEntity(self::INVOICE_CLASS, 'I');
         $conditionGenerator->setField('id', 'id', null, null, 'smallint');
         $conditionGenerator->setField('@id', 'id');

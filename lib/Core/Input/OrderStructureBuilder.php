@@ -187,7 +187,7 @@ final class OrderStructureBuilder implements StructureBuilder
         }
 
         if ($this->inputTransformer === false) {
-            if ($value !== null && ! is_scalar($value)) {
+            if ($value !== null && ! \is_scalar($value)) {
                 $e = new \RuntimeException(
                     sprintf(
                         'Norm value of type %s is not a scalar value or null and not cannot be ' .

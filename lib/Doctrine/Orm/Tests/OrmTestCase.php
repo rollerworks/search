@@ -206,7 +206,7 @@ abstract class OrmTestCase extends DbalTestCase
         $platform = $this->conn->getDatabasePlatform();
 
         foreach ($conditionGenerator->getParameters() as $name => [$value, $type]) {
-            $paramsString .= sprintf("%s = '%s'\n", $name, $type === null ? (is_scalar($value) ? (string) $value : get_debug_type($value)) : $type->convertToDatabaseValue($value, $platform));
+            $paramsString .= sprintf("%s = '%s'\n", $name, $type === null ? (\is_scalar($value) ? (string) $value : get_debug_type($value)) : $type->convertToDatabaseValue($value, $platform));
         }
 
         $query = $qb->getQuery();

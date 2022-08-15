@@ -145,7 +145,7 @@ final class SearchConditionListener
                 throw new RuntimeException(sprintf('Processor option "%s" is not supported for Resource "%s".', $option, $resourceClass));
             }
 
-            if (is_scalar($value) && ctype_digit((string) $value)) {
+            if (\is_scalar($value) && ctype_digit((string) $value)) {
                 $value = (int) $value;
             }
 

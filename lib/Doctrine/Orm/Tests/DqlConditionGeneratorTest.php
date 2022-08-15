@@ -108,7 +108,7 @@ final class DqlConditionGeneratorTest extends OrmTestCase
                          INNER JOIN customers c1_ ON i0_.customer = c1_.id
                 WHERE (((c1_.id = ? OR c1_.id = ?)))
                 SQL
-,
+            ,
             [
                 ':search_0' => [2, Type::getType('integer')],
                 ':search_1' => [5, Type::getType('integer')],
@@ -150,7 +150,7 @@ final class DqlConditionGeneratorTest extends OrmTestCase
                         INNER JOIN customers c1_ ON i0_.customer = c1_.id
                 WHERE (((c1_.id = ? OR c1_.id = ?)) AND ((i0_.status = ? OR i0_.status = ?)))
                 SQL
-,
+            ,
             [
                 ':search_0' => [2, Type::getType('integer')],
                 ':search_1' => [5, Type::getType('integer')],

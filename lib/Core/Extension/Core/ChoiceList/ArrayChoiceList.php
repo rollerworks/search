@@ -214,7 +214,7 @@ class ArrayChoiceList implements ChoiceList
                 continue;
             }
 
-            if (! is_scalar($choice)) {
+            if (! \is_scalar($choice)) {
                 return false;
             }
 

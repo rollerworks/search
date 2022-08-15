@@ -43,7 +43,7 @@ abstract class AbstractExporter implements ConditionExporter
         // Scalar values should be converted to strings to
         // facilitate differentiation between empty ("") and zero (0).
         if ($value === null || ! $transformer) {
-            if ($value !== null && ! is_scalar($value)) {
+            if ($value !== null && ! \is_scalar($value)) {
                 throw new \RuntimeException(
                     sprintf(
                         'Model value of type %s is not a scalar value or null and not cannot be ' .
@@ -71,7 +71,7 @@ abstract class AbstractExporter implements ConditionExporter
         // Scalar values should be converted to strings to
         // facilitate differentiation between empty ("") and zero (0).
         if ($value === null || ! $transformer) {
-            if ($value !== null && ! is_scalar($value)) {
+            if ($value !== null && ! \is_scalar($value)) {
                 throw new \RuntimeException(
                     sprintf(
                         'Model value of type %s is not a scalar value or null and not cannot be ' .

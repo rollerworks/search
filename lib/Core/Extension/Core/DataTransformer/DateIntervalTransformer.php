@@ -61,7 +61,7 @@ final class DateIntervalTransformer implements DataTransformer
      */
     public function reverseTransform($value): ?CarbonInterval
     {
-        if (! is_scalar($value)) {
+        if (! \is_scalar($value)) {
             throw new TransformationFailedException('Expected a scalar.');
         }
 

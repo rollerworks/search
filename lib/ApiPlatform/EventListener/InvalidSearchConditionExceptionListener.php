@@ -43,7 +43,8 @@ final class InvalidSearchConditionExceptionListener
 
         $format = ErrorFormatGuesser::guessErrorFormat($event->getRequest(), $this->errorFormats);
 
-        $event->setResponse(new Response(
+        $event->setResponse(
+            new Response(
                 $this->serializer->serialize($exception, $format['key']),
                 Response::HTTP_BAD_REQUEST,
                 [
@@ -51,6 +52,7 @@ final class InvalidSearchConditionExceptionListener
                     'X-Content-Type-Options' => 'nosniff',
                     'X-Frame-Options' => 'deny',
                 ]
-        ));
+            )
+        );
     }
 }

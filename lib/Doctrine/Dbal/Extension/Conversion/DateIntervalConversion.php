@@ -62,7 +62,7 @@ final class DateIntervalConversion implements ValueConversion
                 $value = mb_strtoupper(rtrim($value, 's'));
             }
 
-            return implode(($negative ? ' - INTERVAL ' : ' + INTERVAL '), $units);
+            return implode($negative ? ' - INTERVAL ' : ' + INTERVAL ', $units);
         };
 
         // Note. Don't use parameters here, values are already pre-formatted.

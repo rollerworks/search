@@ -326,7 +326,7 @@ abstract class StringInput extends AbstractInput
 
                     break;
 
-                    case StringLexer::PATTERN_MATCH:
+                case StringLexer::PATTERN_MATCH:
                     [$caseInsensitive, $type, $value] = $this->lexer->patternMatchValue();
                     $structureBuilder->patterMatchValue($type, $value, $caseInsensitive, [$pathVal, '', '']);
 

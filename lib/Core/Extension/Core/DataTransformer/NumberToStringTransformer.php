@@ -59,7 +59,7 @@ class NumberToStringTransformer extends NumberToLocalizedStringTransformer
      */
     public function reverseTransform($value)
     {
-        if (! is_scalar($value)) {
+        if (! \is_scalar($value)) {
             throw new TransformationFailedException('Expected a scalar.');
         }
 

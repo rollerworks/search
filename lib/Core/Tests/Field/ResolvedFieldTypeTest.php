@@ -269,10 +269,7 @@ final class ResolvedFieldTypeTest extends TestCase
      */
     private function getMockFieldType(string $typeClass = AbstractFieldType::class)
     {
-        return $this->getMockBuilder($typeClass)
-            ->setMethods(['configureOptions', 'buildView', 'buildType', 'getBlockPrefix'])
-            ->getMock()
-        ;
+        return $this->createPartialMock($typeClass, ['configureOptions', 'buildView', 'buildType', 'getBlockPrefix']);
     }
 
     /**
@@ -280,9 +277,7 @@ final class ResolvedFieldTypeTest extends TestCase
      */
     private function getMockFieldTypeExtension()
     {
-        return $this->getMockBuilder(AbstractFieldTypeExtension::class)
-            ->setMethods(['getExtendedType', 'configureOptions', 'buildView', 'buildType']
-        )->getMock();
+        return $this->createPartialMock(AbstractFieldTypeExtension::class, ['getExtendedType', 'configureOptions', 'buildView', 'buildType']);
     }
 
     /**

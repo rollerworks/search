@@ -255,7 +255,7 @@ class ConditionStructureBuilder implements StructureBuilder
                 ConditionErrorMessage::withMessageTemplate(
                     $path[0] . $path[1],
                     'Unknown Comparison operator "{{ operator }}".',
-                    ['{{ operator }}' => is_scalar($operator) ? $operator : \gettype($operator)]
+                    ['{{ operator }}' => \is_scalar($operator) ? $operator : \gettype($operator)]
                 )
             );
             $operator = '<>';
@@ -279,7 +279,7 @@ class ConditionStructureBuilder implements StructureBuilder
         $this->increaseValuesCount($path[0]);
         $this->assertAcceptsType(PatternMatch::class);
 
-        if (! is_scalar($value)) {
+        if (! \is_scalar($value)) {
             $this->addError(new ConditionErrorMessage($path[0] . $path[1], 'PatternMatch value must a string.'));
 
             $valid = false;
@@ -338,7 +338,7 @@ class ConditionStructureBuilder implements StructureBuilder
         }
 
         if ($this->inputTransformer === false) {
-            if ($value !== null && ! is_scalar($value)) {
+            if ($value !== null && ! \is_scalar($value)) {
                 $e = new \RuntimeException(
                     sprintf(
                         'Norm value of type %s is not a scalar value or null and not cannot be ' .

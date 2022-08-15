@@ -66,7 +66,7 @@ class AppKernel extends Kernel
     {
         $bundles = [
             new FrameworkBundle(),
-            //new \Symfony\Bundle\TwigBundle\TwigBundle(),
+            // new \Symfony\Bundle\TwigBundle\TwigBundle(),
 
             new RollerworksSearchBundle(),
         ];

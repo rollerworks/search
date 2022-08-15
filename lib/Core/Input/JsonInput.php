@@ -210,7 +210,7 @@ final class JsonInput extends AbstractInput
                 $this->structureBuilder->patterMatchValue(
                     $matcher['type'],
                     $matcher['value'],
-                    ($matcher['case-insensitive'] ?? false),
+                    $matcher['case-insensitive'] ?? false,
                     ["[pattern-matchers][{$index}]", '[value]', '[type]']
                 );
             }

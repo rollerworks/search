@@ -28,7 +28,7 @@ final class ConditionStructureByViewBuilder extends ConditionStructureBuilder
         }
 
         if (! $this->inputTransformer) {
-            if ($value !== null && ! is_scalar($value)) {
+            if ($value !== null && ! \is_scalar($value)) {
                 $e = new \RuntimeException(
                     sprintf(
                         'View value of type %s is not a scalar value or null and not cannot be ' .
