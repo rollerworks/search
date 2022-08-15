@@ -1,4 +1,4 @@
-QA_DOCKER_IMAGE=jakzal/phpqa:1.59.1-php7.4-alpine
+QA_DOCKER_IMAGE=jakzal/phpqa:1.77-php8.1-alpine
 QA_DOCKER_COMMAND=docker run --init -t --rm --user "$(shell id -u):$(shell id -g)" --volume /tmp/tmp-phpqa-$(shell id -u):/tmp --volume "$(shell pwd):/project" --workdir /project ${QA_DOCKER_IMAGE}
 
 dist: install cs-full phpstan test
@@ -31,10 +31,10 @@ cs: ensure
 	sh -c "${QA_DOCKER_COMMAND} php-cs-fixer fix -vvv --diff"
 
 cs-full: ensure
-	sh -c "${QA_DOCKER_COMMAND} php-cs-fixer fix -vvv --using-cache=false --diff"
+	sh -c "${QA_DOCKER_COMMAND} php-cs-fixer fix -vvv --using-cache=no --diff"
 
 cs-full-check: ensure
-	sh -c "${QA_DOCKER_COMMAND} php-cs-fixer fix -vvv --using-cache=false --diff --dry-run"
+	sh -c "${QA_DOCKER_COMMAND} php-cs-fixer fix -vvv --using-cache=no --diff --dry-run"
 
 ##
 # Special operations
