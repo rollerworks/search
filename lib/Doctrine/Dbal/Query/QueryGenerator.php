@@ -15,9 +15,12 @@ namespace Rollerworks\Component\Search\Doctrine\Dbal\Query;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Query\QueryBuilder;
 use Rollerworks\Component\Search\Doctrine\Dbal\ConversionHints;
 use Rollerworks\Component\Search\Doctrine\Dbal\QueryPlatform\AbstractQueryPlatform;
+use Rollerworks\Component\Search\Exception\BadMethodCallException;
 use Rollerworks\Component\Search\SearchCondition;
+use Rollerworks\Component\Search\SearchOrder;
 use Rollerworks\Component\Search\Value\Compare;
 use Rollerworks\Component\Search\Value\ExcludedRange;
 use Rollerworks\Component\Search\Value\PatternMatch;
@@ -55,6 +58,28 @@ final class QueryGenerator
         $this->connection = $connection;
         $this->queryPlatform = $queryPlatform;
         $this->fields = $fields;
+    }
+
+    /**
+     * @param array<string, array<string|null, QueryField>> $fields
+     */
+    public static function applySortingTo(?SearchOrder $order, QueryBuilder $qb, array $fields): void
+    {
+        if ($order === null) {
+            return;
+        }
+
+        foreach ($order->getFields() as $fieldName => $direction) {
+            if (! isset($fields[$fieldName])) {
+                continue;
+            }
+
+            if (\count($fields[$fieldName]) > 1) {
+                throw new BadMethodCallException(sprintf('Field "%s" is registered as multiple mapping and cannot be used for sorting.', $fieldName));
+            }
+
+            $qb->addOrderBy($fields[$fieldName][null]->column, mb_strtoupper($direction));
+        }
     }
 
     public function getWhereClause(SearchCondition $searchCondition): string

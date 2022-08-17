@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Tests\Doctrine\Dbal\Functional;
 
+use Doctrine\DBAL\Query\QueryBuilder;
 use Doctrine\DBAL\Schema\Schema as DbSchema;
 use Rollerworks\Component\Search\Doctrine\Dbal\ConditionGenerator;
 use Rollerworks\Component\Search\Extension\Core\Type\BirthdayType;
@@ -184,20 +185,14 @@ final class SqlConditionGeneratorResultsTest extends FunctionalDbalTestCase
         ];
     }
 
-    protected function getQuery()
+    protected function getQuery(): QueryBuilder
     {
-        return <<<'SQL'
-            SELECT
-                *, i.id AS id
-            FROM
-                invoice AS i
-            JOIN
-                customer AS c ON i.customer = c.id
-            LEFT JOIN
-                invoice_details AS ir ON ir.invoice = i.id
-            WHERE
-
-            SQL;
+        return $this->conn->createQueryBuilder()
+            ->select('*', 'i.id AS id')
+            ->from('invoice', 'i')
+            ->join('i', 'customer', 'c', 'i.customer = c.id')
+            ->leftJoin('i', 'invoice_details', 'ir', 'ir.invoice = i.id')
+        ;
     }
 
     protected function configureConditionGenerator(ConditionGenerator $conditionGenerator): void
@@ -366,7 +361,7 @@ final class SqlConditionGeneratorResultsTest extends FunctionalDbalTestCase
                 echo 'Please install symfony/var-dumper as dev-requirement to get a readable structure.' . \PHP_EOL;
 
                 // Don't use var-dump or print-r as this crashes php...
-                echo \get_class($e) . '::' . (string) $e;
+                echo \get_class($e) . '::' . $e;
             }
 
             self::fail('Condition contains errors.');
@@ -390,7 +385,7 @@ final class SqlConditionGeneratorResultsTest extends FunctionalDbalTestCase
                 echo 'Please install symfony/var-dumper as dev-requirement to get a readable structure.' . \PHP_EOL;
 
                 // Don't use var-dump or print-r as this crashes php...
-                echo \get_class($e) . '::' . (string) $e;
+                echo \get_class($e) . '::' . $e;
             }
 
             self::fail('Condition contains errors.');

@@ -5,6 +5,38 @@ UPGRADE FROM 2.0-BETA2 to 2.0-BETA3
  
  * Support for Symfony 5 was dropped.
 
+### Doctrine DBAL 
+
+  * Support for using a query as string was removed, a DBAL QueryBuilder
+    is now required to be passed to the generator.
+
+  * The `DoctrineDbalFactory::createCachedConditionGenerator()` method now 
+    requires a DBAL QueryBuilder and SearchCondition is provided instead
+    of a ``ConditionGenerator`` instance.
+ 
+  * The `ConditionGenerator` now longer provides access to the generated
+    condition and parameters. These are applied automatically when calling `apply()`.
+
+    ```php
+    // Doctrine\DBAL\Query\QueryBuilder object
+    $qb = $connection->createQueryBuilder();
+
+    // Rollerworks\Component\Search\SearchCondition object
+    $searchCondition = ...;
+
+    $conditionGenerator = $doctrineDbalFactory->createConditionGenerator($qb, $searchCondition);
+
+    // Set fields mapping
+    // ....
+
+    // Apply the condition (with ordering, if any) to the QueryBuilder
+    $conditionGenerator->apply();
+
+    // Get all the records
+    // See http://docs.doctrine-project.org/projects/doctrine-dbal/en/latest/reference/data-retrieval-and-manipulation.html#data-retrieval
+    $result = $qb->execute();
+    ````
+
 UPGRADE FROM 2.0-BETA1 to 2.0-BETA2
 ===================================
 

@@ -16,12 +16,12 @@ namespace Rollerworks\Component\Search\Tests\Doctrine\Orm;
 use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\QueryBuilder;
 use PHPUnit\Framework\MockObject\MockObject;
+use Prophecy\Argument;
 use Psr\SimpleCache\CacheInterface;
 use Rollerworks\Component\Search\Doctrine\Orm\CachedDqlConditionGenerator;
 use Rollerworks\Component\Search\Doctrine\Orm\ConditionGenerator;
 use Rollerworks\Component\Search\SearchCondition;
 use Rollerworks\Component\Search\SearchConditionBuilder;
-use Rollerworks\Component\Search\SearchPrimaryCondition;
 use Rollerworks\Component\Search\Tests\Doctrine\Orm\Fixtures\Entity\ECommerceInvoice;
 
 /**
@@ -46,7 +46,7 @@ final class CachedDqlConditionGeneratorTest extends OrmTestCase
      */
     protected $cacheDriver;
 
-    public const CACHE_KEY = 'a862f6cc2c2273dd537ef9404a5cf3f6bc8c9fa8183492d13d1559339c8235bf';
+    public const CACHE_KEY = '49dd08f83849fefcd0b03b23e0cd8d877458275a175bc3dfb113af70e5f3da9b';
 
     /** @test */
     public function get_where_clause_no_cache(): void
@@ -136,9 +136,8 @@ final class CachedDqlConditionGeneratorTest extends OrmTestCase
         // Second-key is used for (non-empty) primary-condition
         // Note: ordering doesn't change the cache-key as ordering is applied independently.
         $this->cacheDriver
-            ->expects(self::any())
             ->method('get')
-            ->with(self::matchesRegularExpression('/^' . self::CACHE_KEY . '|2572233a315f25e5bc6603ae17db405863603c0a61b9d780bf9f6d62a37350ce/'))
+            ->with(self::matchesRegularExpression('/^' . self::CACHE_KEY . '|15a1f8831f6a382bc75d64e67057d8fb03c7e10091d2606c13a7b2262edb24c2/'))
             ->willReturn(["me = 'foo'", [':search' => [1, 'integer']]])
         ;
 
@@ -212,7 +211,7 @@ final class CachedDqlConditionGeneratorTest extends OrmTestCase
         $this->cacheDriver
             ->expects(self::once())
             ->method('get')
-            ->with('0bd93612c80eb441a04867c5963104aa1b4dd33cf0afa555e958bf696c14e0b0')
+            ->with('04986d7a8b84955df831caeb6b575793a4850fa402f92c25294df1ffc7bb9dc8')
             ->willReturn(null)
         ;
 
@@ -241,8 +240,9 @@ final class CachedDqlConditionGeneratorTest extends OrmTestCase
     public function with_existing_caches_and_primary_cond(): void
     {
         $cacheDriverProphecy = $this->prophesize(CacheInterface::class);
-        $cacheDriverProphecy->get('94006677e4dd617091945f6f4210a5cefb9e78d84fa3292c126f501523b17b10')->willReturn(["me = 'foo'", [':search_1' => ['duck', 'text']]])->shouldBeCalled();
-        $cacheDriverProphecy->get('d86dcae4d3eca451c2364158a3b0acf40b07402df80bdb42f4ed1b64c8621c67')->willReturn(["you = 'me' AND me = 'foo'", [':search_2' => ['roll', 'text']]])->shouldBeCalled();
+        $cacheDriverProphecy->get('1e18a18fce837f0b3fa15099fed7b4646fa6ac893d4c27a668016776742ff7eb')->willReturn(["me = 'foo'", [':search_1' => ['duck', 'text']]])->shouldBeCalled();
+        $cacheDriverProphecy->get('f8fc5f1054baca1f1de79b109150e1edbd002dda59f65d36c14c55ebd2054121')->willReturn(["you = 'me' AND me = 'foo'", [':search_2' => ['roll', 'text']]])->shouldBeCalled();
+        $cacheDriverProphecy->set(Argument::any(), Argument::any(), Argument::any())->shouldNotBeCalled();
         $cacheDriver = $cacheDriverProphecy->reveal();
 
         $searchCondition = SearchConditionBuilder::create($this->getFieldSet())
@@ -261,16 +261,13 @@ final class CachedDqlConditionGeneratorTest extends OrmTestCase
                 ->addSimpleValue(2)
                 ->addSimpleValue(5)
             ->end()
-        ->getSearchCondition()
-        ;
-
-        $searchCondition2->setPrimaryCondition(new SearchPrimaryCondition(
-            SearchConditionBuilder::create($this->getFieldSet())
-                ->field('customer')
+            ->primaryCondition()
+            ->field('customer')
                     ->addSimpleValue(2)
                 ->end()
-            ->getSearchCondition()->getValuesGroup())
-        );
+            ->end()
+        ->getSearchCondition()
+        ;
 
         $query2 = $this->createQuery();
         $cachedConditionGenerator2 = $this->createCachedConditionGenerator($cacheDriver, $searchCondition2, $query2);

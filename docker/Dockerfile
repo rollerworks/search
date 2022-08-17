@@ -1,8 +1,8 @@
-FROM php:7.4-cli
+FROM php:8.0-cli
 
 ENV BUILD_DEPS="autoconf file g++ gcc libc-dev pkg-config re2c"
-ENV LIB_DEPS="git make unzip ca-certificates zlib1g-dev libzip-dev libpq5 postgresql-server-dev-11"
-ENV ICU_RELEASE=60.1
+ENV LIB_DEPS="git make unzip ca-certificates zlib1g-dev libzip-dev libpq5 postgresql-server-dev-13"
+ENV ICU_RELEASE=70.1
 ENV CXXFLAGS "--std=c++0x"
 
 RUN apt-get update && apt-get install -y --no-install-recommends $BUILD_DEPS $LIB_DEPS && rm -rf /var/lib/apt/lists/*
@@ -21,10 +21,6 @@ RUN ln -s /usr/bin/composer /usr/bin/composer.phar
 
 # https://getcomposer.org/doc/03-cli.md#composer-allow-superuser
 ENV COMPOSER_ALLOW_SUPERUSER 1
-# install Symfony Flex globally to speed up download of Composer packages (parallelized prefetching)
-RUN set -eux; \
-	composer global require "symfony/flex" --prefer-dist --no-progress --no-suggest --classmap-authoritative; \
-	composer clear-cache
 ENV PATH="${PATH}:/root/.composer/vendor/bin"
 
 WORKDIR /srv/www

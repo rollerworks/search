@@ -34,25 +34,27 @@ final class DoctrineDbalFactoryTest extends DbalTestCase
     /** @test */
     public function create_condition_generator(): void
     {
-        $connection = $this->getConnectionMock();
+        $queryBuilder = $this->getConnectionMock()->createQueryBuilder();
         $searchCondition = new SearchCondition(new GenericFieldSet([], 'invoice'), new ValuesGroup());
 
-        $conditionGenerator = $this->factory->createConditionGenerator($connection, $searchCondition);
+        $conditionGenerator = $this->factory->createConditionGenerator($queryBuilder, $searchCondition);
+        self::assertInstanceOf(SqlConditionGenerator::class, $conditionGenerator);
 
         self::assertSame($searchCondition, $conditionGenerator->getSearchCondition());
+        self::assertSame($queryBuilder, $conditionGenerator->getQueryBuilder());
     }
 
     /** @test */
     public function create_cache_condition_generator(): void
     {
-        $connection = $this->getConnectionMock();
+        $queryBuilder = $this->getConnectionMock()->createQueryBuilder();
         $searchCondition = new SearchCondition(new GenericFieldSet([], 'invoice'), new ValuesGroup());
 
-        $conditionGenerator = $this->factory->createConditionGenerator($connection, $searchCondition);
-        self::assertInstanceOf(SqlConditionGenerator::class, $conditionGenerator);
+        $conditionGenerator = $this->factory->createCachedConditionGenerator($queryBuilder, $searchCondition);
+        self::assertInstanceOf(CachedConditionGenerator::class, $conditionGenerator);
 
-        $cacheConditionGenerator = $this->factory->createCachedConditionGenerator($conditionGenerator);
-        self::assertInstanceOf(CachedConditionGenerator::class, $cacheConditionGenerator);
+        self::assertSame($searchCondition, $conditionGenerator->getSearchCondition());
+        self::assertSame($queryBuilder, $conditionGenerator->getQueryBuilder());
     }
 
     protected function setUp(): void

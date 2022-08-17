@@ -80,7 +80,6 @@ jobs:
                 name: Install Composer dependencies
                 run: |
                     rm -f composer.lock
-                    composer global require symfony/flex
                     composer install --no-progress --no-interaction --no-suggest --optimize-autoloader --ansi
 
             ## —— Tests ✅ ———————————————————————————————————————————————————————————
@@ -118,7 +117,6 @@ jobs:
                 name: Install Composer dependencies
                 run: |
                     rm -f composer.lock
-                    composer global require symfony/flex
                     composer install --no-progress --no-interaction --no-suggest --optimize-autoloader --ansi
 
             -

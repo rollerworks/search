@@ -44,26 +44,18 @@ class CachedDqlConditionGenerator extends AbstractCachedConditionGenerator imple
     private $fieldsConfig;
 
     /**
-     * @var SearchCondition
-     */
-    private $searchCondition;
-
-    /**
      * @var QueryBuilder
      */
     private $qb;
-
-    private $isApplied = false;
 
     /**
      * @param mixed|null $ttl
      */
     public function __construct(QueryBuilder $query, SearchCondition $searchCondition, Cache $cacheDriver, $ttl = null)
     {
-        parent::__construct($cacheDriver, $ttl);
+        parent::__construct($cacheDriver, $searchCondition, $ttl);
 
         $this->fieldsConfig = new FieldConfigBuilder($query->getEntityManager(), $searchCondition->getFieldSet());
-        $this->searchCondition = $searchCondition;
         $this->qb = $query;
     }
 
@@ -103,7 +95,7 @@ class CachedDqlConditionGenerator extends AbstractCachedConditionGenerator imple
 
         $this->isApplied = true;
 
-        $cacheKey = $this->getCacheKey();
+        $cacheKey = $this->getCacheKey($this->fieldsConfig->getFields(), 'dql');
         $cached = $this->getFromCache($cacheKey);
 
         // Note that ordering is not part of the cache as this only applies at the root level
@@ -117,52 +109,19 @@ class CachedDqlConditionGenerator extends AbstractCachedConditionGenerator imple
             $whereClause = $generator->getWhereClause();
             $parameters = $generator->getParameters();
 
-            if ($whereClause !== '') {
-                $this->cacheDriver->set(
-                    $cacheKey,
-                    [$whereClause, $this->packParameters($parameters)],
-                    $this->cacheLifeTime
-                );
-            }
+            $this->storeInCache($whereClause, $cacheKey, $parameters);
         }
 
-        if (null !== $primaryCondition = $this->searchCondition->getPrimaryCondition()) {
-            DqlConditionGenerator::applySortingTo($primaryCondition->getOrder(), $this->qb, $this->fieldsConfig);
-        }
-
+        DqlConditionGenerator::applySortingTo($this->searchCondition->getPrimaryCondition()?->getOrder(), $this->qb, $this->fieldsConfig);
         DqlConditionGenerator::applySortingTo($this->searchCondition->getOrder(), $this->qb, $this->fieldsConfig);
 
-        if ($whereClause === '') {
-            return;
+        if ($whereClause !== '') {
+            $this->qb->andWhere($whereClause);
+
+            foreach ($parameters as $name => [$value, $type]) {
+                $this->qb->setParameter($name, $value, $type);
+            }
         }
-
-        $this->qb->andWhere($whereClause);
-
-        foreach ($parameters as $name => [$value, $type]) {
-            $this->qb->setParameter($name, $value, $type);
-        }
-    }
-
-    private function getCacheKey(): string
-    {
-        if ($this->cacheKey === null) {
-            $searchCondition = $this->searchCondition;
-            $primaryCondition = $searchCondition->getPrimaryCondition();
-
-            $this->cacheKey = hash(
-                'sha256',
-                "dql\n" .
-                $searchCondition->getFieldSet()->getSetName() .
-                "\n" .
-                serialize($searchCondition->getValuesGroup()) .
-                "\n" .
-                serialize($primaryCondition ? $primaryCondition->getValuesGroup() : null) .
-                "\n" .
-                serialize($this->fieldsConfig->getFields())
-            );
-        }
-
-        return $this->cacheKey;
     }
 
     public function getQueryBuilder(): QueryBuilder
