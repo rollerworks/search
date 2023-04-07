@@ -1,0 +1,12 @@
+/phpunit.xml
+/composer.lock
+*.phar
+/vendor/
+/.php_cs.cache
+build/**
+*.phar
+/var/
+
+.phpunit.result.cache
+/lib/Symfony/SearchBundle/Tests/Functional/Application/var/
+.php-cs-fixer.cache
