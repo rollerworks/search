@@ -89,7 +89,8 @@ final class DateTimeToLocalizedStringTransformer extends BaseDateTimeTransformer
             throw new TransformationFailedException(intl_get_error_message());
         }
 
-        return $value;
+        // Convert non-breaking and narrow non-breaking spaces to normal ones
+        return str_replace(["\xc2\xa0", "\xe2\x80\xaf"], ' ', $value);
     }
 
     /**
@@ -110,13 +111,16 @@ final class DateTimeToLocalizedStringTransformer extends BaseDateTimeTransformer
             return null;
         }
 
+        // Non-breaking lines are required instead of spaces.
+        $value = str_replace(' ', "\xe2\x80\xaf", $value);
+
         // date-only patterns require parsing to be done in UTC, as midnight might not exist in the local timezone due
         // to DST changes
         $dateOnly = $this->isPatternDateOnly();
 
         $timestamp = $this->getIntlDateFormatter($dateOnly)->parse($value);
 
-        if (intl_get_error_code() != 0) {
+        if (intl_get_error_code() !== 0) {
             throw new TransformationFailedException(intl_get_error_message());
         }
 

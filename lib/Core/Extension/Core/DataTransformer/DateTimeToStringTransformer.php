@@ -115,7 +115,7 @@ final class DateTimeToStringTransformer extends BaseDateTimeTransformer
 
         $lastErrors = \DateTimeImmutable::getLastErrors();
 
-        if (0 < $lastErrors['warning_count'] || 0 < $lastErrors['error_count']) {
+        if ($lastErrors !== false && (0 < $lastErrors['warning_count'] || 0 < $lastErrors['error_count'])) {
             throw new TransformationFailedException(implode(', ', array_merge(array_values($lastErrors['warnings']), array_values($lastErrors['errors']))));
         }
 

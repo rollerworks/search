@@ -18,6 +18,8 @@ use Rollerworks\Component\Search\Extension\Core\Type\DateTimeType;
 use Rollerworks\Component\Search\FieldSetView;
 use Rollerworks\Component\Search\Test\FieldTransformationAssertion;
 use Rollerworks\Component\Search\Test\SearchIntegrationTestCase;
+use Symfony\Component\Intl\Intl;
+use Symfony\Component\Intl\Util\IcuVersion;
 use Symfony\Component\Intl\Util\IntlTestHelper;
 
 /**
@@ -194,7 +196,7 @@ final class DateTimeTypeTest extends SearchIntegrationTestCase
         FieldTransformationAssertion::assertThat($field)
             ->withInput('2 Juni 2010 3:04', '2010-06-02T03:04:00Z')
             ->successfullyTransformsTo($outputTime)
-            ->andReverseTransformsTo('2 jun. 2010 03:04', '2010-06-02T03:04:00Z')
+            ->andReverseTransformsTo(IcuVersion::compare(Intl::getIcuVersion(), '73.2', '>', 1) ? '2 jun 2010 03:04' : '2 jun. 2010 03:04', '2010-06-02T03:04:00Z')
         ;
 
         FieldTransformationAssertion::assertThat($field)
@@ -227,6 +229,6 @@ final class DateTimeTypeTest extends SearchIntegrationTestCase
         parent::setUp();
 
         // we test against "nl", so we need the full implementation
-        IntlTestHelper::requireFullIntl($this, '58.1');
+        IntlTestHelper::requireFullIntl($this, '66.1');
     }
 }
