@@ -13,8 +13,7 @@ declare(strict_types=1);
 
 namespace Rollerworks\Bundle\SearchBundle\Tests\Functional\Application\AppBundle\Entity;
 
-use ApiPlatform\Core\Annotation\ApiProperty;
-use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Metadata\ApiResource;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -22,63 +21,47 @@ use Symfony\Component\Validator\Constraints as Assert;
  * A review of an item - for example, of a restaurant, movie, or store.
  *
  * @see http://schema.org/Review Documentation on Schema.org
- *
- * @ORM\Entity
- * @ApiResource(iri="http://schema.org/Review")
  */
+#[ORM\Entity]
+#[ApiResource]
 class Review
 {
-    /**
-     * @var int
-     *
-     * @ORM\Column(type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    private $id;
+    #[ORM\Column(type: 'integer')]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
+    #[ORM\Id]
+    private int $id;
 
     /**
      * @var string The actual body of the review
-     *
-     * @Assert\Type(type="string")
-     * @ORM\Column(nullable=true, type="text")
-     * @ApiProperty(iri="http://schema.org/reviewBody")
      */
+    #[ORM\Column(nullable: true, type: 'text')]
+    #[Assert\Type(type: 'string')]
     private $body;
 
-    /**
-     * @var int
-     *
-     * @Assert\Type(type="integer")
-     * @Assert\Range(min=0, max=5)
-     * @ORM\Column(type="smallint")
-     */
-    private $rating;
+    #[ORM\Column(type: 'smallint')]
+    #[Assert\Range(min: 0, max: 5)]
+    #[Assert\Type(type: 'integer')]
+    private int $rating;
 
     /**
      * @var Book The item that is being reviewed/rated
-     *
-     * @Assert\NotNull
-     * @ORM\ManyToOne(targetEntity="Rollerworks\Bundle\SearchBundle\Tests\Functional\Application\AppBundle\Entity\Book")
-     * @ORM\JoinColumn(nullable=false)
-     * @ApiProperty(iri="http://schema.org/itemReviewed")
      */
-    private $book;
+    #[ORM\ManyToOne(targetEntity: Book::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    #[Assert\NotNull]
+    private Book $book;
 
     /**
      * @var string Author the author of the review
-     *
-     * @ORM\Column(nullable=true, type="text")
-     * @ApiProperty(iri="http://schema.org/author")
      */
-    private $author;
+    #[ORM\Column(nullable: true, type: 'text')]
+    private string $author;
 
     /**
      * @var \DateTimeImmutable Author the author of the review
-     *
-     * @ORM\Column(nullable=true, type="datetime")
      */
-    private $publicationDate;
+    #[ORM\Column(type: 'datetime_immutable', nullable: true)]
+    private \DateTimeImmutable $publicationDate;
 
     public function setId($id)
     {

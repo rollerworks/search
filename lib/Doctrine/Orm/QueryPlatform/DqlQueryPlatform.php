@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Doctrine\Orm\QueryPlatform;
 
-use Doctrine\DBAL\Types\Type;
 use Rollerworks\Component\Search\Doctrine\Dbal\QueryPlatform\AbstractQueryPlatform;
 use Rollerworks\Component\Search\Value\PatternMatch;
 
@@ -22,7 +21,7 @@ final class DqlQueryPlatform extends AbstractQueryPlatform
     public function getPatternMatcher(PatternMatch $patternMatch, string $column): string
     {
         if (\in_array($patternMatch->getType(), [PatternMatch::PATTERN_EQUALS, PatternMatch::PATTERN_NOT_EQUALS], true)) {
-            $value = $this->createParamReferenceFor($patternMatch->getValue(), Type::getType('text'));
+            $value = $this->createParamReferenceFor($patternMatch->getValue(), 'text');
 
             if ($patternMatch->isCaseInsensitive()) {
                 $column = "LOWER({$column})";
@@ -42,7 +41,7 @@ final class DqlQueryPlatform extends AbstractQueryPlatform
         ];
 
         $value = addcslashes($patternMatch->getValue(), $this->getLikeEscapeChars());
-        $value = sprintf($patternMap[$patternMatch->getType()], $this->createParamReferenceFor($value, Type::getType('text')));
+        $value = sprintf($patternMap[$patternMatch->getType()], $this->createParamReferenceFor($value, 'text'));
 
         if ($patternMatch->isCaseInsensitive()) {
             $column = "LOWER({$column})";

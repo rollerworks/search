@@ -13,8 +13,10 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\ApiPlatform\Metadata;
 
-use ApiPlatform\Core\Metadata\Resource\Factory\ResourceMetadataFactoryInterface;
-use ApiPlatform\Core\Metadata\Resource\ResourceMetadata;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Operation;
+use ApiPlatform\Metadata\Resource\Factory\ResourceMetadataCollectionFactoryInterface;
+use ApiPlatform\Metadata\Resource\ResourceMetadataCollection;
 
 /**
  * The DefaultConfigurationMetadataFactory merges the `_defaults` configuration
@@ -22,34 +24,49 @@ use ApiPlatform\Core\Metadata\Resource\ResourceMetadata;
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-final class DefaultConfigurationMetadataFactory implements ResourceMetadataFactoryInterface
+final class DefaultConfigurationMetadataFactory implements ResourceMetadataCollectionFactoryInterface
 {
-    private $decorated;
-
-    public function __construct(ResourceMetadataFactoryInterface $decorated)
+    public function __construct(private readonly ResourceMetadataCollectionFactoryInterface $decorated)
     {
-        $this->decorated = $decorated;
     }
 
-    public function create(string $resourceClass): ResourceMetadata
+    public function create(string $resourceClass): ResourceMetadataCollection
     {
-        $resourceMetadata = $this->decorated->create($resourceClass);
-        $searchConfig = $resourceMetadata->getAttribute('rollerworks_search');
+        $resourceMetadataCollection = $this->decorated->create($resourceClass);
 
-        if (empty($searchConfig) || empty($searchConfig['contexts']['_defaults'])) {
-            return $resourceMetadata;
+        /** @var ApiResource $resourceMetadata */
+        foreach ($resourceMetadataCollection as $i => $resourceMetadata) {
+            $operations = $resourceMetadata->getOperations();
+
+            if ($operations === null) {
+                continue;
+            }
+
+            /** @var Operation $operation */
+            foreach ($resourceMetadata->getOperations() as $operationName => $operation) {
+                $extraProperties = $operation->getExtraProperties();
+
+                if (isset($extraProperties['rollerworks_search']['contexts']['_defaults'])) {
+                    $extraProperties['rollerworks_search'] = $this->mergeSearchContexts($extraProperties['rollerworks_search']);
+                    $operations->add($operationName, $operation->withExtraProperties($extraProperties));
+                }
+            }
+
+            $resourceMetadataCollection[$i] = $resourceMetadata->withOperations($operations);
         }
 
-        $configurations = $searchConfig['contexts'];
-        unset($configurations['_defaults']);
+        return $resourceMetadataCollection;
+    }
 
-        foreach ($configurations as $name => $configuration) {
-            $configurations[$name] = array_replace_recursive($searchConfig['contexts']['_defaults'], $configuration);
+    private function mergeSearchContexts(array $searchConfig): array
+    {
+        $defaults = $searchConfig['contexts']['_defaults'];
+        unset($searchConfig['contexts']['_defaults']);
+
+        foreach ($searchConfig['contexts'] as $name => $configuration) {
+            $searchConfig['contexts'][$name] = array_replace_recursive($defaults, $configuration);
         }
 
-        $attributes = $resourceMetadata->getAttributes();
-        $attributes['rollerworks_search']['contexts'] = $configurations;
-
-        return $resourceMetadata->withAttributes($attributes);
+        return $searchConfig;
     }
 }

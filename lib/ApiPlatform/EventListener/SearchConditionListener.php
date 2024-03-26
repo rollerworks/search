@@ -13,8 +13,9 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\ApiPlatform\EventListener;
 
-use ApiPlatform\Core\Exception\RuntimeException;
-use ApiPlatform\Core\Metadata\Resource\Factory\ResourceMetadataFactoryInterface as ResourceMetadataFactory;
+use ApiPlatform\Exception\RuntimeException;
+use ApiPlatform\Metadata\HttpOperation;
+use ApiPlatform\Metadata\Resource\Factory\ResourceMetadataCollectionFactoryInterface;
 use Psr\SimpleCache\CacheInterface;
 use Rollerworks\Component\Search\ApiPlatform\SearchConditionEvent;
 use Rollerworks\Component\Search\Exception\UnexpectedTypeException;
@@ -42,15 +43,15 @@ final class SearchConditionListener
 {
     private $searchFactory;
     private $inputProcessorLoader;
-    private $resourceMetadataFactory;
+    private ResourceMetadataCollectionFactoryInterface $resourceMetadataCollectionFactory;
     private $eventDispatcher;
     private $cache;
 
-    public function __construct(SearchFactory $searchFactory, InputProcessorLoader $inputProcessorLoader, ResourceMetadataFactory $resourceMetadataFactory, EventDispatcherInterface $eventDispatcher, CacheInterface $cache = null)
+    public function __construct(SearchFactory $searchFactory, InputProcessorLoader $inputProcessorLoader, ResourceMetadataCollectionFactoryInterface $resourceMetadataFactory, EventDispatcherInterface $eventDispatcher, CacheInterface $cache = null)
     {
         $this->searchFactory = $searchFactory;
         $this->inputProcessorLoader = $inputProcessorLoader;
-        $this->resourceMetadataFactory = $resourceMetadataFactory;
+        $this->resourceMetadataCollectionFactory = $resourceMetadataFactory;
         $this->eventDispatcher = $eventDispatcher;
         $this->cache = $cache;
     }
@@ -64,13 +65,15 @@ final class SearchConditionListener
     public function onKernelRequest(RequestEvent $event): void
     {
         $request = $event->getRequest();
+        $operation = $this->initializeOperation($request);
 
-        if (! $request->isMethodCacheable() || ! $request->attributes->has('_api_resource_class')) {
+        if ($operation === null || ! $request->isMethodCacheable() || ! ($operation->canRead() ?? true)) {
             return;
         }
 
-        $resourceClass = $request->attributes->get('_api_resource_class');
-        $searchConfig = $this->resourceMetadataFactory->create($resourceClass)->getAttribute('rollerworks_search');
+        $resourceClass = $operation->getClass();
+        $extraProperties = $operation->getExtraProperties();
+        $searchConfig = $extraProperties['rollerworks_search'] ?? [];
 
         if (empty($searchConfig)) {
             return;
@@ -90,6 +93,24 @@ final class SearchConditionListener
         $this->eventDispatcher->dispatch($conditionEvent, SearchConditionEvent::SEARCH_CONDITION_EVENT);
 
         $request->attributes->set('_api_search_condition', $condition);
+    }
+
+    private function initializeOperation(Request $request): ?HttpOperation
+    {
+        if ($request->attributes->get('_api_operation')) {
+            return $request->attributes->get('_api_operation');
+        }
+
+        if ($request->attributes->get('_api_resource_class') === null) {
+            return null;
+        }
+
+        $operationName = $request->attributes->get('_api_operation_name');
+        /** @var HttpOperation $operation */
+        $operation = $this->resourceMetadataCollectionFactory->create($request->attributes->get('_api_resource_class'))->getOperation($operationName);
+        $request->attributes->set('_api_operation', $operation);
+
+        return $operation;
     }
 
     private function resolveSearchConfiguration(array $searchConfig, string $resourceClass, Request $request): array

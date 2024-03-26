@@ -1,4 +1,4 @@
-name: Full CI process
+name: CI
 on:
     push:
         branches:
@@ -13,13 +13,120 @@ env:
     DB_HOST: 127.0.0.1
 
 jobs:
+
+    cs-fixer:
+        name: 'PHP CS Fixer'
+
+        runs-on: 'ubuntu-latest'
+
+        strategy:
+            matrix:
+                php-version:
+                    - '8.2'
+
+        steps:
+            -
+                name: 'Check out'
+                uses: 'actions/checkout@v4'
+
+            -
+                name: 'Set up PHP'
+                uses: 'shivammathur/setup-php@v2'
+                with:
+                    php-version: '${{ matrix.php-version }}'
+                    coverage: 'none'
+
+            -
+                name: 'Get Composer cache directory'
+                id: 'composer-cache'
+                run: 'echo "cache_dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT'
+
+            -
+                name: 'Cache dependencies'
+                uses: 'actions/cache@v3'
+                with:
+                    path: '${{ steps.composer-cache.outputs.cache_dir }}'
+                    key: "php-${{ matrix.php-version }}-composer-locked-${{ hashFiles('composer.lock') }}"
+                    restore-keys: 'php-${{ matrix.php-version }}-composer-locked-'
+
+            -
+                name: 'Install dependencies'
+                run: 'composer install --no-progress'
+
+            -
+                name: 'Check the code style'
+                run: 'make cs'
+
+    phpstan:
+        name: 'PhpStan'
+
+        runs-on: 'ubuntu-latest'
+
+        strategy:
+            matrix:
+                php-version:
+                    - '8.2'
+
+        steps:
+            -
+                name: 'Check out'
+                uses: 'actions/checkout@v4'
+
+            -
+                name: 'Set up PHP'
+                uses: 'shivammathur/setup-php@v2'
+                with:
+                    php-version: '${{ matrix.php-version }}'
+                    coverage: 'none'
+
+            -
+                name: 'Get Composer cache directory'
+                id: 'composer-cache'
+                run: 'echo "cache_dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT'
+
+            -
+                name: 'Cache dependencies'
+                uses: 'actions/cache@v3'
+                with:
+                    path: '${{ steps.composer-cache.outputs.cache_dir }}'
+                    key: "php-${{ matrix.php-version }}-composer-locked-${{ hashFiles('composer.lock') }}"
+                    restore-keys: 'php-${{ matrix.php-version }}-composer-locked-'
+
+            -
+                name: 'Install dependencies'
+                run: 'composer install --no-progress'
+
+            -
+                name: 'Run PhpStan'
+                run: 'vendor/bin/phpstan analyze --no-progress --error-format=github'
+
     test:
-        name: PHP ${{ matrix.php-versions }}
+
+        name: 'PHPUnit with PHP ${{ matrix.php-versions }} / Symfony ${{ matrix.symfony-version }}'
         runs-on: ubuntu-latest
+
         strategy:
             fail-fast: false
             matrix:
-                php-versions: ['8.1', '8.2']
+                include:
+                    -
+                        php-version: '8.1'
+                        composer-options: '--prefer-stable'
+                        symfony-version: '6.4'
+                    -
+                        php-version: '8.2'
+                        composer-options: '--prefer-stable'
+                        symfony-version: '^6.4'
+
+                    -
+                        php-version: '8.2'
+                        composer-options: '--prefer-stable'
+                        symfony-version: '^7.0'
+
+                    -
+                        php-version: '8.3'
+                        composer-options: '--prefer-stable'
+                        symfony-version: '^7.0'
 
         services:
             # https://docs.docker.com/samples/library/postgres/
@@ -51,76 +158,55 @@ jobs:
                 options: -e="discovery.type=single-node" -e="xpack.security.enabled=false" --health-cmd="curl http://localhost:9200/_cluster/health" --health-interval=10s --health-timeout=5s --health-retries=10
 
         steps:
-            # —— Check Elasticsearch 🔎 ——————————————————————————————————————————————
             -
                 name: Check the Elasticsearch connection from runner host
                 run: |
                     curl -fsSL "http://localhost:$ES_HTTP_PORT"
                     curl -fsSL "http://localhost:$ES_HTTP_PORT/_cluster/health?pretty"
 
-            # —— Setup Github actions 🐙 —————————————————————————————————————————————
-            # https://github.com/actions/checkout (official)
             -
                 name: Checkout
-                uses: actions/checkout@v2
+                uses: actions/checkout@v4
 
-            # https://github.com/shivammathur/setup-php (community)
             -
-                name: Setup PHP, extensions and composer with shivammathur/setup-php
-                uses: shivammathur/setup-php@v2
+                name: 'Set up PHP'
+                uses: 'shivammathur/setup-php@v2'
                 with:
-                    php-version: ${{ matrix.php-versions }}
+                    php-version: '${{ matrix.php-version }}'
                     extensions: mbstring, xml, ctype, iconv, intl, bcmath, pdo_sqlite, dom, filter, json, pgsql, pdo, pdo_pgsql, pdo_mysql
-                    coverage: xdebug
+                    coverage: 'xdebug'
                 env:
                     update: true
 
-            # —— Composer 🧙‍️ —————————————————————————————————————————————————————————
             -
-                name: Install Composer dependencies
+                name: 'Get Composer cache directory'
+                id: 'composer-cache'
+                run: 'echo "cache_dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT'
+
+            -
+                name: 'Cache dependencies'
+                uses: 'actions/cache@v3'
+                with:
+                    path: '${{ steps.composer-cache.outputs.cache_dir }}'
+                    key: "php-${{ matrix.php-version }}-composer-locked-${{ hashFiles('composer.lock') }}"
+                    restore-keys: 'php-${{ matrix.php-version }}-composer-locked-'
+
+            -
+                name: 'Install dependencies'
+                env:
+                    COMPOSER_OPTIONS: '${{ matrix.composer-options }}'
+                    SYMFONY_REQUIRE: '${{ matrix.symfony-version }}'
                 run: |
                     rm -f composer.lock
-                    composer install --no-progress --no-interaction --no-suggest --optimize-autoloader --ansi
+                    composer global config --no-plugins allow-plugins.symfony/flex true
+                    composer global require --no-progress --no-scripts --no-plugins symfony/flex
+                    composer update --no-progress --no-interaction --optimize-autoloader $COMPOSER_OPTIONS
 
-            ## —— Tests ✅ ———————————————————————————————————————————————————————————
             -
                 name: Run Tests
                 env:
                     SYMFONY_DEPRECATIONS_HELPER: weak
                 run: |
-                    vendor/bin/phpunit --verbose
+                    vendor/bin/phpunit --verbose --configuration phpunit.xml.dist
                     vendor/bin/phpunit --verbose --configuration phpunit/pgsql.xml
                     vendor/bin/phpunit --verbose --configuration phpunit/mysql.xml
-
-    lint:
-        name: PHP-QA
-        runs-on: ubuntu-latest
-        strategy:
-            fail-fast: false
-        steps:
-            -
-                name: Checkout
-                uses: actions/checkout@v2
-
-            # https://github.com/shivammathur/setup-php (community)
-            -
-                name: Setup PHP, extensions and composer with shivammathur/setup-php
-                uses: shivammathur/setup-php@v2
-                with:
-                    php-version: '8.1'
-                    extensions: mbstring, xml, ctype, iconv, intl, bcmath, pdo_sqlite, dom, filter, json, pgsql, pdo, pdo_pgsql, pdo_mysql
-                    coverage: xdebug
-                    tools: cs2pr
-
-            # —— Composer 🧙‍️ —————————————————————————————————————————————————————————
-            -
-                name: Install Composer dependencies
-                run: |
-                    rm -f composer.lock
-                    composer install --no-progress --no-interaction --no-suggest --optimize-autoloader --ansi
-
-            -
-                name: Run PHP-QA
-                run: |
-                    make cs-full-check
-                    vendor/bin/phpstan analyse --memory-limit=-1 --error-format=checkstyle | cs2pr

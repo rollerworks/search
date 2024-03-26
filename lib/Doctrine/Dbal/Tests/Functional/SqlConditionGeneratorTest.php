@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Rollerworks\Component\Search\Tests\Doctrine\Dbal\Functional;
 
 use Carbon\CarbonInterval;
+use Doctrine\DBAL\ParameterType;
 use Doctrine\DBAL\Query\QueryBuilder;
 use Doctrine\DBAL\Schema\Schema as DbSchema;
 use Doctrine\DBAL\Types\Types;
@@ -44,16 +45,16 @@ final class SqlConditionGeneratorTest extends FunctionalDbalTestCase
     protected function setUpDbSchema(DbSchema $schema): void
     {
         $invoiceTable = $schema->createTable('invoice');
-        $invoiceTable->addColumn('id', 'integer');
-        $invoiceTable->addColumn('status', 'integer');
-        $invoiceTable->addColumn('label', 'string');
-        $invoiceTable->addColumn('customer', 'integer');
+        $invoiceTable->addColumn('id', 'integer', ['notNull' => false]);
+        $invoiceTable->addColumn('status', 'integer', ['notNull' => false]);
+        $invoiceTable->addColumn('label', 'string', ['notNull' => false]);
+        $invoiceTable->addColumn('customer', 'integer', ['notNull' => false]);
         $invoiceTable->setPrimaryKey(['id']);
 
         $customerTable = $schema->createTable('customer');
-        $customerTable->addColumn('id', 'integer');
-        $customerTable->addColumn('name', 'string');
-        $customerTable->addColumn('birthday', 'date');
+        $customerTable->addColumn('id', 'integer', ['notNull' => false]);
+        $customerTable->addColumn('name', 'string', ['notNull' => false]);
+        $customerTable->addColumn('birthday', 'date', ['notNull' => false]);
         $customerTable->setPrimaryKey(['id']);
     }
 
@@ -426,11 +427,11 @@ final class SqlConditionGeneratorTest extends FunctionalDbalTestCase
                 $condition,
                 ' WHERE (((c.birthday = NOW() + CAST(:search_0 AS interval) OR c.birthday = NOW() - CAST(:search_1 AS interval) OR c.birthday = :search_2 OR (c.birthday >= NOW() + CAST(:search_3 AS interval) AND c.birthday <= NOW() + CAST(:search_4 AS interval)))))',
                 [
-                    ':search_0' => '1 year 2 weeks 8 seconds',
-                    ':search_1' => '1 year 2 weeks 8 seconds',
-                    ':search_2' => [$date, Types::DATETIME_IMMUTABLE],
-                    ':search_3' => '1 year',
-                    ':search_4' => '10 years',
+                    'search_0' => ['1 year 2 weeks 8 seconds', ParameterType::STRING],
+                    'search_1' => ['1 year 2 weeks 8 seconds', ParameterType::STRING],
+                    'search_2' => [$date, Types::DATETIME_IMMUTABLE],
+                    'search_3' => ['1 year', ParameterType::STRING],
+                    'search_4' => ['10 years', ParameterType::STRING],
                 ]
             );
         } elseif (\in_array($this->conn->getDatabasePlatform()->getName(), ['mysql', 'drizzle'], true)) {
@@ -438,7 +439,7 @@ final class SqlConditionGeneratorTest extends FunctionalDbalTestCase
                 $condition,
                 ' WHERE (((c.birthday = NOW() + INTERVAL 1 YEAR + INTERVAL 2 WEEK + INTERVAL 8 SECOND OR c.birthday = NOW() - INTERVAL 1 YEAR - INTERVAL 2 WEEK - INTERVAL 8 SECOND OR c.birthday = :search_0 OR (c.birthday >= NOW() + INTERVAL 1 YEAR AND c.birthday <= NOW() + INTERVAL 10 YEAR))))',
                 [
-                    ':search_0' => [$date, Types::DATETIME_IMMUTABLE],
+                    'search_0' => [$date, Types::DATETIME_IMMUTABLE],
                 ]
             );
         }

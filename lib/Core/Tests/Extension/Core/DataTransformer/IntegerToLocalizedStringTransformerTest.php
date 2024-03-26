@@ -30,7 +30,7 @@ final class IntegerToLocalizedStringTransformerTest extends TestCase
         \Locale::setDefault('en');
     }
 
-    public function transformWithRoundingProvider()
+    public function transformWithRoundingProvider(): iterable
     {
         return [
             // towards positive infinity (1.6 -> 2, -1.6 -> -1)
@@ -131,7 +131,7 @@ final class IntegerToLocalizedStringTransformerTest extends TestCase
         self::assertEquals(12345, $transformer->reverseTransform('12345'));
     }
 
-    public function reverseTransformWithRoundingProvider()
+    public function reverseTransformWithRoundingProvider(): iterable
     {
         return [
             // towards positive infinity (1.6 -> 2, -1.6 -> -1)
@@ -232,7 +232,7 @@ final class IntegerToLocalizedStringTransformerTest extends TestCase
         $transformer->reverseTransform($number);
     }
 
-    public function floatNumberProvider()
+    public function floatNumberProvider(): iterable
     {
         return [
             ['12345.912', 'en'],

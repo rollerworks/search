@@ -98,7 +98,9 @@ final class QueryBuilderConditionGenerator implements ConditionGenerator
         $generator = new DqlConditionGenerator($this->qb->getEntityManager(), $this->searchCondition, $this->fieldsConfig);
         $whereClause = $generator->getWhereClause();
 
-        if (null !== $primaryCondition = $this->searchCondition->getPrimaryCondition()) {
+        $primaryCondition = $this->searchCondition->getPrimaryCondition();
+
+        if ($primaryCondition !== null) {
             DqlConditionGenerator::applySortingTo($primaryCondition->getOrder(), $this->qb, $this->fieldsConfig);
         }
 

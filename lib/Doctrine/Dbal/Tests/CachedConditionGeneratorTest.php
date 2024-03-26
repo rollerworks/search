@@ -59,8 +59,8 @@ final class CachedConditionGeneratorTest extends DbalTestCase
                 [
                     '(((c.id = :search_0 OR c.id = :search_1)))',
                     [
-                        ':search_0' => [2, 'integer'],
-                        ':search_1' => [5, 'integer'],
+                        'search_0' => [2, 'integer'],
+                        'search_1' => [5, 'integer'],
                     ],
                 ],
                 60
@@ -70,7 +70,7 @@ final class CachedConditionGeneratorTest extends DbalTestCase
         QueryBuilderAssertion::assertQueryBuilderEquals(
             $this->conditionGenerator,
             ' WHERE (((c.id = :search_0 OR c.id = :search_1)))',
-            [':search_0' => [2, 'integer'], ':search_1' => [5, 'integer']]
+            ['search_0' => [2, 'integer'], 'search_1' => [5, 'integer']]
         );
     }
 
@@ -217,8 +217,8 @@ final class CachedConditionGeneratorTest extends DbalTestCase
     public function with_existing_caches_and_primary_cond(): void
     {
         $cacheDriverProphecy = $this->prophesize(Cache::class);
-        $cacheDriverProphecy->get('c26c585aab758c3797f9fd16f3831bcca97dde4db5cce381f43b027287495d69')->willReturn(["me = 'foo'", [':search_1' => ['duck', 'text']]])->shouldBeCalled();
-        $cacheDriverProphecy->get('72356eef163c9e3f2602ba1d8d8d47954e1480f379672cbf760380c05434ae71')->willReturn(["you = 'me' AND me = 'foo'", [':search_2' => ['roll', 'text']]])->shouldBeCalled();
+        $cacheDriverProphecy->get('c26c585aab758c3797f9fd16f3831bcca97dde4db5cce381f43b027287495d69')->willReturn(["me = 'foo'", ['search_1' => ['duck', 'text']]])->shouldBeCalled();
+        $cacheDriverProphecy->get('72356eef163c9e3f2602ba1d8d8d47954e1480f379672cbf760380c05434ae71')->willReturn(["you = 'me' AND me = 'foo'", ['search_2' => ['roll', 'text']]])->shouldBeCalled();
         $cacheDriver = $cacheDriverProphecy->reveal();
 
         $searchCondition = SearchConditionBuilder::create($this->getFieldSet())
@@ -250,11 +250,11 @@ final class CachedConditionGeneratorTest extends DbalTestCase
 
         QueryBuilderAssertion::assertQueryBuilderEquals(
             $cachedConditionGenerator,
-            " WHERE me = 'foo'", [':search_1' => ['duck', 'text']],
+            " WHERE me = 'foo'", ['search_1' => ['duck', 'text']],
         );
         QueryBuilderAssertion::assertQueryBuilderEquals(
             $cachedConditionGenerator2,
-            " WHERE you = 'me' AND me = 'foo'", [':search_2' => ['roll', 'text']],
+            " WHERE you = 'me' AND me = 'foo'", ['search_2' => ['roll', 'text']],
         );
     }
 
@@ -288,8 +288,8 @@ final class CachedConditionGeneratorTest extends DbalTestCase
                 [
                     '(((c.id = :search_0 OR c.id = :search_1)))',
                     [
-                        ':search_0' => [2, 'integer'],
-                        ':search_1' => [5, 'integer'],
+                        'search_0' => [2, 'integer'],
+                        'search_1' => [5, 'integer'],
                     ],
                 ],
                 60
@@ -299,7 +299,7 @@ final class CachedConditionGeneratorTest extends DbalTestCase
         QueryBuilderAssertion::assertQueryBuilderEquals(
             $this->conditionGenerator,
             ' WHERE (((c.id = :search_0 OR c.id = :search_1)))',
-            [':search_0' => [2, 'integer'], ':search_1' => [5, 'integer']]
+            ['search_0' => [2, 'integer'], 'search_1' => [5, 'integer']]
         );
     }
 

@@ -13,16 +13,19 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Tests\Doctrine\Dbal\Functional;
 
+use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Logging\DebugStack;
+use Doctrine\DBAL\ParameterType;
 use Doctrine\DBAL\Query\QueryBuilder;
 use Doctrine\DBAL\Schema\Schema as DbSchema;
-use Doctrine\DBAL\Schema\Synchronizer\SingleDatabaseSynchronizer;
-use Doctrine\Tests\TestUtil;
+use Doctrine\DBAL\SQL\Builder\DropSchemaObjectsSQLBuilder;
+use Doctrine\DBAL\Types\Type;
 use PHPUnit\Framework\AssertionFailedError;
 use PHPUnit\Framework\Exception;
 use PHPUnit\Framework\Warning;
 use Rollerworks\Component\Search\Doctrine\Dbal\ConditionGenerator;
 use Rollerworks\Component\Search\Doctrine\Dbal\Test\QueryBuilderAssertion;
+use Rollerworks\Component\Search\Doctrine\Dbal\Tests\TestUtil;
 use Rollerworks\Component\Search\SearchCondition;
 use Rollerworks\Component\Search\Tests\Doctrine\Dbal\DbalTestCase;
 use Rollerworks\Component\Search\Tests\Doctrine\Dbal\SchemaRecord;
@@ -32,12 +35,12 @@ abstract class FunctionalDbalTestCase extends DbalTestCase
     /**
      * Shared connection when a TestCase is run alone (outside of it's functional suite).
      *
-     * @var \Doctrine\DBAL\Connection|null
+     * @var Connection|null
      */
     private static $sharedConn;
 
     /**
-     * @var \Doctrine\DBAL\Connection|null
+     * @var Connection|null
      */
     protected $conn;
 
@@ -80,13 +83,16 @@ abstract class FunctionalDbalTestCase extends DbalTestCase
             $schema = new DbSchema();
             $this->setUpDbSchema($schema);
 
-            $databaseSynchronizer = new SingleDatabaseSynchronizer(self::$sharedConn);
-            $databaseSynchronizer->dropAllSchema();
-            $databaseSynchronizer->updateSchema($schema);
+            foreach ((new DropSchemaObjectsSQLBuilder(self::$sharedConn->getDatabasePlatform()))->buildSQL($schema) as $s) {
+                try {
+                    $this->conn->executeStatement($s);
+                } catch (\Throwable) {
+                }
+            }
 
-            $recordSets = $this->getDbRecords();
+            $this->updateSchema(self::$sharedConn, $schema);
 
-            foreach ($recordSets as $set) {
+            foreach ($this->getDbRecords() as $set) {
                 $set->executeRecords(self::$sharedConn);
             }
         }
@@ -94,6 +100,41 @@ abstract class FunctionalDbalTestCase extends DbalTestCase
         $this->conn = self::$sharedConn;
         $this->sqlLoggerStack = new DebugStack();
         $this->conn->getConfiguration()->setSQLLogger($this->sqlLoggerStack);
+    }
+
+    private function updateSchema(Connection $connection, DbSchema $providedSchema): void
+    {
+        $schemaManager = $connection->createSchemaManager();
+        $schemaDiff = $schemaManager->createComparator()
+            ->compareSchemas($schemaManager->introspectSchema(), $providedSchema);
+
+        $platform = $connection->getDatabasePlatform();
+
+        if ($platform->supportsSchemas()) {
+            foreach ($schemaDiff->getCreatedSchemas() as $schema) {
+                $connection->executeStatement($platform->getCreateSchemaSQL($schema));
+            }
+        }
+
+        if ($platform->supportsSequences()) {
+            foreach ($schemaDiff->getAlteredSequences() as $sequence) {
+                $connection->executeStatement($platform->getAlterSequenceSQL($sequence));
+            }
+
+            foreach ($schemaDiff->getCreatedSequences() as $sequence) {
+                $connection->executeStatement($platform->getCreateSequenceSQL($sequence));
+            }
+        }
+
+        foreach ($platform->getCreateTablesSQL($schemaDiff->getCreatedTables()) as $sql) {
+            $connection->executeStatement($sql);
+        }
+
+        foreach ($schemaDiff->getAlteredTables() as $tableDiff) {
+            foreach ($platform->getAlterTableSQL($tableDiff) as $sql) {
+                $connection->executeStatement($sql);
+            }
+        }
     }
 
     public static function tearDownAfterClass(): void
@@ -106,17 +147,17 @@ abstract class FunctionalDbalTestCase extends DbalTestCase
     {
         $invoiceTable = $schema->createTable('invoice');
         $invoiceTable->addOption('collate', 'utf8_bin');
-        $invoiceTable->addColumn('id', 'integer');
-        $invoiceTable->addColumn('status', 'integer');
-        $invoiceTable->addColumn('label', 'string');
-        $invoiceTable->addColumn('customer', 'integer');
+        $invoiceTable->addColumn('id', 'integer', ['notNull' => false]);
+        $invoiceTable->addColumn('status', 'integer', ['notNull' => false]);
+        $invoiceTable->addColumn('label', 'string', ['notNull' => false]);
+        $invoiceTable->addColumn('customer', 'integer', ['notNull' => false]);
         $invoiceTable->setPrimaryKey(['id']);
 
         $customerTable = $schema->createTable('customer');
         $customerTable->addOption('collate', 'utf8_bin');
-        $customerTable->addColumn('id', 'integer');
-        $customerTable->addColumn('name', 'string');
-        $customerTable->addColumn('birthday', 'date');
+        $customerTable->addColumn('id', 'integer', ['notNull' => false]);
+        $customerTable->addColumn('name', 'string', ['notNull' => false]);
+        $customerTable->addColumn('birthday', 'date', ['notNull' => false]);
         $customerTable->setPrimaryKey(['id']);
     }
 
@@ -143,7 +184,7 @@ abstract class FunctionalDbalTestCase extends DbalTestCase
     }
 
     /**
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws \Doctrine\DBAL\Exception
      */
     protected function assertRecordsAreFound(SearchCondition $condition, array $ids): void
     {
@@ -158,10 +199,26 @@ abstract class FunctionalDbalTestCase extends DbalTestCase
         $paramsString = '';
         $platform = $this->conn->getDatabasePlatform();
 
-        foreach ($qb->getParameters() as $name => $value) {
-            $type = $qb->getParameterType($name);
+        static $bindingToType = [
+            ParameterType::NULL => 'string',
+            ParameterType::STRING => 'string',
+            ParameterType::INTEGER => 'integer',
+            ParameterType::BINARY => 'binary',
+            ParameterType::BOOLEAN => 'boolean',
+            ParameterType::ASCII => 'string',
+            ParameterType::LARGE_OBJECT => 'blob',
+        ];
 
-            $paramsString .= sprintf("%s = '%s'\n", $name, $type === null ? (\is_scalar($value) ? (string) $value : get_debug_type($value)) : $type->convertToDatabaseValue($value, $platform));
+        foreach ($qb->getParameters() as $name => $value) {
+            $type = $qb->getParameterType($name) ?? 'string';
+
+            if (is_int($type)) {
+                $type = $bindingToType[$type];
+            } elseif (is_object($type)) {
+                $type = Type::lookupName($type);
+            }
+
+            $paramsString .= sprintf("%s = '%s'\n", $name, Type::getType($type)->convertToDatabaseValue($value, $platform));
         }
 
         $rows = $result->fetchAllAssociative();

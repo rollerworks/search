@@ -7,7 +7,7 @@ framework:
         strict_requirements: "%kernel.debug%"
     form: false
     csrf_protection: false
-    validation: { enable_annotations: false }
+    validation: ~
     default_locale: en
     session:
         handler_id: null

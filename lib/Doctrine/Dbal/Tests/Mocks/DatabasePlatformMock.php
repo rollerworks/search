@@ -39,43 +39,48 @@ class DatabasePlatformMock extends AbstractPlatform
     }
 
     /** @override */
-    public function getSequenceNextValSQL($sequenceName): string
+    public function getSequenceNextValSQL($sequence): string
     {
         return $this->_sequenceNextValSql;
     }
 
     /** @override */
-    public function getBooleanTypeDeclarationSQL(array $field): string
+    public function getBooleanTypeDeclarationSQL(array $column): string
     {
     }
 
     /** @override */
-    public function getIntegerTypeDeclarationSQL(array $field): string
+    public function getIntegerTypeDeclarationSQL(array $column): string
     {
     }
 
     /** @override */
-    public function getBigIntTypeDeclarationSQL(array $field): string
+    public function getBigIntTypeDeclarationSQL(array $column): string
     {
     }
 
     /** @override */
-    public function getSmallIntTypeDeclarationSQL(array $field): string
+    public function getSmallIntTypeDeclarationSQL(array $column): string
     {
     }
 
     /** @override */
-    protected function _getCommonIntegerTypeDeclarationSQL(array $columnDef): string
+    protected function _getCommonIntegerTypeDeclarationSQL(array $column): string
     {
     }
 
     /** @override */
-    public function getVarcharTypeDeclarationSQL(array $field): string
+    public function getVarcharTypeDeclarationSQL(array $column): string
     {
     }
 
     /** @override */
-    public function getClobTypeDeclarationSQL(array $field): string
+    public function getClobTypeDeclarationSQL(array $column): string
+    {
+    }
+
+    /** @override */
+    public function getCurrentDatabaseExpression(): string
     {
     }
 
@@ -114,7 +119,7 @@ class DatabasePlatformMock extends AbstractPlatform
      *
      * @throws DBALException
      */
-    public function getBlobTypeDeclarationSQL(array $field): void
+    public function getBlobTypeDeclarationSQL(array $column): void
     {
         throw DBALException::notSupported(__METHOD__);
     }

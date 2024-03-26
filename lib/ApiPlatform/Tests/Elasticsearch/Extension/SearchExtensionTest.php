@@ -13,7 +13,8 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\ApiPlatform\Tests\Elasticsearch\Extension;
 
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Util\QueryNameGenerator;
+use ApiPlatform\Doctrine\Orm\Util\QueryNameGenerator;
+use ApiPlatform\Metadata\Get;
 use Doctrine\ORM\Query\Expr;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
@@ -119,7 +120,7 @@ final class SearchExtensionTest extends TestCase
         $requestStack->push($request);
 
         $orderExtensionTest = new SearchExtension($requestStack, $managerRegistry, $elasticsearchFactory, $elasticaClient);
-        $orderExtensionTest->applyToCollection($queryBuilder, new QueryNameGenerator(), Dummy::class, 'get');
+        $orderExtensionTest->applyToCollection($queryBuilder, new QueryNameGenerator(), Dummy::class, new Get(name: 'get'));
     }
 
     private function createCondition(?string $setName = 'dummy_fieldset'): SearchCondition

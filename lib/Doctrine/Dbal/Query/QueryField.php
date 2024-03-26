@@ -46,6 +46,11 @@ class QueryField implements \Serializable
     /**
      * @var string
      */
+    public $dbTypeName;
+
+    /**
+     * @var string
+     */
     public $column;
 
     /**
@@ -68,7 +73,7 @@ class QueryField implements \Serializable
      */
     public $tableColumn;
 
-    public function __construct(string $mappingName, FieldConfig $fieldConfig, DbType $dbType, string $column, string $alias = null)
+    public function __construct(string $mappingName, FieldConfig $fieldConfig, string $dbType, string $column, string $alias = null)
     {
         $this->mappingName = $mappingName;
         $this->fieldConfig = $fieldConfig;
@@ -76,7 +81,8 @@ class QueryField implements \Serializable
         $this->alias = $alias;
         $this->tableColumn = $column;
         $this->column = ($alias ? $alias . '.' : '') . $column;
-        $this->dbType = $dbType;
+        $this->dbType = DbType::getType($dbType);
+        $this->dbTypeName = $dbType;
 
         $this->initConversions($fieldConfig);
     }
@@ -87,12 +93,12 @@ class QueryField implements \Serializable
             [
                 'mapping_name' => $this->mappingName,
                 'field' => $this->fieldConfig->getName(),
-                'db_type' => $this->dbType->getName(),
+                'db_type' => $this->dbTypeName,
             ]
         );
     }
 
-    public function unserialize($serialized): void
+    public function unserialize(string $data): void
     {
         // noop
     }
@@ -102,7 +108,7 @@ class QueryField implements \Serializable
         return [
             'mapping_name' => $this->mappingName,
             'field' => $this->fieldConfig->getName(),
-            'db_type' => $this->dbType->getName(),
+            'db_type' => $this->dbTypeName,
         ];
     }
 

@@ -13,9 +13,10 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\ApiPlatform\Doctrine\Orm\Extension;
 
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Extension\QueryCollectionExtensionInterface;
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Util\QueryNameGeneratorInterface;
-use ApiPlatform\Core\Exception\RuntimeException;
+use ApiPlatform\Doctrine\Orm\Extension\QueryCollectionExtensionInterface;
+use ApiPlatform\Doctrine\Orm\Util\QueryNameGeneratorInterface;
+use ApiPlatform\Exception\RuntimeException;
+use ApiPlatform\Metadata\Operation;
 use Doctrine\ORM\QueryBuilder;
 use Rollerworks\Component\Search\ApiPlatform\ArrayKeysValidator;
 use Rollerworks\Component\Search\Doctrine\Orm\ConditionGenerator;
@@ -39,7 +40,7 @@ final class SearchExtension implements QueryCollectionExtensionInterface
         $this->ormFactory = $ormFactory;
     }
 
-    public function applyToCollection(QueryBuilder $queryBuilder, QueryNameGeneratorInterface $queryNameGenerator, string $resourceClass, string $operationName = null): void
+    public function applyToCollection(QueryBuilder $queryBuilder, QueryNameGeneratorInterface $queryNameGenerator, string $resourceClass, Operation $operation = null, array $context = []): void
     {
         $request = $this->requestStack->getCurrentRequest();
 
@@ -54,9 +55,9 @@ final class SearchExtension implements QueryCollectionExtensionInterface
             return;
         }
 
-        $context = $request->attributes->get('_api_search_context');
+        $searchContext = $request->attributes->get('_api_search_context');
         $configuration = $request->attributes->get('_api_search_config');
-        $configPath = "{$resourceClass}#attributes[rollerworks_search][contexts][{$context}][doctrine_orm]";
+        $configPath = "{$resourceClass}#attributes[rollerworks_search][contexts][{$searchContext}][doctrine_orm]";
 
         if (empty($configuration['doctrine_orm'])) {
             return;
