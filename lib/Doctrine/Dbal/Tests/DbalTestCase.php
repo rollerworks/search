@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Tests\Doctrine\Dbal;
 
-use Doctrine\DBAL\Driver\PDOSqlite\Driver as PDOSqlite;
+use Doctrine\DBAL\Driver\PDO\SQLite\Driver as PDOSqlite;
 use Psr\SimpleCache\CacheInterface;
 use Rollerworks\Component\Search\Doctrine\Dbal\DoctrineDbalFactory;
 use Rollerworks\Component\Search\Extension\Core\Type\DateTimeType;

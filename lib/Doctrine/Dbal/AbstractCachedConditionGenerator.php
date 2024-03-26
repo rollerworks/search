@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace Rollerworks\Component\Search\Doctrine\Dbal;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\DBAL\Types\Type;
 use Psr\SimpleCache\CacheInterface as Cache;
 use Rollerworks\Component\Search\SearchCondition;
 
@@ -88,7 +87,7 @@ abstract class AbstractCachedConditionGenerator
         $parameters = new ArrayCollection();
 
         foreach ($provided as $name => [$value, $type]) {
-            $parameters->set($name, [$value, $type === null ? null : Type::getType($type)]);
+            $parameters->set($name, [$value, $type]);
         }
 
         return $parameters;
@@ -112,7 +111,7 @@ abstract class AbstractCachedConditionGenerator
         $parameters = [];
 
         foreach ($provided as $name => [$value, $type]) {
-            $parameters[$name] = [$value, $type?->getName()];
+            $parameters[$name] = [$value, $type];
         }
 
         return $parameters;

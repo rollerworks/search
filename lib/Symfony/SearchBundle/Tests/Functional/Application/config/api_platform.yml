@@ -7,8 +7,8 @@ framework:
         enabled: true
         resource: "%kernel.project_dir%/config/routing_api.yml"
         strict_requirements: "%kernel.debug%"
-    validation:      { enable_annotations: true }
-    serializer:      { enable_annotations: true }
+    validation:      ~
+    serializer:      ~
     assets:
         enabled: true
     cache:
@@ -50,10 +50,9 @@ doctrine:
                 mappings:
                     App:
                         is_bundle: false
-                        type: annotation
+                        type: attribute
                         dir: '%kernel.project_dir%/AppBundle/Entity'
-                        prefix: 'Rollerworks\\Bundle\\SearchBundle\\Tests\\Functional\\Application\\AppBundle\\Entity'
-                        alias: AppBundle
+                        prefix: 'Rollerworks\Bundle\SearchBundle\Tests\Functional\Application\AppBundle\Entity'
 
 api_platform:
     title:       API Platform's demo

@@ -18,6 +18,10 @@ use Rollerworks\Component\Search\Extension\Core\Type\DateTimeType;
 use Rollerworks\Component\Search\FieldSetView;
 use Rollerworks\Component\Search\Test\FieldTransformationAssertion;
 use Rollerworks\Component\Search\Test\SearchIntegrationTestCase;
+use SebastianBergmann\Comparator\Comparator;
+use SebastianBergmann\Comparator\ComparisonFailure;
+use SebastianBergmann\Comparator\Factory as ComparatorFactory;
+use SebastianBergmann\Exporter\Exporter;
 use Symfony\Component\Intl\Intl;
 use Symfony\Component\Intl\Util\IcuVersion;
 use Symfony\Component\Intl\Util\IntlTestHelper;
@@ -132,7 +136,7 @@ final class DateTimeTypeTest extends SearchIntegrationTestCase
 
         FieldTransformationAssertion::assertThat($field)
             ->withInput('1 week 2 jaar', '1 week 2 years')
-            ->successfullyTransformsTo(CarbonInterval::fromString('1 week 2 years'))
+            ->successfullyTransformsTo(CarbonInterval::fromString('1 weeks 2 years'))
             ->andReverseTransformsTo('2 jaar 1 week', '2 years 1 week')
         ;
 
@@ -160,7 +164,7 @@ final class DateTimeTypeTest extends SearchIntegrationTestCase
 
         FieldTransformationAssertion::assertThat($field)
             ->withInput('-3 أيام ساعتين', '-3 days 2 hours')
-            ->successfullyTransformsTo(CarbonInterval::fromString('3 days 2 hours')->invert())
+            ->successfullyTransformsTo(CarbonInterval::fromString('3 days 2 hour')->invert())
             ->andReverseTransformsTo('-3 أيام ساعتين', '-3 days 2 hours')
         ;
     }
@@ -230,5 +234,65 @@ final class DateTimeTypeTest extends SearchIntegrationTestCase
 
         // we test against "nl", so we need the full implementation
         IntlTestHelper::requireFullIntl($this, '66.1');
+    }
+
+    private static ?CarbonIntervalComparator $violationComparator = null;
+
+    /**
+     * @beforeClass
+     */
+    public static function setUpValidatorComparator(): void
+    {
+        self::$violationComparator = new CarbonIntervalComparator();
+
+        $comparatorFactory = ComparatorFactory::getInstance();
+        $comparatorFactory->register(self::$violationComparator);
+    }
+
+    /**
+     * @afterClass
+     */
+    public static function tearDownValidatorComparator(): void
+    {
+        if (self::$violationComparator === null) {
+            return;
+        }
+
+        $comparatorFactory = ComparatorFactory::getInstance();
+        $comparatorFactory->unregister(self::$violationComparator);
+        self::$violationComparator = null;
+    }
+}
+
+final class CarbonIntervalComparator extends Comparator
+{
+    public function accepts(mixed $expected, mixed $actual): bool
+    {
+        return $expected instanceof CarbonInterval && $actual instanceof CarbonInterval;
+    }
+
+    /**
+     * @param CarbonInterval $expected
+     * @param CarbonInterval $actual
+     */
+    public function assertEquals($expected, $actual, $delta = 0.0, $canonicalize = false, $ignoreCase = false): void
+    {
+        if ($expected->invert === $actual->invert && $expected->forHumans() === $actual->forHumans()) {
+            return;
+        }
+
+        $exporter = new Exporter();
+
+        throw new ComparisonFailure(
+            $expected,
+            $actual,
+            $exportedExpected = $exporter->export($expected),
+            $exportedActual = $exporter->export($actual),
+            sprintf(
+                'Failed asserting that %s matches expected %s.',
+                $exportedActual,
+                $exportedExpected
+            )
+        );
     }
 }

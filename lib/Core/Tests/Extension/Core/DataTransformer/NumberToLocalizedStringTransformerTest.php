@@ -30,7 +30,7 @@ final class NumberToLocalizedStringTransformerTest extends TestCase
         \Locale::setDefault('en');
     }
 
-    public function provideTransformations()
+    public function provideTransformations(): iterable
     {
         return [
             [null, '', 'de_AT'],
@@ -60,7 +60,7 @@ final class NumberToLocalizedStringTransformerTest extends TestCase
         self::assertSame($to, $transformer->transform($from));
     }
 
-    public function provideTransformationsWithGrouping()
+    public function provideTransformationsWithGrouping(): iterable
     {
         return [
             [1234.5, '1.234,5', 'de_DE'],
@@ -102,7 +102,7 @@ final class NumberToLocalizedStringTransformerTest extends TestCase
         self::assertEquals('678,92', $transformer->transform(678.916));
     }
 
-    public function transformWithRoundingProvider()
+    public function transformWithRoundingProvider(): iterable
     {
         return [
             // towards positive infinity (1.6 -> 2, -1.6 -> -1)
@@ -287,7 +287,7 @@ final class NumberToLocalizedStringTransformerTest extends TestCase
         self::assertEquals(12345.912, $transformer->reverseTransform('12345,912'));
     }
 
-    public function reverseTransformWithRoundingProvider()
+    public function reverseTransformWithRoundingProvider(): iterable
     {
         return [
             // towards positive infinity (1.6 -> 2, -1.6 -> -1)

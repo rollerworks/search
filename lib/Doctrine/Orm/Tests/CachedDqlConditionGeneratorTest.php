@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Tests\Doctrine\Orm;
 
-use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\QueryBuilder;
 use PHPUnit\Framework\MockObject\MockObject;
 use Prophecy\Argument;
@@ -71,8 +70,8 @@ final class CachedDqlConditionGeneratorTest extends OrmTestCase
                 [
                     '(((C.id = :search_0 OR C.id = :search_1)))',
                     [
-                        ':search_0' => [2, 'integer'],
-                        ':search_1' => [5, 'integer'],
+                        'search_0' => [2, 'integer'],
+                        'search_1' => [5, 'integer'],
                     ],
                 ],
                 60
@@ -81,7 +80,7 @@ final class CachedDqlConditionGeneratorTest extends OrmTestCase
 
         $this->assertQueryBuilderEquals(
             ' WHERE (((C.id = :search_0 OR C.id = :search_1)))',
-            [':search_0' => [2, Type::getType('integer')], ':search_1' => [5, Type::getType('integer')]]
+            ['search_0' => [2, 'integer'], 'search_1' => [5, 'integer']]
         );
     }
 
@@ -114,7 +113,7 @@ final class CachedDqlConditionGeneratorTest extends OrmTestCase
             ->expects(self::once())
             ->method('get')
             ->with(self::CACHE_KEY)
-            ->willReturn(["me = 'foo'", [':search' => [1, 'integer']]])
+            ->willReturn(["me = 'foo'", ['search' => [1, 'integer']]])
         ;
 
         $this->cacheDriver
@@ -122,7 +121,7 @@ final class CachedDqlConditionGeneratorTest extends OrmTestCase
             ->method('set')
         ;
 
-        $this->assertQueryBuilderEquals(" WHERE me = 'foo'", [':search' => [1, Type::getType('integer')]]);
+        $this->assertQueryBuilderEquals(" WHERE me = 'foo'", ['search' => [1, 'integer']]);
     }
 
     /** @test */
@@ -138,7 +137,7 @@ final class CachedDqlConditionGeneratorTest extends OrmTestCase
         $this->cacheDriver
             ->method('get')
             ->with(self::matchesRegularExpression('/^' . self::CACHE_KEY . '|15a1f8831f6a382bc75d64e67057d8fb03c7e10091d2606c13a7b2262edb24c2/'))
-            ->willReturn(["me = 'foo'", [':search' => [1, 'integer']]])
+            ->willReturn(["me = 'foo'", ['search' => [1, 'integer']]])
         ;
 
         $this->cacheDriver
@@ -157,7 +156,7 @@ final class CachedDqlConditionGeneratorTest extends OrmTestCase
 
         $this->assertQueryBuilderEquals(
             " WHERE me = 'foo' ORDER BY I.id DESC",
-            [':search' => [1, Type::getType('integer')]],
+            ['search' => [1, 'integer']],
             $this->createCachedConditionGenerator($this->cacheDriver, $searchCondition, $this->createQuery())
         );
 
@@ -174,7 +173,7 @@ final class CachedDqlConditionGeneratorTest extends OrmTestCase
 
         $this->assertQueryBuilderEquals(
             " WHERE me = 'foo' ORDER BY I.id DESC",
-            [':search' => [1, Type::getType('integer')]],
+            ['search' => [1, 'integer']],
             $this->createCachedConditionGenerator($this->cacheDriver, $searchCondition, $this->createQuery())
         );
 
@@ -192,7 +191,7 @@ final class CachedDqlConditionGeneratorTest extends OrmTestCase
 
         $this->assertQueryBuilderEquals(
             " WHERE me = 'foo' ORDER BY I.id DESC, C.id DESC",
-            [':search' => [1, Type::getType('integer')]],
+            ['search' => [1, 'integer']],
             $this->createCachedConditionGenerator($this->cacheDriver, $searchCondition, $this->createQuery())
         );
     }
@@ -240,8 +239,8 @@ final class CachedDqlConditionGeneratorTest extends OrmTestCase
     public function with_existing_caches_and_primary_cond(): void
     {
         $cacheDriverProphecy = $this->prophesize(CacheInterface::class);
-        $cacheDriverProphecy->get('1e18a18fce837f0b3fa15099fed7b4646fa6ac893d4c27a668016776742ff7eb')->willReturn(["me = 'foo'", [':search_1' => ['duck', 'text']]])->shouldBeCalled();
-        $cacheDriverProphecy->get('f8fc5f1054baca1f1de79b109150e1edbd002dda59f65d36c14c55ebd2054121')->willReturn(["you = 'me' AND me = 'foo'", [':search_2' => ['roll', 'text']]])->shouldBeCalled();
+        $cacheDriverProphecy->get('1e18a18fce837f0b3fa15099fed7b4646fa6ac893d4c27a668016776742ff7eb')->willReturn(["me = 'foo'", ['search_1' => ['duck', 'text']]])->shouldBeCalled();
+        $cacheDriverProphecy->get('f8fc5f1054baca1f1de79b109150e1edbd002dda59f65d36c14c55ebd2054121')->willReturn(["you = 'me' AND me = 'foo'", ['search_2' => ['roll', 'text']]])->shouldBeCalled();
         $cacheDriverProphecy->set(Argument::any(), Argument::any(), Argument::any())->shouldNotBeCalled();
         $cacheDriver = $cacheDriverProphecy->reveal();
 
@@ -272,8 +271,8 @@ final class CachedDqlConditionGeneratorTest extends OrmTestCase
         $query2 = $this->createQuery();
         $cachedConditionGenerator2 = $this->createCachedConditionGenerator($cacheDriver, $searchCondition2, $query2);
 
-        $this->assertQueryBuilderEquals(" WHERE me = 'foo'", [':search_1' => ['duck', Type::getType('text')]], $cachedConditionGenerator);
-        $this->assertQueryBuilderEquals(" WHERE you = 'me' AND me = 'foo'", [':search_2' => ['roll', Type::getType('text')]], $cachedConditionGenerator2);
+        $this->assertQueryBuilderEquals(" WHERE me = 'foo'", ['search_1' => ['duck', 'text']], $cachedConditionGenerator);
+        $this->assertQueryBuilderEquals(" WHERE you = 'me' AND me = 'foo'", ['search_2' => ['roll', 'text']], $cachedConditionGenerator2);
     }
 
     protected function setUp(): void

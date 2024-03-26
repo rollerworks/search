@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Tests\Doctrine\Orm;
 
-use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\Query\QueryException;
 use Doctrine\ORM\QueryBuilder;
 use Rollerworks\Component\Search\Doctrine\Dbal\ConversionHints;
@@ -110,8 +109,8 @@ final class DqlConditionGeneratorTest extends OrmTestCase
                 SQL
             ,
             [
-                ':search_0' => [2, Type::getType('integer')],
-                ':search_1' => [5, Type::getType('integer')],
+                'search_0' => [2, 'integer'],
+                'search_1' => [5, 'integer'],
             ]
         );
     }
@@ -152,10 +151,10 @@ final class DqlConditionGeneratorTest extends OrmTestCase
                 SQL
             ,
             [
-                ':search_0' => [2, Type::getType('integer')],
-                ':search_1' => [5, Type::getType('integer')],
-                ':search_2' => [2, Type::getType('integer')],
-                ':search_3' => [5, Type::getType('integer')],
+                'search_0' => [2, 'integer'],
+                'search_1' => [5, 'integer'],
+                'search_2' => [2, 'integer'],
+                'search_3' => [5, 'integer'],
             ]
         );
     }
@@ -243,12 +242,12 @@ final class DqlConditionGeneratorTest extends OrmTestCase
                 SQL
             ,
             [
-                ':search_0' => [2, Type::getType('integer')],
-                ':search_1' => [5, Type::getType('integer')],
-                ':search_2' => [6, Type::getType('smallint')],
-                ':search_3' => [3, Type::getType('smallint')],
-                ':search_4' => [8, Type::getType('integer')],
-                ':search_5' => [9, Type::getType('integer')],
+                'search_0' => [2, 'integer'],
+                'search_1' => [5, 'integer'],
+                'search_2' => [6, 'smallint'],
+                'search_3' => [3, 'smallint'],
+                'search_4' => [8, 'integer'],
+                'search_5' => [9, 'integer'],
             ]
         );
     }
@@ -291,10 +290,10 @@ final class DqlConditionGeneratorTest extends OrmTestCase
                 SQL
             ,
             [
-                ':search_0' => [2, Type::getType('integer')],
-                ':search_1' => [5, Type::getType('integer')],
-                ':search_2' => [2, Type::getType('integer')],
-                ':search_3' => [5, Type::getType('integer')],
+                'search_0' => [2, 'integer'],
+                'search_1' => [5, 'integer'],
+                'search_2' => [2, 'integer'],
+                'search_3' => [5, 'integer'],
             ]
         );
     }
@@ -332,8 +331,8 @@ final class DqlConditionGeneratorTest extends OrmTestCase
                 SQL
             ,
             [
-                ':search_0' => [2, Type::getType('integer')],
-                ':search_1' => [5, Type::getType('integer')],
+                'search_0' => [2, 'integer'],
+                'search_1' => [5, 'integer'],
             ]
         );
     }
@@ -372,8 +371,8 @@ final class DqlConditionGeneratorTest extends OrmTestCase
                 SQL
             ,
             [
-                ':search_0' => [2, Type::getType('integer')],
-                ':search_1' => [5, Type::getType('integer')],
+                'search_0' => [2, 'integer'],
+                'search_1' => [5, 'integer'],
             ]
         );
     }
@@ -442,8 +441,8 @@ final class DqlConditionGeneratorTest extends OrmTestCase
                 SQL
             ,
             [
-                ':search_0' => [2, Type::getType('integer')],
-                ':search_1' => [5, Type::getType('integer')],
+                'search_0' => [2, 'integer'],
+                'search_1' => [5, 'integer'],
             ]
         );
     }
@@ -484,8 +483,8 @@ final class DqlConditionGeneratorTest extends OrmTestCase
                 SQL
             ,
             [
-                ':search_0' => [2, Type::getType('integer')],
-                ':search_1' => [5, Type::getType('integer')],
+                'search_0' => [2, 'integer'],
+                'search_1' => [5, 'integer'],
             ]
         );
     }
@@ -898,7 +897,7 @@ final class DqlConditionGeneratorTest extends OrmTestCase
             $conditionGenerator,
             'WHERE ((C.id = :search_0))',
             '',
-            [':search_0' => [2, Type::getType('integer')]]
+            ['search_0' => [2, 'integer']]
         );
         self::assertEquals(
             'SELECT C FROM Rollerworks\Component\Search\Tests\Doctrine\Orm\Fixtures\Entity\ECommerceCustomer C WHERE ((C.id = :search_0))',

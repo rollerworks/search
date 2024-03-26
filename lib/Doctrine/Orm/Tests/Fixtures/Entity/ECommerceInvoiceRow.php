@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the RollerworksSearch package.
  *
@@ -13,42 +15,28 @@ namespace Rollerworks\Component\Search\Tests\Doctrine\Orm\Fixtures\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity
- * @ORM\Table(name="invoice_rows", options={"collate"="utf8_bin"})
- */
+#[ORM\Entity]
+#[ORM\Table(name: 'invoice_rows', options: ['collate' => 'utf8_bin'])]
 class ECommerceInvoiceRow
 {
-    /**
-     * @ORM\Id
-     * @ORM\Column(type="integer")
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
+    #[ORM\Id]
+    #[ORM\Column(type: 'integer')]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
     public $id;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="ECommerceInvoice", inversedBy="rows")
-     * @ORM\JoinColumn(name="invoice", referencedColumnName="invoice_id")
-     */
+    #[ORM\ManyToOne(targetEntity: 'ECommerceInvoice', inversedBy: 'rows')]
+    #[ORM\JoinColumn(name: 'invoice', referencedColumnName: 'invoice_id')]
     public $invoice;
 
-    /**
-     * @ORM\Column(type="string")
-     */
+    #[ORM\Column(type: 'string')]
     public $label;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Column(type: 'integer')]
     public $quantity;
 
-    /**
-     * @ORM\Column(name="price", type="decimal", precision=0, scale=2)
-     */
+    #[ORM\Column(name: 'price', type: 'decimal', precision: 0, scale: 2)]
     public $price;
 
-    /**
-     * @ORM\Column(name="total", type="decimal", precision=0, scale=2)
-     */
+    #[ORM\Column(name: 'total', type: 'decimal', precision: 0, scale: 2)]
     public $total;
 }

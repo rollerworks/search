@@ -25,7 +25,7 @@ final class DateTimeToStringTransformerTest extends TestCase
 {
     use assertDateTimeEqualsTrait;
 
-    public function dataProvider()
+    public function dataProvider(): iterable
     {
         return [
             ['Y-m-d H:i:s', '2010-02-03 16:05:06', '2010-02-03 16:05:06 UTC'],

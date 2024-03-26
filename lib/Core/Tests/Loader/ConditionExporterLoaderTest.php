@@ -34,6 +34,7 @@ final class ConditionExporterLoaderTest extends TestCase
 
     /**
      * @dataProvider provideProcessors
+     *
      * @test
      */
     public function it_can_load_bundled_processor(string $alias, string $className): void
@@ -43,7 +44,7 @@ final class ConditionExporterLoaderTest extends TestCase
         self::assertInstanceOf($className, $loader->get($alias));
     }
 
-    public function provideProcessors(): array
+    public function provideProcessors(): iterable
     {
         return [
             ['json', Exporter\JsonExporter::class],
