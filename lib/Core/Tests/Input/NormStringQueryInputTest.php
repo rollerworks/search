@@ -108,6 +108,7 @@ final class NormStringQueryInputTest extends SearchIntegrationTestCase
 
     /**
      * @test
+     *
      * @dataProvider provideMultipleValues
      */
     public function it_processes_multiple_fields(string $input): void
@@ -132,7 +133,7 @@ final class NormStringQueryInputTest extends SearchIntegrationTestCase
         $this->assertConditionEquals($input, $condition, $processor, $config);
     }
 
-    public function provideMultipleValues()
+    public function provideMultipleValues(): iterable
     {
         return [
             ['name: value, value2; date: "2014-12-16 00:00:00 UTC";'],

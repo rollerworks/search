@@ -43,7 +43,10 @@ final class InputValidatorTest extends SearchIntegrationTestCase
         parent::setUp();
 
         $validatorBuilder = Validation::createValidatorBuilder();
-        $validatorBuilder->disableAnnotationMapping();
+
+        if (method_exists($validatorBuilder, 'disableAnnotationMapping')) {
+            $validatorBuilder->disableAnnotationMapping();
+        }
 
         $this->sfValidator = $validatorBuilder->getValidator();
         $this->validator = new InputValidator($this->sfValidator);

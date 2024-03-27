@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Doctrine\Orm;
 
-use Doctrine\DBAL\Types\Type as MappingType;
 use Doctrine\ORM\EntityManagerInterface;
 use Rollerworks\Component\Search\FieldSet;
 
@@ -110,12 +109,9 @@ final class FieldConfigBuilder
         );
     }
 
-    private function getMappingType(string $fieldName, string $entity, string $propertyName, ?string $type = null): MappingType
+    private function getMappingType(string $fieldName, string $entity, string $propertyName, ?string $type = null): string
     {
-        if (! $type) {
-            /** @var object|string|null $type */
-            $type = $this->entityManager->getClassMetadata($entity)->getTypeOfField($propertyName);
-        }
+        $type ??= $this->entityManager->getClassMetadata($entity)->getTypeOfField($propertyName);
 
         if ($type === null) {
             throw new \RuntimeException(
@@ -129,6 +125,6 @@ final class FieldConfigBuilder
             );
         }
 
-        return \is_object($type) ? $type : MappingType::getType($type);
+        return $type;
     }
 }

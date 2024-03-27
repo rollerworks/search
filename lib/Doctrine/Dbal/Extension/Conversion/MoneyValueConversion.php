@@ -48,7 +48,7 @@ final class MoneyValueConversion implements ValueConversion, ColumnConversion
 
     public function convertColumn(string $column, array $options, ConversionHints $hints): string
     {
-        if ($hints->field->dbType->getName() === DbType::DECIMAL) {
+        if ($hints->field->dbTypeName === DbType::DECIMAL) {
             return $column;
         }
 

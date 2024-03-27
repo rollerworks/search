@@ -70,6 +70,8 @@ $config
         'ordered_imports' => [
             'imports_order' => ['const', 'class', 'function'],
         ],
+        'php_unit_data_provider_name' => false,
+        'php_unit_data_provider_return_type' => false, // XXX Too much work for now, InputTests must be updated
         'php_unit_method_casing' => ['case' => 'snake_case'],
         'php_unit_strict' => false,
         'php_unit_test_annotation' => ['style' => 'annotation'],

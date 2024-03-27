@@ -13,14 +13,12 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\ApiPlatform\Tests\EventListener;
 
-use ApiPlatform\Core\Exception\RuntimeException;
-use ApiPlatform\Core\Metadata\Resource\Factory\ResourceMetadataFactoryInterface;
-use ApiPlatform\Core\Metadata\Resource\ResourceMetadata;
+use ApiPlatform\Exception\RuntimeException;
 use Prophecy\Argument;
 use Rollerworks\Component\Search\ApiPlatform\EventListener\SearchConditionListener;
 use Rollerworks\Component\Search\ApiPlatform\SearchConditionEvent;
 use Rollerworks\Component\Search\ApiPlatform\Tests\Fixtures\BookFieldSet;
-use Rollerworks\Component\Search\ApiPlatform\Tests\Fixtures\Dummy;
+use Rollerworks\Component\Search\ApiPlatform\Tests\MetadataFactoryTrait;
 use Rollerworks\Component\Search\ApiPlatform\Tests\Mock\SpyingInputProcessor;
 use Rollerworks\Component\Search\ApiPlatform\Tests\Mock\StubInputProcessor;
 use Rollerworks\Component\Search\InputProcessor;
@@ -39,30 +37,15 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
  */
 final class SearchConditionListenerTest extends SearchIntegrationTestCase
 {
+    use MetadataFactoryTrait;
+
     /** @test */
     public function it_sets_search_condition_and_config_for_empty_query(): void
     {
-        $dummyMetadata = new ResourceMetadata(
-            'dummy',
-            'dummy',
-            '#dummy',
-            [],
-            [],
-            [
-                'rollerworks_search' => [
-                    'contexts' => [
-                        '_any' => [
-                            'fieldset' => BookFieldSet::class,
-                        ],
-                    ],
-                ],
-            ]
-        );
-
         $httpKernel = $this->createMock(HttpKernelInterface::class);
-        $resourceMetadataFactory = $this->createResourceMetadata($dummyMetadata);
+        $resourceMetadataFactory = $this->createResourceMetadataFactory();
 
-        $request = new Request([], [], ['_api_resource_class' => Dummy::class]);
+        $request = new Request([], [], ['_api_resource_class' => 'dummy', '_api_operation_name' => 'get_collection']);
         $eventDispatcher = $this->expectingCallEventDispatcher($request);
 
         $inputProcessor = new SpyingInputProcessor();
@@ -73,47 +56,29 @@ final class SearchConditionListenerTest extends SearchIntegrationTestCase
             $eventDispatcher
         );
 
-        $listener->onKernelRequest($event = new RequestEvent($httpKernel, $request, HttpKernelInterface::MASTER_REQUEST));
+        $listener->onKernelRequest(new RequestEvent($httpKernel, $request, HttpKernelInterface::MAIN_REQUEST));
 
-        self::assertEquals(
-            [
-                '_api_resource_class' => Dummy::class,
-                '_api_search_config' => ['fieldset' => BookFieldSet::class],
-                '_api_search_context' => '_any',
-                '_api_search_condition' => SpyingInputProcessor::getCondition(),
-            ],
-            $request->attributes->all()
-        );
+        $arr = [
+            '_api_resource_class' => 'dummy',
+            '_api_operation_name' => 'get_collection',
+            '_api_search_config' => ['fieldset' => BookFieldSet::class],
+            '_api_search_context' => '_any',
+            '_api_search_condition' => SpyingInputProcessor::getCondition(),
+        ];
+
+        self::assertOperationAttrEquals($arr, $request);
         self::assertEquals('', $inputProcessor->getInput());
 
-        $config = $inputProcessor->getConfig();
-        self::assertEquals(BookFieldSet::class, $config->getFieldSet()->getSetName());
+        self::assertEquals(BookFieldSet::class, $inputProcessor->getConfig()->getFieldSet()->getSetName());
     }
 
     /** @test */
     public function it_sets_search_condition_and_config_for_json_query(): void
     {
-        $dummyMetadata = new ResourceMetadata(
-            'dummy',
-            'dummy',
-            '#dummy',
-            [],
-            [],
-            [
-                'rollerworks_search' => [
-                    'contexts' => [
-                        '_any' => [
-                            'fieldset' => BookFieldSet::class,
-                        ],
-                    ],
-                ],
-            ]
-        );
-
         $httpKernel = $this->createMock(HttpKernelInterface::class);
-        $resourceMetadataFactory = $this->createResourceMetadata($dummyMetadata);
+        $resourceMetadataFactory = $this->createResourceMetadataFactory();
 
-        $request = new Request(['search' => '{"fields:": ["foobar"]}'], [], ['_api_resource_class' => Dummy::class]);
+        $request = new Request(['search' => '{"fields:": ["foobar"]}'], [], ['_api_resource_class' => 'dummy', '_api_operation_name' => 'get_collection']);
         $eventDispatcher = $this->expectingCallEventDispatcher($request);
 
         $inputProcessor = new SpyingInputProcessor();
@@ -124,16 +89,17 @@ final class SearchConditionListenerTest extends SearchIntegrationTestCase
             $eventDispatcher
         );
 
-        $listener->onKernelRequest($event = new RequestEvent($httpKernel, $request, HttpKernelInterface::MASTER_REQUEST));
+        $listener->onKernelRequest(new RequestEvent($httpKernel, $request, HttpKernelInterface::MAIN_REQUEST));
 
-        self::assertEquals(
+        self::assertOperationAttrEquals(
             [
-                '_api_resource_class' => Dummy::class,
+                '_api_resource_class' => 'dummy',
+                '_api_operation_name' => 'get_collection',
                 '_api_search_config' => ['fieldset' => BookFieldSet::class],
                 '_api_search_context' => '_any',
                 '_api_search_condition' => SpyingInputProcessor::getCondition(),
             ],
-            $request->attributes->all()
+            $request
         );
         self::assertEquals('{"fields:": ["foobar"]}', $inputProcessor->getInput());
 
@@ -144,30 +110,21 @@ final class SearchConditionListenerTest extends SearchIntegrationTestCase
     /** @test */
     public function it_sets_search_condition_and_config_for_context(): void
     {
-        $dummyMetadata = new ResourceMetadata(
-            'dummy',
-            'dummy',
-            '#dummy',
-            [],
-            [],
-            [
-                'rollerworks_search' => [
-                    'contexts' => [
-                        '_any' => [
-                            'fieldset' => 'book',
-                        ],
-                        'frontend' => [
-                            'fieldset' => BookFieldSet::class,
-                        ],
+        $httpKernel = $this->createMock(HttpKernelInterface::class);
+        $resourceMetadataFactory = $this->createResourceMetadataFactory([
+            'rollerworks_search' => [
+                'contexts' => [
+                    '_any' => [
+                        'fieldset' => 'book',
+                    ],
+                    'frontend' => [
+                        'fieldset' => BookFieldSet::class,
                     ],
                 ],
-            ]
-        );
+            ],
+        ]);
 
-        $httpKernel = $this->createMock(HttpKernelInterface::class);
-        $resourceMetadataFactory = $this->createResourceMetadata($dummyMetadata);
-
-        $request = new Request([], [], ['_api_resource_class' => Dummy::class, '_api_search_context' => 'frontend']);
+        $request = new Request([], [], ['_api_resource_class' => 'dummy', '_api_search_context' => 'frontend', '_api_operation_name' => 'get_collection']);
         $eventDispatcher = $this->expectingCallEventDispatcher($request);
 
         $inputProcessor = new SpyingInputProcessor();
@@ -178,16 +135,17 @@ final class SearchConditionListenerTest extends SearchIntegrationTestCase
             $eventDispatcher
         );
 
-        $listener->onKernelRequest($event = new RequestEvent($httpKernel, $request, HttpKernelInterface::MASTER_REQUEST));
+        $listener->onKernelRequest(new RequestEvent($httpKernel, $request, HttpKernelInterface::MAIN_REQUEST));
 
-        self::assertEquals(
+        self::assertOperationAttrEquals(
             [
-                '_api_resource_class' => Dummy::class,
+                '_api_resource_class' => 'dummy',
+                '_api_operation_name' => 'get_collection',
                 '_api_search_config' => ['fieldset' => BookFieldSet::class],
                 '_api_search_context' => 'frontend',
                 '_api_search_condition' => SpyingInputProcessor::getCondition(),
             ],
-            $request->attributes->all()
+            $request
         );
         self::assertEquals('', $inputProcessor->getInput());
 
@@ -198,10 +156,8 @@ final class SearchConditionListenerTest extends SearchIntegrationTestCase
     /** @test */
     public function it_does_nothing_when_no_metadata_is_set(): void
     {
-        $dummyMetadata = new ResourceMetadata('dummy', 'dummy', '#dummy');
-
         $httpKernel = $this->createMock(HttpKernelInterface::class);
-        $resourceMetadataFactory = $this->createResourceMetadata($dummyMetadata);
+        $resourceMetadataFactory = $this->createResourceMetadataFactory([]);
 
         $eventDispatcher = $this->expectingNoCallEventDispatcher();
         $listener = new SearchConditionListener(
@@ -211,10 +167,10 @@ final class SearchConditionListenerTest extends SearchIntegrationTestCase
             $eventDispatcher
         );
 
-        $request = new Request([], [], ['_api_resource_class' => Dummy::class]);
-        $listener->onKernelRequest($event = new RequestEvent($httpKernel, $request, HttpKernelInterface::MASTER_REQUEST));
+        $request = new Request([], [], ['_api_resource_class' => 'dummy', '_api_operation_name' => 'get_collection']);
+        $listener->onKernelRequest(new RequestEvent($httpKernel, $request, HttpKernelInterface::MAIN_REQUEST));
 
-        self::assertEquals(['_api_resource_class' => Dummy::class], $request->attributes->all());
+        self::assertOperationAttrEquals(['_api_resource_class' => 'dummy', '_api_operation_name' => 'get_collection'], $request);
     }
 
     /** @test */
@@ -222,11 +178,9 @@ final class SearchConditionListenerTest extends SearchIntegrationTestCase
     {
         $httpKernel = $this->createMock(HttpKernelInterface::class);
 
-        $resourceMetadataFactoryProphecy = $this->prophesize(ResourceMetadataFactoryInterface::class);
-        $resourceMetadataFactoryProphecy->create(Argument::any())->shouldNotBeCalled();
-        $resourceMetadataFactory = $resourceMetadataFactoryProphecy->reveal();
+        $resourceMetadataFactory = $this->createResourceMetadataFactory([]);
 
-        $request = new Request([], [], ['_api_resource_class' => Dummy::class]);
+        $request = new Request([], [], ['_api_resource_class' => 'dummy', '_api_operation_name' => 'get_collection']);
         $request->setMethod('POST');
 
         $eventDispatcher = $this->expectingNoCallEventDispatcher();
@@ -237,38 +191,32 @@ final class SearchConditionListenerTest extends SearchIntegrationTestCase
             $eventDispatcher
         );
 
-        $listener->onKernelRequest($event = new RequestEvent($httpKernel, $request, HttpKernelInterface::MASTER_REQUEST));
+        $listener->onKernelRequest(new RequestEvent($httpKernel, $request, HttpKernelInterface::MAIN_REQUEST));
 
-        self::assertEquals(['_api_resource_class' => Dummy::class], $request->attributes->all());
+        self::assertOperationAttrEquals([
+            '_api_resource_class' => 'dummy',
+            '_api_operation_name' => 'get_collection',
+        ], $request);
     }
 
     /** @test */
     public function it_maps_configuration_processor_configuration(): void
     {
-        $dummyMetadata = new ResourceMetadata(
-            'dummy',
-            'dummy',
-            '#dummy',
-            [],
-            [],
-            [
-                'rollerworks_search' => [
-                    'contexts' => [
-                        '_any' => [
-                            'fieldset' => BookFieldSet::class,
-                            'processor' => [
-                                'cache_ttl' => 30,
-                            ],
+        $httpKernel = $this->createMock(HttpKernelInterface::class);
+        $resourceMetadataFactory = $this->createResourceMetadataFactory([
+            'rollerworks_search' => [
+                'contexts' => [
+                    '_any' => [
+                        'fieldset' => BookFieldSet::class,
+                        'processor' => [
+                            'cache_ttl' => 30,
                         ],
                     ],
                 ],
-            ]
-        );
+            ],
+        ]);
 
-        $httpKernel = $this->createMock(HttpKernelInterface::class);
-        $resourceMetadataFactory = $this->createResourceMetadata($dummyMetadata);
-
-        $request = new Request([], [], ['_api_resource_class' => Dummy::class]);
+        $request = new Request([], [], ['_api_resource_class' => 'dummy', '_api_operation_name' => 'get_collection']);
         $eventDispatcher = $this->expectingCallEventDispatcher($request);
 
         $inputProcessor = new SpyingInputProcessor();
@@ -279,11 +227,12 @@ final class SearchConditionListenerTest extends SearchIntegrationTestCase
             $eventDispatcher
         );
 
-        $listener->onKernelRequest($event = new RequestEvent($httpKernel, $request, HttpKernelInterface::MASTER_REQUEST));
+        $listener->onKernelRequest(new RequestEvent($httpKernel, $request, HttpKernelInterface::MAIN_REQUEST));
 
-        self::assertEquals(
+        self::assertOperationAttrEquals(
             [
-                '_api_resource_class' => Dummy::class,
+                '_api_resource_class' => 'dummy',
+                '_api_operation_name' => 'get_collection',
                 '_api_search_config' => [
                     'fieldset' => BookFieldSet::class,
                     'processor' => ['cache_ttl' => 30],
@@ -291,7 +240,7 @@ final class SearchConditionListenerTest extends SearchIntegrationTestCase
                 '_api_search_context' => '_any',
                 '_api_search_condition' => SpyingInputProcessor::getCondition(),
             ],
-            $request->attributes->all()
+            $request
         );
 
         $config = $inputProcessor->getConfig();
@@ -302,30 +251,21 @@ final class SearchConditionListenerTest extends SearchIntegrationTestCase
     /** @test */
     public function it_stores_cached_result_when_configured(): void
     {
-        $dummyMetadata = new ResourceMetadata(
-            'dummy',
-            'dummy',
-            '#dummy',
-            [],
-            [],
-            [
-                'rollerworks_search' => [
-                    'contexts' => [
-                        '_any' => [
-                            'fieldset' => BookFieldSet::class,
-                            'processor' => [
-                                'cache_ttl' => 30,
-                            ],
+        $httpKernel = $this->createMock(HttpKernelInterface::class);
+        $resourceMetadataFactory = $this->createResourceMetadataFactory([
+            'rollerworks_search' => [
+                'contexts' => [
+                    '_any' => [
+                        'fieldset' => BookFieldSet::class,
+                        'processor' => [
+                            'cache_ttl' => 30,
                         ],
                     ],
                 ],
-            ]
-        );
+            ],
+        ]);
 
-        $httpKernel = $this->createMock(HttpKernelInterface::class);
-        $resourceMetadataFactory = $this->createResourceMetadata($dummyMetadata);
-
-        $request = new Request([], [], ['_api_resource_class' => Dummy::class]);
+        $request = new Request([], [], ['_api_resource_class' => 'dummy', '_api_operation_name' => 'get_collection']);
         $eventDispatcher = $this->expectingCallEventDispatcher($request);
 
         $inputProcessor = new SpyingInputProcessor();
@@ -334,23 +274,21 @@ final class SearchConditionListenerTest extends SearchIntegrationTestCase
             $this->createProcessorLoader($inputProcessor, 'norm_string_query'),
             $resourceMetadataFactory,
             $eventDispatcher,
-            $cache = new Psr16Cache($arrayCache = new ArrayAdapter())
+            new Psr16Cache($arrayCache = new ArrayAdapter())
         );
 
-        $listener->onKernelRequest($event = new RequestEvent($httpKernel, $request, HttpKernelInterface::MASTER_REQUEST));
+        $listener->onKernelRequest(new RequestEvent($httpKernel, $request, HttpKernelInterface::MAIN_REQUEST));
 
-        self::assertEquals(
-            [
-                '_api_resource_class' => Dummy::class,
-                '_api_search_config' => [
-                    'fieldset' => BookFieldSet::class,
-                    'processor' => ['cache_ttl' => 30],
-                ],
-                '_api_search_context' => '_any',
-                '_api_search_condition' => SpyingInputProcessor::getCondition(),
+        self::assertOperationAttrEquals([
+            '_api_resource_class' => 'dummy',
+            '_api_operation_name' => 'get_collection',
+            '_api_search_config' => [
+                'fieldset' => BookFieldSet::class,
+                'processor' => ['cache_ttl' => 30],
             ],
-            $request->attributes->all()
-        );
+            '_api_search_context' => '_any',
+            '_api_search_condition' => SpyingInputProcessor::getCondition(),
+        ], $request);
         self::assertCount(1, $arrayCache->getValues());
 
         $config = $inputProcessor->getConfig();
@@ -359,29 +297,20 @@ final class SearchConditionListenerTest extends SearchIntegrationTestCase
     }
 
     /** @test */
-    public function it_does_not_store_cached_result_when_ttl_is_unconfigured(): void
+    public function it_does_not_store_cached_result_when_ttl_is_not_configured(): void
     {
-        $dummyMetadata = new ResourceMetadata(
-            'dummy',
-            'dummy',
-            '#dummy',
-            [],
-            [],
-            [
-                'rollerworks_search' => [
-                    'contexts' => [
-                        '_any' => [
-                            'fieldset' => BookFieldSet::class,
-                        ],
+        $httpKernel = $this->createMock(HttpKernelInterface::class);
+        $resourceMetadataFactory = $this->createResourceMetadataFactory([
+            'rollerworks_search' => [
+                'contexts' => [
+                    '_any' => [
+                        'fieldset' => BookFieldSet::class,
                     ],
                 ],
-            ]
-        );
+            ],
+        ]);
 
-        $httpKernel = $this->createMock(HttpKernelInterface::class);
-        $resourceMetadataFactory = $this->createResourceMetadata($dummyMetadata);
-
-        $request = new Request([], [], ['_api_resource_class' => Dummy::class]);
+        $request = new Request([], [], ['_api_resource_class' => 'dummy', '_api_operation_name' => 'get_collection']);
         $eventDispatcher = $this->expectingCallEventDispatcher($request);
 
         $inputProcessor = new SpyingInputProcessor();
@@ -393,18 +322,19 @@ final class SearchConditionListenerTest extends SearchIntegrationTestCase
             $cache = new Psr16Cache($arrayCache = new ArrayAdapter())
         );
 
-        $listener->onKernelRequest($event = new RequestEvent($httpKernel, $request, HttpKernelInterface::MASTER_REQUEST));
+        $listener->onKernelRequest($event = new RequestEvent($httpKernel, $request, HttpKernelInterface::MAIN_REQUEST));
 
-        self::assertEquals(
+        self::assertOperationAttrEquals(
             [
-                '_api_resource_class' => Dummy::class,
+                '_api_resource_class' => 'dummy',
+                '_api_operation_name' => 'get_collection',
                 '_api_search_config' => [
                     'fieldset' => BookFieldSet::class,
                 ],
                 '_api_search_context' => '_any',
                 '_api_search_condition' => SpyingInputProcessor::getCondition(),
             ],
-            $request->attributes->all()
+            $request
         );
         self::assertCount(0, $arrayCache->getValues());
 
@@ -415,26 +345,18 @@ final class SearchConditionListenerTest extends SearchIntegrationTestCase
 
     /**
      * @test
-     * @dataProvider provideInvalidConfigurations
+     *
+     * @dataProvider provideIt_errors_when_context_configuration_is_invalidCases
      */
     public function it_errors_when_context_configuration_is_invalid(string $message, array $config): void
     {
-        $dummyMetadata = new ResourceMetadata(
-            'dummy',
-            'dummy',
-            '#dummy',
-            [],
-            [],
-            $config
-        );
-
         $httpKernel = $this->createMock(HttpKernelInterface::class);
-        $resourceMetadataFactory = $this->createResourceMetadata($dummyMetadata);
+        $resourceMetadataFactory = $this->createResourceMetadataFactory($config);
 
         $request = new Request(
             ['search' => ['fields' => ['id' => ['single-values' => [1, 1]]]]],
             [],
-            ['_api_resource_class' => Dummy::class]
+            ['_api_resource_class' => 'dummy', '_api_operation_name' => 'get_collection']
         );
 
         $eventDispatcher = $this->expectingNoCallEventDispatcher();
@@ -448,12 +370,12 @@ final class SearchConditionListenerTest extends SearchIntegrationTestCase
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage($message);
 
-        $listener->onKernelRequest($event = new RequestEvent($httpKernel, $request, HttpKernelInterface::MASTER_REQUEST));
+        $listener->onKernelRequest($event = new RequestEvent($httpKernel, $request, HttpKernelInterface::MAIN_REQUEST));
     }
 
-    public function provideInvalidConfigurations(): array
+    public static function provideIt_errors_when_context_configuration_is_invalidCases(): iterable
     {
-        $resourceClass = Dummy::class;
+        $resourceClass = 'dummy';
 
         return [
             'context with missing fieldset' => [
@@ -514,30 +436,22 @@ final class SearchConditionListenerTest extends SearchIntegrationTestCase
         ];
     }
 
-    private function createResourceMetadata(ResourceMetadata $metadata = null, string $resourceClass = Dummy::class): ResourceMetadataFactoryInterface
+    private function expectingCallEventDispatcher(Request $request, string $resourceClass = 'dummy'): EventDispatcherInterface
     {
-        $resourceMetadataFactoryProphecy = $this->prophesize(ResourceMetadataFactoryInterface::class);
-        $resourceMetadataFactoryProphecy->create($resourceClass)->shouldBeCalled()->willReturn($metadata);
-
-        return $resourceMetadataFactoryProphecy->reveal();
-    }
-
-    private function expectingCallEventDispatcher(Request $request): EventDispatcherInterface
-    {
-        $event = new SearchConditionEvent(SpyingInputProcessor::getCondition(), Dummy::class, $request);
+        $event = new SearchConditionEvent(SpyingInputProcessor::getCondition(), $resourceClass, $request);
 
         $eventDispatcherProphecy = $this->prophesize(EventDispatcherInterface::class);
-        $eventDispatcherProphecy->dispatch($event, SearchConditionEvent::SEARCH_CONDITION_EVENT)->shouldBeCalled();
-        $eventDispatcherProphecy->dispatch($event, SearchConditionEvent::SEARCH_CONDITION_EVENT . Dummy::class)->shouldBeCalled();
+        $eventDispatcherProphecy->dispatch($event, SearchConditionEvent::SEARCH_CONDITION_EVENT)->willReturnArgument()->shouldBeCalled();
+        $eventDispatcherProphecy->dispatch($event, SearchConditionEvent::SEARCH_CONDITION_EVENT . $resourceClass)->willReturnArgument()->shouldBeCalled();
 
         return $eventDispatcherProphecy->reveal();
     }
 
-    private function expectingNoCallEventDispatcher(): EventDispatcherInterface
+    private function expectingNoCallEventDispatcher(string $resourceClass = 'dummy'): EventDispatcherInterface
     {
         $eventDispatcherProphecy = $this->prophesize(EventDispatcherInterface::class);
-        $eventDispatcherProphecy->dispatch(Argument::any(), SearchConditionEvent::SEARCH_CONDITION_EVENT)->shouldNotBeCalled();
-        $eventDispatcherProphecy->dispatch(Argument::any(), SearchConditionEvent::SEARCH_CONDITION_EVENT . Dummy::class)->shouldNotBeCalled();
+        $eventDispatcherProphecy->dispatch(Argument::any(), SearchConditionEvent::SEARCH_CONDITION_EVENT)->willReturnArgument()->shouldNotBeCalled();
+        $eventDispatcherProphecy->dispatch(Argument::any(), SearchConditionEvent::SEARCH_CONDITION_EVENT . $resourceClass)->willReturnArgument()->shouldNotBeCalled();
 
         return $eventDispatcherProphecy->reveal();
     }
@@ -552,5 +466,15 @@ final class SearchConditionListenerTest extends SearchIntegrationTestCase
             ),
             [$name => $name]
         );
+    }
+
+    private static function assertOperationAttrEquals(array $attributes, Request $request): void
+    {
+        $requestAttributes = $request->attributes->all();
+
+        // This object graph is to big for comparison and is considered an internal detail
+        unset($attributes['_api_operation'], $requestAttributes['_api_operation']);
+
+        self::assertEquals($attributes, $requestAttributes);
     }
 }

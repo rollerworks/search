@@ -13,16 +13,17 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Tests\Doctrine\Orm;
 
+use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Query\Parameter;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Tools\SchemaTool;
 use Doctrine\ORM\Tools\Setup;
-use Doctrine\Tests\TestUtil;
 use PHPUnit\Framework\AssertionFailedError;
 use PHPUnit\Framework\Exception;
 use PHPUnit\Framework\Warning;
 use Psr\SimpleCache\CacheInterface;
+use Rollerworks\Component\Search\Doctrine\Dbal\Tests\TestUtil;
 use Rollerworks\Component\Search\Doctrine\Orm\DoctrineOrmFactory;
 use Rollerworks\Component\Search\Doctrine\Orm\DqlConditionGenerator;
 use Rollerworks\Component\Search\Doctrine\Orm\Extension\Functions\AgeFunction;
@@ -77,7 +78,7 @@ abstract class OrmTestCase extends DbalTestCase
         parent::setUp();
 
         if (! isset(self::$sharedConn)) {
-            $config = Setup::createAnnotationMetadataConfiguration([__DIR__ . '/Fixtures/Entity'], true, null, null, false);
+            $config = Setup::createAttributeMetadataConfiguration([__DIR__ . '/Fixtures/Entity'], true, null, null, false);
 
             self::$sharedConn = TestUtil::getConnection();
             self::$sharedEm = EntityManager::create(self::$sharedConn, $config);
@@ -206,7 +207,7 @@ abstract class OrmTestCase extends DbalTestCase
         $platform = $this->conn->getDatabasePlatform();
 
         foreach ($conditionGenerator->getParameters() as $name => [$value, $type]) {
-            $paramsString .= sprintf("%s = '%s'\n", $name, $type === null ? (\is_scalar($value) ? (string) $value : get_debug_type($value)) : $type->convertToDatabaseValue($value, $platform));
+            $paramsString .= sprintf("%s = '%s'\n", $name, $type === null ? (\is_scalar($value) ? (string) $value : get_debug_type($value)) : Type::getType($type)->convertToDatabaseValue($value, $platform));
         }
 
         $query = $qb->getQuery();
@@ -242,7 +243,7 @@ abstract class OrmTestCase extends DbalTestCase
             foreach ($actualParameters as $idx => $parameter) {
                 unset($actualParameters[$idx]);
 
-                $actualParameters[':' . $parameter->getName()] = [$parameter->getValue(), $parameter->getType()];
+                $actualParameters[$parameter->getName()] = [$parameter->getValue(), $parameter->getType()];
             }
         }
 

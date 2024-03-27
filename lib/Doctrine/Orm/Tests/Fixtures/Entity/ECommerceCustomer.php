@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the RollerworksSearch package.
  *
@@ -13,36 +15,24 @@ namespace Rollerworks\Component\Search\Tests\Doctrine\Orm\Fixtures\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity
- * @ORM\Table(name="customers", options={"collate"="utf8_bin"})
- */
+#[ORM\Entity]
+#[ORM\Table(name: 'customers', options: ['collate' => 'utf8_bin'])]
 class ECommerceCustomer
 {
-    /**
-     * @ORM\Id
-     * @ORM\Column(type="integer")
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
+    #[ORM\Id]
+    #[ORM\Column(type: 'integer')]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
     public $id;
 
-    /**
-     * @ORM\Column(type="string", name="first_name")
-     */
+    #[ORM\Column(name: 'first_name', type: 'string')]
     public $firstName;
 
-    /**
-     * @ORM\Column(type="string", name="last_name")
-     */
+    #[ORM\Column(name: 'last_name', type: 'string')]
     public $lastName;
 
-    /**
-     * @ORM\Column(type="date")
-     */
+    #[ORM\Column(type: 'date')]
     public $birthday;
 
-    /**
-     * @ORM\Column(type="datetime")
-     */
+    #[ORM\Column(type: 'datetime')]
     public $regdate;
 }

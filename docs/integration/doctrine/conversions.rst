@@ -62,9 +62,7 @@ Using:
        public function configureOptions(OptionsResolver $resolver)
        {
            $resolver->setDefaults([
-               'doctrine_dbal_conversion' => function () {
-                   return new MyConversionClass())
-               },
+               'doctrine_dbal_conversion' => static fn () => new MyConversionClass(),
            ]);
        }
 
@@ -231,8 +229,8 @@ And the GeoConversion class::
             if ($value instanceof Point) {
                 // The second argument is a Doctrine DBAL type used for the binding-type and
                 // any SQL specific transformation (otherwise the value is marked as text and used as-is).
-                $long = $hints->createParamReferenceFor($input->getLongitude(), Type::getType('decimal'));
-                $lat = $hints->createParamReferenceFor($input->getLatitude(), Type::getType('decimal'));
+                $long = $hints->createParamReferenceFor($input->getLongitude(), 'decimal');
+                $lat = $hints->createParamReferenceFor($input->getLatitude(), 'decimal');
 
                 $value = sprintf('POINT(%s, %s)', $long, $lat);
             }

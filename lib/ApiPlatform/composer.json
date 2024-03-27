@@ -10,16 +10,16 @@
         }
     ],
     "require": {
-        "php": ">=8.0",
-        "api-platform/core": "^2.0.10",
-        "rollerworks/search": "^2.0@dev,>=2.0.0-BETA2",
+        "php": ">=8.1",
+        "api-platform/core": "^2.0.10 || ^3.2",
+        "rollerworks/search": ">=2.0.0-BETA2 ^2.0@dev",
         "rollerworks/uri-encoder": "^1.1.0 || ^2.0",
-        "symfony/http-foundation": "^6.0"
+        "symfony/http-foundation": "^6.4 || ^7.0"
     },
     "require-dev": {
         "doctrine/orm": "^2.5.6",
         "phpunit/phpunit": "^6.3",
-        "rollerworks/search-doctrine-orm": "^2.0@dev,>=2.0.0-BETA2",
+        "rollerworks/search-doctrine-orm": ">=2.0.0-BETA2 ^2.0@dev",
         "symfony/phpunit-bridge": "^6.0"
     },
     "minimum-stability": "dev",
@@ -34,8 +34,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Rollerworks\\Component\\Search\\ApiPlatform\\Tests\\": "Tests/",
-            "ApiPlatform\\Core\\Tests\\Fixtures\\TestBundle\\Entity\\": "vendor/api-platform/core/tests/Fixtures/TestBundle/Entity"
+            "Rollerworks\\Component\\Search\\ApiPlatform\\Tests\\": "Tests/"
         }
     },
     "extra": {
