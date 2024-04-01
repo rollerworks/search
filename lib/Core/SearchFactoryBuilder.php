@@ -25,7 +25,7 @@ use Rollerworks\Component\Search\Field\ResolvedFieldTypeFactory;
 final class SearchFactoryBuilder
 {
     /**
-     * @var ResolvedFieldTypeFactory
+     * @var ResolvedFieldTypeFactory|null
      */
     private $resolvedTypeFactory;
 
@@ -45,7 +45,7 @@ final class SearchFactoryBuilder
     private $typeExtensions = [];
 
     /**
-     * @var FieldSetRegistry
+     * @var FieldSetRegistry|null
      */
     private $fieldSetRegistry;
 
@@ -63,8 +63,6 @@ final class SearchFactoryBuilder
 
     /**
      * Set the FieldSetRegistry to use for loading FieldSetConfigurators.
-     *
-     * @return SearchFactoryBuilder
      */
     public function setFieldSetRegistry(FieldSetRegistry $fieldSetRegistry): self
     {
@@ -106,7 +104,7 @@ final class SearchFactoryBuilder
      */
     public function addType(FieldType $type)
     {
-        $this->types[\get_class($type)] = $type;
+        $this->types[$type::class] = $type;
 
         return $this;
     }
@@ -121,7 +119,7 @@ final class SearchFactoryBuilder
     public function addTypes(array $types)
     {
         foreach ($types as $type) {
-            $this->types[\get_class($type)] = $type;
+            $this->types[$type::class] = $type;
         }
 
         return $this;

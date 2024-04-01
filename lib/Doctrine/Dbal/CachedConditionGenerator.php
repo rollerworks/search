@@ -46,7 +46,7 @@ final class CachedConditionGenerator extends AbstractCachedConditionGenerator im
         $this->fieldsConfig = new FieldConfigurationSet($searchCondition->getFieldSet());
     }
 
-    public function setField(string $fieldName, string $column, string $alias = null, string $type = 'string')
+    public function setField(string $fieldName, string $column, ?string $alias = null, string $type = 'string')
     {
         $this->fieldsConfig->setField($fieldName, $column, $alias, $type);
 

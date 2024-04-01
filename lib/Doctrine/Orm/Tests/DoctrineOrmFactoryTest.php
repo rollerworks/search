@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Tests\Doctrine\Orm;
 
+use Doctrine\ORM\QueryBuilder;
 use Psr\SimpleCache\CacheInterface;
 use Rollerworks\Component\Search\Doctrine\Orm\CachedDqlConditionGenerator;
 use Rollerworks\Component\Search\Doctrine\Orm\DoctrineOrmFactory;
@@ -37,12 +38,8 @@ final class DoctrineOrmFactoryTest extends OrmTestCase
     /** @test */
     public function create_condition_generator(): void
     {
+        $qb = $this->getQuery();
         $condition = new SearchCondition(new GenericFieldSet([]), new ValuesGroup());
-        $qb = $this->em->createQueryBuilder()
-            ->select('I')
-            ->from(ECommerceInvoice::class, 'I')
-            ->join('I.customer', 'C')
-        ;
 
         $conditionGenerator = $this->factory->createConditionGenerator($qb, $condition);
         self::assertInstanceOf(QueryBuilderConditionGenerator::class, $conditionGenerator);
@@ -51,11 +48,7 @@ final class DoctrineOrmFactoryTest extends OrmTestCase
     /** @test */
     public function cached_dql_condition_generator(): void
     {
-        $qb = $this->em->createQueryBuilder()
-            ->select('I')
-            ->from(ECommerceInvoice::class, 'I')
-            ->join('I.customer', 'C')
-        ;
+        $qb = $this->getQuery();
         $searchCondition = new SearchCondition(new GenericFieldSet([]), new ValuesGroup());
         $cachedConditionGenerator = $this->factory->createCachedConditionGenerator($qb, $searchCondition);
 
@@ -68,5 +61,14 @@ final class DoctrineOrmFactoryTest extends OrmTestCase
 
         $cacheDriver = $this->createMock(CacheInterface::class);
         $this->factory = new DoctrineOrmFactory($cacheDriver);
+    }
+
+    protected function getQuery(): QueryBuilder
+    {
+        return $this->em->createQueryBuilder()
+            ->select('I')
+            ->from(ECommerceInvoice::class, 'I')
+            ->join('I.customer', 'C')
+        ;
     }
 }

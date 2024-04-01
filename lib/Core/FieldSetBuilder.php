@@ -36,9 +36,9 @@ interface FieldSetBuilder
     public function set(FieldConfig $field);
 
     /**
-     * @throws BadMethodCallException When the FieldSet has been already turned into a FieldSet instance
-     *
      * @return static The builder
+     *
+     * @throws BadMethodCallException When the FieldSet has been already turned into a FieldSet instance
      */
     public function remove(string $name);
 
@@ -49,5 +49,5 @@ interface FieldSetBuilder
     /**
      * Create the FieldSet using the fields set on the builder.
      */
-    public function getFieldSet(string $name = null): FieldSet;
+    public function getFieldSet(?string $name = null): FieldSet;
 }

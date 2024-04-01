@@ -77,7 +77,7 @@ interface ConditionGenerator
      *
      * @return $this
      */
-    public function setField(string $fieldName, string $property, string $alias = null, string $entity = null, string $dbType = null);
+    public function setField(string $fieldName, string $property, ?string $alias = null, ?string $entity = null, ?string $dbType = null);
 
     /**
      * Apply the SearchCondition to the QueryBuilder (as an AND-WHERE).

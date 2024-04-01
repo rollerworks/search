@@ -173,9 +173,9 @@ class ValuesGroup implements \Serializable
      * This is either one of the following class constants:
      * GROUP_LOGICAL_OR or GROUP_LOGICAL_AND.
      *
-     * @throws InvalidArgumentException When an unsupported group logical is provided
-     *
      * @return self
+     *
+     * @throws InvalidArgumentException When an unsupported group logical is provided
      */
     public function setGroupLogical(string $groupLogical)
     {

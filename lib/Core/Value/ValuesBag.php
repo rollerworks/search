@@ -191,7 +191,7 @@ class ValuesBag implements \Countable, \Serializable
      */
     public function add(ValueHolder $value)
     {
-        $this->values[\get_class($value)][] = $value;
+        $this->values[$value::class][] = $value;
 
         ++$this->valuesCount;
 

@@ -15,7 +15,7 @@ namespace Rollerworks\Component\Search\Field;
 
 final class GenericResolvedFieldTypeFactory implements ResolvedFieldTypeFactory
 {
-    public function createResolvedType(FieldType $type, array $typeExtensions, ResolvedFieldType $parent = null): ResolvedFieldType
+    public function createResolvedType(FieldType $type, array $typeExtensions, ?ResolvedFieldType $parent = null): ResolvedFieldType
     {
         return new GenericResolvedFieldType($type, $typeExtensions, $parent);
     }

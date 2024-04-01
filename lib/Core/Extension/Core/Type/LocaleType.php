@@ -42,7 +42,7 @@ final class LocaleType extends AbstractFieldType implements ChoiceLoader
         return ChoiceType::class;
     }
 
-    public function loadChoiceList(callable $value = null): ChoiceList
+    public function loadChoiceList(?callable $value = null): ChoiceList
     {
         if ($this->choiceList !== null) {
             return $this->choiceList;

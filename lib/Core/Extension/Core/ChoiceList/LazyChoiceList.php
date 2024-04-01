@@ -52,7 +52,7 @@ final class LazyChoiceList implements ChoiceList
      * @param callable|null $value  The callable generating the choice
      *                              values
      */
-    public function __construct(ChoiceLoader $loader, callable $value = null)
+    public function __construct(ChoiceLoader $loader, ?callable $value = null)
     {
         $this->loader = $loader;
         $this->value = $value;

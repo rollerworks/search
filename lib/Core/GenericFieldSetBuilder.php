@@ -99,7 +99,7 @@ final class GenericFieldSetBuilder implements FieldSetBuilder
         throw new InvalidArgumentException(sprintf('The field with the name "%s" does not exist.', $name));
     }
 
-    public function getFieldSet(string $setName = null): FieldSet
+    public function getFieldSet(?string $setName = null): FieldSet
     {
         foreach ($this->unresolvedFields as $name => $field) {
             $this->fields[$name] = $this->searchFactory->createField(

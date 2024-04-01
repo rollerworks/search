@@ -28,9 +28,9 @@ final class DateTimeToTimestampTransformer extends BaseDateTimeTransformer
      *
      * @param \DateTimeImmutable|null $dateTime
      *
-     * @throws TransformationFailedException If the given value is not a \DateTimeImmutable
-     *
      * @return int|null A timestamp
+     *
+     * @throws TransformationFailedException If the given value is not a \DateTimeImmutable
      */
     public function transform($dateTime): ?int
     {

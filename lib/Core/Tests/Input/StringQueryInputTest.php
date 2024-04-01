@@ -37,7 +37,7 @@ use Rollerworks\Component\Search\ValueComparator;
  */
 final class StringQueryInputTest extends InputProcessorTestCase
 {
-    protected function getProcessor(callable $labelResolver = null): InputProcessor
+    protected function getProcessor(?callable $labelResolver = null): InputProcessor
     {
         return new StringQueryInput(null, $labelResolver);
     }
@@ -226,7 +226,7 @@ final class StringQueryInputTest extends InputProcessorTestCase
         $this->assertConditionContainsErrors($input, $config, [$error]);
     }
 
-    public function provideQueryExceptionTests(): iterable
+    public static function provideQueryExceptionTests(): iterable
     {
         return [
             [
@@ -315,7 +315,7 @@ final class StringQueryInputTest extends InputProcessorTestCase
         self::assertEquals($condition, $processor->process($config, '*(title:paris;subtitle:paris;teaser:paris)'));
     }
 
-    public function provideEmptyInputTests()
+    public static function provideEmptyInputTests(): iterable
     {
         return [
             [''],
@@ -323,7 +323,7 @@ final class StringQueryInputTest extends InputProcessorTestCase
         ];
     }
 
-    public function provideSingleValuePairTests()
+    public static function provideSingleValuePairTests(): iterable
     {
         return [
             ['name: value, value2, ٤٤٤٦٥٤٦٠٠, 30, 30L, !value3; @date: uP', ['@date' => 'ASC']],
@@ -333,7 +333,7 @@ final class StringQueryInputTest extends InputProcessorTestCase
         ];
     }
 
-    public function provideMultipleValues()
+    public static function provideMultipleValues(): iterable
     {
         return [
             ['name: value, value2; date: "12-16-2014";'],
@@ -342,7 +342,7 @@ final class StringQueryInputTest extends InputProcessorTestCase
         ];
     }
 
-    public function provideRangeValues()
+    public static function provideRangeValues(): iterable
     {
         return [
             ['id: 1~10, 15 ~ 30, ] 100~200 ], 310~400[, !50~70; date: [12-16-2014 ~ 12-20-2014];'],
@@ -350,7 +350,7 @@ final class StringQueryInputTest extends InputProcessorTestCase
         ];
     }
 
-    public function provideComparisonValues()
+    public static function provideComparisonValues(): iterable
     {
         return [
             ['id: >1, <2, <=5, >=8, <>20; date: >="12-16-2014";'],
@@ -358,14 +358,14 @@ final class StringQueryInputTest extends InputProcessorTestCase
         ];
     }
 
-    public function provideMatcherValues()
+    public static function provideMatcherValues(): iterable
     {
         return [
             ['name: ~*value, ~i>value2, ~<value3, ~!*value4, ~i!*value5, ~=value9, ~!=value10, ~i=value11, ~i!=value12;'],
         ];
     }
 
-    public function provideGroupTests()
+    public static function provideGroupTests(): iterable
     {
         return [
             ['name: value, value2; (name: value3, value4;); *(name: value8, value10;);'],
@@ -375,7 +375,7 @@ final class StringQueryInputTest extends InputProcessorTestCase
         ];
     }
 
-    public function provideRootLogicalTests()
+    public static function provideRootLogicalTests(): iterable
     {
         return [
             ['name: value, value2;'],
@@ -385,7 +385,7 @@ final class StringQueryInputTest extends InputProcessorTestCase
         ];
     }
 
-    public function provideMultipleSubGroupTests()
+    public static function provideMultipleSubGroupTests(): iterable
     {
         return [
             ['(name: value, value2); (name: value3, "value4");'],
@@ -393,7 +393,7 @@ final class StringQueryInputTest extends InputProcessorTestCase
         ];
     }
 
-    public function provideNestedGroupTests()
+    public static function provideNestedGroupTests(): iterable
     {
         return [
             ['((name: value, value2;););'],
@@ -404,7 +404,7 @@ final class StringQueryInputTest extends InputProcessorTestCase
         ];
     }
 
-    public function provideAliasedFieldsTests(): iterable
+    public static function provideAliasedFieldsTests(): iterable
     {
         return [
             ['first-name: value1; first-name: value, value2;'],
@@ -413,7 +413,7 @@ final class StringQueryInputTest extends InputProcessorTestCase
         ];
     }
 
-    public function provideValueOverflowTests()
+    public static function provideValueOverflowTests(): iterable
     {
         return [
             ['first level' => 'name: value, value2, value3, value4, value5;', 'name', '[name][3]'],
@@ -423,7 +423,7 @@ final class StringQueryInputTest extends InputProcessorTestCase
         ];
     }
 
-    public function provideGroupsOverflowTests()
+    public static function provideGroupsOverflowTests(): iterable
     {
         return [
             ['(name: value, value2;); (name: value, value2;); (name: value, value2;); (name: value, value2;)', ''],
@@ -431,14 +431,14 @@ final class StringQueryInputTest extends InputProcessorTestCase
         ];
     }
 
-    public function provideNestingLevelExceededTests()
+    public static function provideNestingLevelExceededTests(): iterable
     {
         return [
             ['((field2: value;))', '[0][0]'],
         ];
     }
 
-    public function providePrivateFieldTests()
+    public static function providePrivateFieldTests(): iterable
     {
         return [
             ['_id: 1;', '_id'],
@@ -446,14 +446,14 @@ final class StringQueryInputTest extends InputProcessorTestCase
         ];
     }
 
-    public function provideUnknownFieldTests()
+    public static function provideUnknownFieldTests(): iterable
     {
         return [
             ['field2: value;'],
         ];
     }
 
-    public function provideUnsupportedValueTypeExceptionTests()
+    public static function provideUnsupportedValueTypeExceptionTests(): iterable
     {
         return [
             ['no-range-field: 1~12;', 'no-range-field', Range::class],
@@ -462,7 +462,7 @@ final class StringQueryInputTest extends InputProcessorTestCase
         ];
     }
 
-    public function provideInvalidRangeTests()
+    public static function provideInvalidRangeTests(): iterable
     {
         return [
             ['id: 30~10, 50~60, 40~20;', ['[id][0]', '[id][2]']],
@@ -470,7 +470,7 @@ final class StringQueryInputTest extends InputProcessorTestCase
         ];
     }
 
-    public function provideInvalidValueTests()
+    public static function provideInvalidValueTests(): iterable
     {
         return [
             [
@@ -491,7 +491,7 @@ final class StringQueryInputTest extends InputProcessorTestCase
         ];
     }
 
-    public function provideInvalidWithMessageValueTests()
+    public static function provideInvalidWithMessageValueTests(): iterable
     {
         return [
             [
@@ -504,7 +504,7 @@ final class StringQueryInputTest extends InputProcessorTestCase
         ];
     }
 
-    public function provideNestedErrorsTests()
+    public static function provideNestedErrorsTests(): iterable
     {
         return [
             ['date: 1;', [new ConditionErrorMessage('[date][0]', 'This value is not valid.')]],

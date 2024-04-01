@@ -26,6 +26,7 @@ final class FieldSetStub implements FieldSet
 
     public function get(string $name): FieldConfig
     {
+        throw new \BadMethodCallException('Cannot be called');
     }
 
     public function all(): array

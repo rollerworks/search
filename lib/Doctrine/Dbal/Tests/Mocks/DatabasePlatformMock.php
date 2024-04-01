@@ -47,41 +47,49 @@ class DatabasePlatformMock extends AbstractPlatform
     /** @override */
     public function getBooleanTypeDeclarationSQL(array $column): string
     {
+        throw DBALException::notSupported(__METHOD__);
     }
 
     /** @override */
     public function getIntegerTypeDeclarationSQL(array $column): string
     {
+        throw DBALException::notSupported(__METHOD__);
     }
 
     /** @override */
     public function getBigIntTypeDeclarationSQL(array $column): string
     {
+        throw DBALException::notSupported(__METHOD__);
     }
 
     /** @override */
     public function getSmallIntTypeDeclarationSQL(array $column): string
     {
+        throw DBALException::notSupported(__METHOD__);
     }
 
     /** @override */
     protected function _getCommonIntegerTypeDeclarationSQL(array $column): string
     {
+        throw DBALException::notSupported(__METHOD__);
     }
 
     /** @override */
     public function getVarcharTypeDeclarationSQL(array $column): string
     {
+        throw DBALException::notSupported(__METHOD__);
     }
 
     /** @override */
     public function getClobTypeDeclarationSQL(array $column): string
     {
+        throw DBALException::notSupported(__METHOD__);
     }
 
     /** @override */
     public function getCurrentDatabaseExpression(): string
     {
+        throw DBALException::notSupported(__METHOD__);
     }
 
     /* MOCK API */
@@ -112,6 +120,7 @@ class DatabasePlatformMock extends AbstractPlatform
 
     protected function getVarcharTypeDeclarationSQLSnippet($length, $fixed): string
     {
+        throw DBALException::notSupported(__METHOD__);
     }
 
     /**

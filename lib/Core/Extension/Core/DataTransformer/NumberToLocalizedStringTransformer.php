@@ -81,7 +81,7 @@ class NumberToLocalizedStringTransformer implements DataTransformer
     private $scale;
     private $locale;
 
-    public function __construct(int $scale = null, ?bool $grouping = false, ?int $roundingMode = self::ROUND_HALF_UP, string $locale = null)
+    public function __construct(?int $scale = null, ?bool $grouping = false, ?int $roundingMode = self::ROUND_HALF_UP, ?string $locale = null)
     {
         if ($grouping === null) {
             $grouping = false;
@@ -102,10 +102,10 @@ class NumberToLocalizedStringTransformer implements DataTransformer
      *
      * @param float|int|string|null $value Number value
      *
+     * @return string Localized value
+     *
      * @throws TransformationFailedException if the given value is not numeric
      *                                       or if the value can not be transformed
-     *
-     * @return string Localized value
      */
     public function transform($value): ?string
     {
@@ -133,10 +133,10 @@ class NumberToLocalizedStringTransformer implements DataTransformer
      *
      * @param string $value The localized value
      *
+     * @return float|int|null The numeric value
+     *
      * @throws TransformationFailedException if the given value is not a string
      *                                       or if the value can not be transformed
-     *
-     * @return float|int|null The numeric value
      */
     public function reverseTransform($value)
     {

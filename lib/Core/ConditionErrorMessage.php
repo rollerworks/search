@@ -85,7 +85,7 @@ final class ConditionErrorMessage
         $this->cause = $cause;
     }
 
-    public static function withMessageTemplate(string $path, string $messageTemplate, array $messageParameters = [], int $messagePluralization = null, $cause = null): self
+    public static function withMessageTemplate(string $path, string $messageTemplate, array $messageParameters = [], ?int $messagePluralization = null, $cause = null): self
     {
         return new self(
             $path,

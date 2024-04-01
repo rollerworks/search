@@ -60,8 +60,6 @@ final class LazyFieldSetRegistry implements FieldSetRegistry
      * @param \Closure[] $configurators an array of lazy loading configurators.
      *                                  The Closure when called is expected to return
      *                                  a FieldSetConfiguratorInterface object
-     *
-     * @return LazyFieldSetRegistry
      */
     public static function create(array $configurators = []): self
     {

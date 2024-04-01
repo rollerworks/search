@@ -48,16 +48,18 @@ final class DqlConditionGeneratorTest extends OrmTestCase
         return $build ? $fieldSet->getFieldSet('invoice') : $fieldSet;
     }
 
+    protected function getQuery(): QueryBuilder
+    {
+        return $this->em->createQueryBuilder()
+            ->select('I')
+            ->from(ECommerceInvoice::class, 'I')
+            ->join('I.customer', 'C')
+        ;
+    }
+
     private function getConditionGenerator(SearchCondition $condition, ?QueryBuilder $qb = null, bool $noMapping = false)
     {
-        if ($qb === null) {
-            $qb = $this->em->createQueryBuilder()
-                ->select('I')
-                ->from(ECommerceInvoice::class, 'I')
-                ->join('I.customer', 'C')
-            ;
-        }
-
+        $qb ??= $this->getQuery();
         $conditionGenerator = $this->getOrmFactory()->createConditionGenerator($qb, $condition);
 
         if (! $noMapping) {

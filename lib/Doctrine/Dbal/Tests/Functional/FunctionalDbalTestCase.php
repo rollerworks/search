@@ -74,7 +74,7 @@ abstract class FunctionalDbalTestCase extends DbalTestCase
             $GLOBALS['db_dbname'],
             $GLOBALS['db_port']
         )) {
-            static::markTestSkipped('GLOBAL variables not enabled');
+            self::markTestSkipped('GLOBAL variables not enabled');
         }
 
         if (! isset(self::$sharedConn)) {
@@ -106,7 +106,8 @@ abstract class FunctionalDbalTestCase extends DbalTestCase
     {
         $schemaManager = $connection->createSchemaManager();
         $schemaDiff = $schemaManager->createComparator()
-            ->compareSchemas($schemaManager->introspectSchema(), $providedSchema);
+            ->compareSchemas($schemaManager->introspectSchema(), $providedSchema)
+        ;
 
         $platform = $connection->getDatabasePlatform();
 
@@ -172,9 +173,7 @@ abstract class FunctionalDbalTestCase extends DbalTestCase
     /**
      * Returns the string for the ConditionGenerator.
      */
-    protected function getQuery(): QueryBuilder
-    {
-    }
+    abstract protected function getQuery(): QueryBuilder;
 
     /**
      * Configure fields of the ConditionGenerator.
@@ -212,9 +211,9 @@ abstract class FunctionalDbalTestCase extends DbalTestCase
         foreach ($qb->getParameters() as $name => $value) {
             $type = $qb->getParameterType($name) ?? 'string';
 
-            if (is_int($type)) {
+            if (\is_int($type)) {
                 $type = $bindingToType[$type];
-            } elseif (is_object($type)) {
+            } elseif (\is_object($type)) {
                 $type = Type::lookupName($type);
             }
 
@@ -230,7 +229,7 @@ abstract class FunctionalDbalTestCase extends DbalTestCase
         sort($ids);
         sort($idRows);
 
-        static::assertEquals(
+        self::assertEquals(
             $ids,
             array_merge([], array_unique($idRows)),
             sprintf("Found these records instead: \n%s\nWith Query: %s\nAnd params: %s", print_r($rows, true), $qb->getSQL(), $paramsString)
@@ -281,7 +280,7 @@ abstract class FunctionalDbalTestCase extends DbalTestCase
                 $params = array_map(
                     static function ($p) {
                         if (\is_object($p)) {
-                            return \get_class($p);
+                            return $p::class;
                         }
 
                         return "'" . var_export($p, true) . "'";
@@ -308,7 +307,7 @@ abstract class FunctionalDbalTestCase extends DbalTestCase
             }
 
             $message =
-                '[' . \get_class($e) . '] ' .
+                '[' . $e::class . '] ' .
                 $e->getMessage() .
                 \PHP_EOL . \PHP_EOL .
                 'With queries:' . \PHP_EOL .

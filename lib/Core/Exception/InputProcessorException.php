@@ -35,7 +35,7 @@ class InputProcessorException extends \InvalidArgumentException implements Searc
     /** @var int|null */
     public $plural;
 
-    public function __construct(string $path, string $messageTemplate, array $messageParameters = [], int $plural = null, \Exception $previous = null)
+    public function __construct(string $path, string $messageTemplate, array $messageParameters = [], ?int $plural = null, ?\Exception $previous = null)
     {
         $this->path = $path;
         $this->messageTemplate = $messageTemplate;
@@ -68,8 +68,6 @@ class InputProcessorException extends \InvalidArgumentException implements Searc
      *
      * @param array $translatedParameters An array of parameter names that need
      *                                    to be translated prior to their usage
-     *
-     * @return InputProcessorException
      */
     protected function setTranslatedParameters(array $translatedParameters): self
     {

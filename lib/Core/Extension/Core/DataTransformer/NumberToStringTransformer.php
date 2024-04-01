@@ -52,10 +52,10 @@ class NumberToStringTransformer extends NumberToLocalizedStringTransformer
      *
      * @param string $value The localized value
      *
+     * @return float|int|null The numeric value
+     *
      * @throws TransformationFailedException If the given value is not a string
      *                                       or if the value can not be transformed
-     *
-     * @return float|int|null The numeric value
      */
     public function reverseTransform($value)
     {

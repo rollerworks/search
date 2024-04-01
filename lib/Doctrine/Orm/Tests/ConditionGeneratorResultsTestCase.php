@@ -319,10 +319,10 @@ abstract class ConditionGeneratorResultsTestCase extends OrmTestCase
                 echo 'Please install symfony/var-dumper as dev-requirement to get a readable structure.' . \PHP_EOL;
 
                 // Don't use var-dump or print-r as this crashes php...
-                echo \get_class($e) . '::' . (string) $e;
+                echo $e::class . '::' . (string) $e;
             }
 
-            static::fail('Condition contains errors.');
+            self::fail('Condition contains errors.');
         }
     }
 
@@ -343,10 +343,10 @@ abstract class ConditionGeneratorResultsTestCase extends OrmTestCase
                 echo 'Please install symfony/var-dumper as dev-requirement to get a readable structure.' . \PHP_EOL;
 
                 // Don't use var-dump or print-r as this crashes php...
-                echo \get_class($e) . '::' . (string) $e;
+                echo $e::class . '::' . (string) $e;
             }
 
-            static::fail('Condition contains errors.');
+            self::fail('Condition contains errors.');
         }
     }
 }

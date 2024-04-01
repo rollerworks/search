@@ -27,7 +27,7 @@ final class DateIntervalTransformer implements DataTransformer
     /** @var string */
     private $toLocale;
 
-    public function __construct(string $fromLocale, string $toLocale = null)
+    public function __construct(string $fromLocale, ?string $toLocale = null)
     {
         $this->fromLocale = $fromLocale;
         $this->toLocale = $toLocale ?? $fromLocale;

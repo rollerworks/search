@@ -13,8 +13,6 @@ declare(strict_types=1);
 
 namespace Rollerworks\Bundle\SearchBundle\Tests;
 
-use BadMethodCallException;
-use LogicException;
 use PHPUnit\Framework\TestCase;
 use Rollerworks\Component\Search\Extension\Core\Type\IntegerType;
 use Rollerworks\Component\Search\Extension\Core\Type\TextType;
@@ -52,7 +50,7 @@ final class SearchConditionBuilderTest extends TestCase
         $fieldSet = new FieldSetStub();
         $builder = SearchConditionBuilder::create($fieldSet);
 
-        $this->expectException(LogicException::class);
+        $this->expectException(\LogicException::class);
         $this->expectExceptionMessage('Unable serialize a SearchConditionBuilder. Call getSearchCondition() and serialize the SearchCondition itself.');
 
         serialize($builder);
@@ -71,7 +69,7 @@ final class SearchConditionBuilderTest extends TestCase
         $fieldSet = $fieldSetBuilder->getFieldSet('users');
         $condBuilder = SearchConditionBuilder::create($fieldSet);
 
-        $this->expectException(BadMethodCallException::class);
+        $this->expectException(\BadMethodCallException::class);
         $this->expectExceptionMessage('Cannot add ordering at nested levels.');
 
         $condBuilder->group()
@@ -106,7 +104,7 @@ final class SearchConditionBuilderTest extends TestCase
         self::assertEquals($conditionProvider($fieldSet), $condBuilder->getSearchCondition());
     }
 
-    public function provideBuilderExpectations(): iterable
+    public static function provideBuilderExpectations(): iterable
     {
         yield 'root (AND)' => [
             static function (FieldSet $fieldSet): SearchCondition {

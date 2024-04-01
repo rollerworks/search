@@ -24,7 +24,7 @@ final class IntegerToStringTransformer extends NumberToStringTransformer
     /**
      * @param int|null $roundingMode One of the ROUND_ constants in this class
      */
-    public function __construct(int $roundingMode = null, bool $grouping = false)
+    public function __construct(?int $roundingMode = null, bool $grouping = false)
     {
         parent::__construct(0, $grouping, $roundingMode ?? self::ROUND_DOWN);
     }

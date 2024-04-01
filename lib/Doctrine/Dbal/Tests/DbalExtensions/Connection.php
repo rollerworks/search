@@ -29,11 +29,11 @@ final class Connection extends BaseConnection
     /** @var QueryLog */
     public $queryLog;
 
-    public function __construct(array $params, Driver $driver, Configuration $config = null, EventManager $eventManager = null)
+    public function __construct(array $params, Driver $driver, ?Configuration $config = null, ?EventManager $eventManager = null)
     {
         $this->queryLog = new QueryLog();
 
-        if (\class_exists(LoggingMiddleware::class)) {
+        if (class_exists(LoggingMiddleware::class)) {
             $logging = new LoggingMiddleware(new SqlLogger($this->queryLog));
             $driver = $logging->wrap($driver);
         } else {

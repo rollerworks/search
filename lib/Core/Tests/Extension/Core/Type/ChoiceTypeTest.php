@@ -16,6 +16,7 @@ namespace Rollerworks\Component\Search\Tests\Extension\Core\Type;
 use Rollerworks\Component\Search\Extension\Core\ChoiceList\View\ChoiceGroupView;
 use Rollerworks\Component\Search\Extension\Core\ChoiceList\View\ChoiceView;
 use Rollerworks\Component\Search\Extension\Core\Type\ChoiceType;
+use Rollerworks\Component\Search\Field\SearchField;
 use Rollerworks\Component\Search\FieldSetView;
 use Rollerworks\Component\Search\Test\FieldTransformationAssertion;
 use Rollerworks\Component\Search\Test\SearchIntegrationTestCase;
@@ -104,6 +105,7 @@ final class ChoiceTypeTest extends SearchIntegrationTestCase
     /** @test */
     public function choice_list_with_scalar_values(): void
     {
+        /** @var SearchField $field */
         $field = $this->getFactory()->createField('choice', ChoiceType::class, [
             'choices' => $this->scalarChoices,
         ]);
@@ -137,6 +139,7 @@ final class ChoiceTypeTest extends SearchIntegrationTestCase
     /** @test */
     public function choice_list_with_scalar_values_and_norm_format_label(): void
     {
+        /** @var SearchField $field */
         $field = $this->getFactory()->createField('choice', ChoiceType::class, [
             'choices' => $this->scalarChoices,
             'norm_format' => 'label',
@@ -171,6 +174,7 @@ final class ChoiceTypeTest extends SearchIntegrationTestCase
     /** @test */
     public function choice_list_with_scalar_values_and_false_as_preferred_choice(): void
     {
+        /** @var SearchField $field */
         $field = $this->getFactory()->createField('choice', ChoiceType::class, [
             'choices' => $this->scalarChoices,
             'preferred_choices' => [false],
@@ -185,6 +189,7 @@ final class ChoiceTypeTest extends SearchIntegrationTestCase
     /** @test */
     public function object_choices(): void
     {
+        /** @var SearchField $field */
         $field = $this->getFactory()->createField('choice', ChoiceType::class, [
             'choices' => $this->objectChoices,
             'choice_label' => 'name',
@@ -201,6 +206,7 @@ final class ChoiceTypeTest extends SearchIntegrationTestCase
     /** @test */
     public function value_view_format_is_value(): void
     {
+        /** @var SearchField $field */
         $field = $this->getFactory()->createField('choice', ChoiceType::class, [
             'choices' => $this->objectChoices,
             'choice_label' => 'name',
@@ -230,6 +236,7 @@ final class ChoiceTypeTest extends SearchIntegrationTestCase
     /** @test */
     public function array_choices(): void
     {
+        /** @var SearchField $field */
         $field = $this->getFactory()->createField('choice', ChoiceType::class, [
             'choices' => $this->choices,
         ]);
@@ -245,6 +252,8 @@ final class ChoiceTypeTest extends SearchIntegrationTestCase
     public function pass_choices_to_view(): void
     {
         $choices = ['A' => 'a', 'B' => 'b', 'C' => 'c', 'D' => 'd'];
+
+        /** @var SearchField $field */
         $field = $this->getFactory()->createField('choice', ChoiceType::class, [
             'choices' => $choices,
         ]);
@@ -264,6 +273,8 @@ final class ChoiceTypeTest extends SearchIntegrationTestCase
     public function pass_preferred_choices_to_view(): void
     {
         $choices = ['A' => 'a', 'B' => 'b', 'C' => 'c', 'D' => 'd'];
+
+        /** @var SearchField $field */
         $field = $this->getFactory()->createField('choice', ChoiceType::class, [
             'choices' => $choices,
             'preferred_choices' => ['b', 'd'],
@@ -286,6 +297,7 @@ final class ChoiceTypeTest extends SearchIntegrationTestCase
     /** @test */
     public function pass_hierarchical_choices_to_view(): void
     {
+        /** @var SearchField $field */
         $field = $this->getFactory()->createField('choice', ChoiceType::class, [
             'choices' => $this->groupedChoices,
             'preferred_choices' => ['b', 'd'],

@@ -70,7 +70,7 @@ final class DateTimeIntervalValueComparator implements ValueComparator
     {
         // Note that only values of the same type can be compared.
         // As an interval is never equal to "now".
-        if (! is_a($value, \get_class($nextValue))) {
+        if (! is_a($value, $nextValue::class)) {
             return false;
         }
 

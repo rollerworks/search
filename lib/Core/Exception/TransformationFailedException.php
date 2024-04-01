@@ -13,14 +13,12 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Exception;
 
-use Throwable;
-
 final class TransformationFailedException extends \RuntimeException implements SearchException
 {
     private $invalidMessage;
     private $invalidMessageParameters;
 
-    public function __construct(string $message = '', int $code = 0, Throwable $previous = null, string $invalidMessage = null, array $invalidMessageParameters = [])
+    public function __construct(string $message = '', int $code = 0, ?\Throwable $previous = null, ?string $invalidMessage = null, array $invalidMessageParameters = [])
     {
         parent::__construct($message, $code, $previous);
 
@@ -33,7 +31,7 @@ final class TransformationFailedException extends \RuntimeException implements S
      * @param string|null $invalidMessage           The message or message key
      * @param array       $invalidMessageParameters Data to be passed into the translator
      */
-    public function setInvalidMessage(string $invalidMessage = null, array $invalidMessageParameters = []): void
+    public function setInvalidMessage(?string $invalidMessage = null, array $invalidMessageParameters = []): void
     {
         $this->invalidMessage = $invalidMessage;
         $this->invalidMessageParameters = $invalidMessageParameters;

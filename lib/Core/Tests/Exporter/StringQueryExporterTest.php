@@ -148,12 +148,12 @@ final class StringQueryExporterTest extends SearchConditionExporterTestCase
         return '(  );';
     }
 
-    protected function getExporter(callable $labelResolver = null): ConditionExporter
+    protected function getExporter(?callable $labelResolver = null): ConditionExporter
     {
         return new StringQueryExporter($labelResolver);
     }
 
-    protected function getInputProcessor(callable $labelResolver = null): InputProcessor
+    protected function getInputProcessor(?callable $labelResolver = null): InputProcessor
     {
         return new StringQueryInput(null, $labelResolver);
     }

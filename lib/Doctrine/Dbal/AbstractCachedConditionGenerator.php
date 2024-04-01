@@ -20,7 +20,7 @@ use Rollerworks\Component\Search\SearchCondition;
 abstract class AbstractCachedConditionGenerator
 {
     protected Cache $cacheDriver;
-    protected int|null|\DateInterval $cacheLifeTime;
+    protected \DateInterval|int|null $cacheLifeTime;
     protected SearchCondition $searchCondition;
     protected ?string $cacheKey = null;
     protected bool $isApplied = false;

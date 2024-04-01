@@ -21,9 +21,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 interface ResolvedFieldType
 {
-    /**
-     * @return ResolvedFieldType|null
-     */
     public function getParent(): ?self;
 
     /**

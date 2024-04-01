@@ -112,7 +112,7 @@ abstract class AbstractExtension implements SearchExtension
                 throw new UnexpectedTypeException($type, FieldType::class);
             }
 
-            $this->types[\get_class($type)] = $type;
+            $this->types[$type::class] = $type;
         }
     }
 

@@ -99,7 +99,7 @@ abstract class SearchIntegrationTestCase extends TestCase
     {
         try {
             // First try the "simple" method, it's possible this fails due to index mismatches.
-            static::assertEquals($expectedCondition, $actualCondition);
+            self::assertEquals($expectedCondition, $actualCondition);
         } catch (\Exception $e) {
             // No need for custom implementations here.
             // The reindexValuesGroup can be used for custom implementations (when needed).
@@ -108,7 +108,7 @@ abstract class SearchIntegrationTestCase extends TestCase
                 self::reindexValuesGroup($actualCondition->getValuesGroup())
             );
 
-            static::assertEquals($expectedCondition, $actualCondition);
+            self::assertEquals($expectedCondition, $actualCondition);
         }
     }
 
@@ -147,7 +147,7 @@ abstract class SearchIntegrationTestCase extends TestCase
     protected function assertConditionEquals($input, SearchCondition $condition, InputProcessor $processor, ProcessorConfig $config): void
     {
         try {
-            static::assertEquals($condition, $processor->process($config, $input));
+            self::assertEquals($condition, $processor->process($config, $input));
         } catch (\Exception $e) {
             InputProcessorTestCase::detectSystemException($e);
 
@@ -157,10 +157,10 @@ abstract class SearchIntegrationTestCase extends TestCase
                 echo 'Please install symfony/var-dumper as dev-requirement to get a readable structure.' . \PHP_EOL;
 
                 // Don't use var-dump or print-r as this crashes php...
-                echo \get_class($e) . '::' . (string) $e;
+                echo $e::class . '::' . (string) $e;
             }
 
-            static::fail('Condition contains errors.');
+            self::fail('Condition contains errors.');
         }
     }
 

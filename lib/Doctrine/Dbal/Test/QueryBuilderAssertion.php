@@ -20,7 +20,7 @@ use Rollerworks\Component\Search\Doctrine\Dbal\ConditionGenerator;
 final class QueryBuilderAssertion
 {
     /**
-     * @phpstan-param array<string, mixed|array{0: mixed, 1: string}}> $parameters by name with value or [value, type name)]
+     * @phpstan-param array<string, mixed|array{0: mixed, 1: string}> $parameters by name with value or [value, type name)]
      */
     public static function assertQueryBuilderEquals(ConditionGenerator $generator, string $where, ?array $parameters = []): void
     {

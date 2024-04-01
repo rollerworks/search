@@ -26,7 +26,7 @@ final class QueryLog
     /** @var bool */
     private $enabled = false;
 
-    public function logQuery(string $sql, array $params = null, array $types = null): void
+    public function logQuery(string $sql, ?array $params = null, ?array $types = null): void
     {
         if (! $this->enabled) {
             return;

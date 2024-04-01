@@ -307,9 +307,7 @@ final class CachedConditionGeneratorTest extends DbalTestCase
     {
         parent::setUp();
 
-        $this->cacheDriver = $this->getMockBuilder('Doctrine\Common\Cache\Cache')->getMock();
         $this->query = $this->createQuery();
-
         $searchCondition = SearchConditionBuilder::create($this->getFieldSet())
             ->field('customer')
                 ->addSimpleValue(2)

@@ -1,4 +1,4 @@
-QA_DOCKER_IMAGE=jakzal/phpqa:1.77-php8.1-alpine
+QA_DOCKER_IMAGE=jakzal/phpqa:1.96.4-php8.1-alpine
 QA_DOCKER_COMMAND=docker run --init -t --rm --user "$(shell id -u):$(shell id -g)" --volume /tmp/tmp-phpqa-$(shell id -u):/tmp --volume "$(shell pwd):/project" --workdir /project ${QA_DOCKER_IMAGE}
 
 dist: install cs-full phpstan test

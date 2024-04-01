@@ -48,7 +48,7 @@ final class FieldConfigBuilder
         $this->defaultAlias = $alias;
     }
 
-    public function setField(string $mappingName, string $property, string $alias = null, string $entity = null, string $type = null): void
+    public function setField(string $mappingName, string $property, ?string $alias = null, ?string $entity = null, ?string $type = null): void
     {
         $mappingIdx = null;
         $fieldName = $mappingName;

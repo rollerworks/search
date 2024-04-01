@@ -101,7 +101,7 @@ class ConditionStructureBuilder implements StructureBuilder
         $this->maxNesting = $config->getMaxNestingLevel();
         $this->maxGroups = $config->getMaxGroups();
 
-        $this->errorList = $errorList ?? new ErrorList();
+        $this->errorList = $errorList;
         $this->valuesGroupLevels[0] = new ValuesGroup();
         $this->path[] = $path;
     }
@@ -452,7 +452,7 @@ class ConditionStructureBuilder implements StructureBuilder
             return;
         }
 
-        $class = \get_class($range);
+        $class = $range::class;
 
         // Perform validation for both bounds (don't move to bounds validator as that returns early).
         $this->validator->validate($range->getLower(), $class, $lower, $path[0] . $path[1]);

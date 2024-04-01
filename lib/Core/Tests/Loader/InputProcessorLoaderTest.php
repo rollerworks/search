@@ -34,6 +34,7 @@ final class InputProcessorLoaderTest extends TestCase
 
     /**
      * @dataProvider provideProcessors
+     *
      * @test
      */
     public function it_can_load_bundled_processor(string $alias, string $className): void
@@ -43,7 +44,7 @@ final class InputProcessorLoaderTest extends TestCase
         self::assertInstanceOf($className, $loader->get($alias));
     }
 
-    public function provideProcessors(): array
+    public static function provideProcessors(): iterable
     {
         return [
             ['json', Input\JsonInput::class],

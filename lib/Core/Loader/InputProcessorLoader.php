@@ -43,7 +43,7 @@ final class InputProcessorLoader
     /**
      * Create a new InputProcessorLoader with the build-in InputProcessors loadable.
      */
-    public static function create(Validator $validator = null): self
+    public static function create(?Validator $validator = null): self
     {
         return new self(
             new ClosureContainer(

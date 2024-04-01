@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Doctrine\Dbal\Tests;
 
+use Doctrine\Common\EventSubscriber;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Driver\AbstractSQLiteDriver\Middleware\EnableForeignKeys;
 use Doctrine\DBAL\DriverManager;
@@ -140,7 +141,7 @@ class TestUtil
 
         $evm = $conn->getEventManager();
 
-        /** @psalm-var class-string<EventSubscriber> $subscriberClass */
+        /** @var class-string<EventSubscriber> $subscriberClass */
         foreach (explode(',', $GLOBALS['db_event_subscribers']) as $subscriberClass) {
             $subscriberInstance = new $subscriberClass();
             $evm->addEventSubscriber($subscriberInstance);
@@ -212,7 +213,7 @@ class TestUtil
                 continue;
             }
 
-            $parameters['driverOptions'][mb_substr($param, \mb_strlen($prefix . 'driver_option_'))] = $value;
+            $parameters['driverOptions'][mb_substr($param, mb_strlen($prefix . 'driver_option_'))] = $value;
         }
 
         $parameters['wrapperClass'] = DbalExtensions\Connection::class;

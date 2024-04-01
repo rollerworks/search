@@ -40,7 +40,7 @@ final class SearchExtension implements QueryCollectionExtensionInterface
         $this->ormFactory = $ormFactory;
     }
 
-    public function applyToCollection(QueryBuilder $queryBuilder, QueryNameGeneratorInterface $queryNameGenerator, string $resourceClass, Operation $operation = null, array $context = []): void
+    public function applyToCollection(QueryBuilder $queryBuilder, QueryNameGeneratorInterface $queryNameGenerator, string $resourceClass, ?Operation $operation = null, array $context = []): void
     {
         $request = $this->requestStack->getCurrentRequest();
 

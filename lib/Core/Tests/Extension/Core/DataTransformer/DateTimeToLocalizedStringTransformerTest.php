@@ -56,10 +56,10 @@ final class DateTimeToLocalizedStringTransformerTest extends TestCase
             $actual = $actual->format('c');
         }
 
-        parent::assertEquals($expected, $actual, $message, $delta, $maxDepth, $canonicalize, $ignoreCase);
+        parent::assertEquals($expected, $actual, $message);
     }
 
-    public function dataProvider(): iterable
+    public static function dataProvider(): iterable
     {
         return [
             [\IntlDateFormatter::SHORT, null, null, '03.02.10, 04:05', '2010-02-03 04:05:00 UTC'],
@@ -253,7 +253,7 @@ final class DateTimeToLocalizedStringTransformerTest extends TestCase
         $transformer = new DateTimeToLocalizedStringTransformer('America/New_York', 'Asia/Hong_Kong');
 
         $dateTime = new \DateTimeImmutable('2010-02-03 04:05:00 Asia/Hong_Kong');
-        $dateTime->setTimezone(new \DateTimeZone('America/New_York'));
+        $dateTime = $dateTime->setTimezone(new \DateTimeZone('America/New_York'));
 
         self::assertDateTimeEquals($dateTime, $transformer->reverseTransform('03.02.2010, 04:05'));
     }

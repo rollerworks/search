@@ -114,8 +114,6 @@ class ProcessorConfig
 
     /**
      * @param \DateInterval|int|null $cacheTTL
-     *
-     * @return ProcessorConfig
      */
     public function setCacheTTL($cacheTTL): self
     {

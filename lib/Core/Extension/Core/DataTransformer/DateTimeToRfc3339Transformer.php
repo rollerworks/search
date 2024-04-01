@@ -25,9 +25,9 @@ final class DateTimeToRfc3339Transformer extends BaseDateTimeTransformer
      *
      * @param \DateTimeImmutable|null $dateTime
      *
-     * @throws TransformationFailedException If the given value is not a \DateTimeImmutable
-     *
      * @return string The formatted date
+     *
+     * @throws TransformationFailedException If the given value is not a \DateTimeImmutable
      */
     public function transform($dateTime): string
     {

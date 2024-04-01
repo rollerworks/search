@@ -30,10 +30,12 @@ final class LegacySqlLogger implements SQLLogger
         $this->queryLog = $queryLog;
     }
 
-    public function startQuery($sql, array $params = null, array $types = null): void
+    public function startQuery($sql, ?array $params = null, ?array $types = null): void
     {
         $this->queryLog->logQuery($sql, $params, $types);
     }
 
-    public function stopQuery(): void {}
+    public function stopQuery(): void
+    {
+    }
 }

@@ -264,8 +264,7 @@ final class DefaultChoiceListFactoryTest extends TestCase
     {
         $loader = $this->createMock(ChoiceLoader::class);
 
-        $value = static function (): void {
-        };
+        $value = static function (): void {};
         $list = $this->factory->createListFromLoader($loader, $value);
 
         self::assertEquals(new LazyChoiceList($loader, $value), $list);

@@ -29,7 +29,7 @@ final class IntegerToStringTransformerTest extends TestCase
         \Locale::setDefault('en');
     }
 
-    public function transformWithRoundingProvider(): iterable
+    public static function transformWithRoundingProvider(): iterable
     {
         return [
             // towards positive infinity (1.6 -> 2, -1.6 -> -1)
@@ -111,7 +111,7 @@ final class IntegerToStringTransformerTest extends TestCase
         self::assertNull($transformer->reverseTransform(''));
     }
 
-    public function reverseTransformWithRoundingProvider(): iterable
+    public static function reverseTransformWithRoundingProvider(): iterable
     {
         return [
             // towards positive infinity (1.6 -> 2, -1.6 -> -1)

@@ -46,7 +46,7 @@ abstract class FunctionalElasticsearchTestCase extends ElasticsearchTestCase
                 $this->createDocuments($name, $properties, $data);
             }
         } catch (ResponseException $exception) {
-            static::fail(sprintf(
+            self::fail(sprintf(
                 "%s\nWith path: %s\nWith query: ---------------------\n%s\n---------------------------------\n",
                 $exception->getMessage(),
                 $exception->getRequest()->getPath(),
@@ -190,7 +190,7 @@ abstract class FunctionalElasticsearchTestCase extends ElasticsearchTestCase
                 $index->refresh();
             }
         } catch (ResponseException $exception) {
-            static::fail(sprintf(
+            self::fail(sprintf(
                 "%s\nWith path: %s\nWith query: ---------------------\n%s\n---------------------------------\n",
                 $exception->getMessage(),
                 $exception->getRequest()->getPath(),
@@ -307,7 +307,7 @@ abstract class FunctionalElasticsearchTestCase extends ElasticsearchTestCase
                 $documents
             );
         } catch (ResponseException $exception) {
-            static::fail(sprintf(
+            self::fail(sprintf(
                 "%s\nWith path: %s\nWith query: ---------------------\n%s\n---------------------------------\n",
                 $exception->getMessage(),
                 $search->getPath(),
@@ -315,7 +315,7 @@ abstract class FunctionalElasticsearchTestCase extends ElasticsearchTestCase
             ));
         }
 
-        static::assertSame(
+        self::assertSame(
             array_map('strval', $expectedIds),
             $foundIds,
             sprintf(
