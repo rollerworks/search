@@ -43,7 +43,7 @@ jobs:
 
             -
                 name: 'Cache dependencies'
-                uses: 'actions/cache@v3'
+                uses: 'actions/cache@v4'
                 with:
                     path: '${{ steps.composer-cache.outputs.cache_dir }}'
                     key: "php-${{ matrix.php-version }}-composer-locked-${{ hashFiles('composer.lock') }}"
@@ -86,7 +86,7 @@ jobs:
 
             -
                 name: 'Cache dependencies'
-                uses: 'actions/cache@v3'
+                uses: 'actions/cache@v4'
                 with:
                     path: '${{ steps.composer-cache.outputs.cache_dir }}'
                     key: "php-${{ matrix.php-version }}-composer-locked-${{ hashFiles('composer.lock') }}"
@@ -102,7 +102,7 @@ jobs:
 
     test:
 
-        name: 'PHPUnit with PHP ${{ matrix.php-versions }} / Symfony ${{ matrix.symfony-version }}'
+        name: 'PHPUnit with PHP ${{ matrix.php-version }} / Symfony ${{ matrix.symfony-version }}'
         runs-on: ubuntu-latest
 
         strategy:
@@ -112,7 +112,7 @@ jobs:
                     -
                         php-version: '8.1'
                         composer-options: '--prefer-stable'
-                        symfony-version: '6.4'
+                        symfony-version: '^6.4'
                     -
                         php-version: '8.2'
                         composer-options: '--prefer-stable'
@@ -185,7 +185,7 @@ jobs:
 
             -
                 name: 'Cache dependencies'
-                uses: 'actions/cache@v3'
+                uses: 'actions/cache@v4'
                 with:
                     path: '${{ steps.composer-cache.outputs.cache_dir }}'
                     key: "php-${{ matrix.php-version }}-composer-locked-${{ hashFiles('composer.lock') }}"
