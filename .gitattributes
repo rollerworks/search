@@ -17,6 +17,5 @@ phpstan.neon export-ignore
 phpstan-baseline.neon export-ignore
 phpunit.xml.dist export-ignore
 psalm.xml export-ignore
-UPGRADE.md export-ignore
 UPGRADE-2.0.md export-ignore
 Tests/ export-ignore

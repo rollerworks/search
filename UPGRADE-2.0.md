@@ -1,20 +1,12 @@
-UPGRADE FROM 2.0-BETA3 to 2.0-BETA4
+UPGRADE FROM 2.0-BETA2 to 2.0-BETA3
 ===================================
 
  * Support for PHP < 8.1 was dropped.
 
- * Doctrine mapping type as object is deprecated and will no longer work in 3.0,
-   use a type-name as string instead.
-
- * Support for Api-Platform 2.4 was dropped, 2.0-BETA3 of the components 
-   still supports all newer versions of RollerworksSearch.
-
-UPGRADE FROM 2.0-BETA2 to 2.0-BETA3
-===================================
-
- * Support for PHP < 8.0 was dropped.
- 
  * Support for Symfony 5 was dropped.
+
+ * Support for Api-Platform 2.4 was dropped, 2.0-BETA2 of the components 
+   still supports all newer versions of RollerworksSearch.
 
 ### Doctrine DBAL 
 
@@ -47,6 +39,11 @@ UPGRADE FROM 2.0-BETA2 to 2.0-BETA3
     // See http://docs.doctrine-project.org/projects/doctrine-dbal/en/latest/reference/data-retrieval-and-manipulation.html#data-retrieval
     $result = $qb->execute();
     ````
+    
+### Doctrine DBAL/ORM
+
+ * Doctrine mapping type as object is deprecated and will no longer work in 3.0,
+   use a type-name as string instead.
 
 UPGRADE FROM 2.0-BETA1 to 2.0-BETA2
 ===================================
