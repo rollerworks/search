@@ -15,7 +15,6 @@ namespace Rollerworks\Component\Search\Doctrine\Dbal\QueryPlatform;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\Types\Type;
 use Rollerworks\Component\Search\Doctrine\Dbal\ConversionHints;
 use Rollerworks\Component\Search\Doctrine\Dbal\Query\QueryField;
 use Rollerworks\Component\Search\Value\PatternMatch;
@@ -56,15 +55,15 @@ abstract class AbstractQueryPlatform
             );
         }
 
-        return $this->createParamReferenceFor($value, $mappingConfig->dbType);
+        return $this->createParamReferenceFor($value, $mappingConfig->dbTypeName);
     }
 
-    public function createParamReferenceFor($value, Type $type = null): string
+    public function createParamReferenceFor($value, string $type = null): string
     {
-        $name = ':search_' . (++$this->parameterIdx);
+        $name = 'search_' . (++$this->parameterIdx);
         $this->parameters->set($name, [$value, $type]);
 
-        return $name;
+        return ':' . $name;
     }
 
     public function getFieldColumn(QueryField $mappingConfig, string $column, ConversionHints $hints): string
@@ -83,7 +82,7 @@ abstract class AbstractQueryPlatform
     public function getPatternMatcher(PatternMatch $patternMatch, string $column): string
     {
         if (\in_array($patternMatch->getType(), [PatternMatch::PATTERN_EQUALS, PatternMatch::PATTERN_NOT_EQUALS], true)) {
-            $value = $this->createParamReferenceFor($patternMatch->getValue(), Type::getType('text'));
+            $value = $this->createParamReferenceFor($patternMatch->getValue(), 'text');
 
             if ($patternMatch->isCaseInsensitive()) {
                 $column = "LOWER({$column})";
@@ -103,7 +102,7 @@ abstract class AbstractQueryPlatform
         ];
 
         $value = addcslashes($patternMatch->getValue(), $this->getLikeEscapeChars());
-        $value = sprintf($this->connection->getDatabasePlatform()->getConcatExpression(...$patternMap[$patternMatch->getType()]), $this->createParamReferenceFor($value, Type::getType('text')));
+        $value = sprintf($this->connection->getDatabasePlatform()->getConcatExpression(...$patternMap[$patternMatch->getType()]), $this->createParamReferenceFor($value, 'text'));
 
         if ($patternMatch->isCaseInsensitive()) {
             $column = "LOWER({$column})";

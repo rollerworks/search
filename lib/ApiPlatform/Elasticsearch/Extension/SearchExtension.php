@@ -13,8 +13,9 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\ApiPlatform\Elasticsearch\Extension;
 
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Extension\QueryCollectionExtensionInterface;
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Util\QueryNameGeneratorInterface;
+use ApiPlatform\Doctrine\Orm\Extension\QueryCollectionExtensionInterface;
+use ApiPlatform\Doctrine\Orm\Util\QueryNameGeneratorInterface;
+use ApiPlatform\Metadata\Operation;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 use Elastica\Client;
@@ -45,7 +46,7 @@ class SearchExtension implements QueryCollectionExtensionInterface
         $this->client = $client;
     }
 
-    public function applyToCollection(QueryBuilder $queryBuilder, QueryNameGeneratorInterface $queryNameGenerator, string $resourceClass, string $operationName = null): void
+    public function applyToCollection(QueryBuilder $queryBuilder, QueryNameGeneratorInterface $queryNameGenerator, string $resourceClass, Operation $operation = null, array $context = []): void
     {
         $request = $this->requestStack->getCurrentRequest();
 
@@ -56,9 +57,9 @@ class SearchExtension implements QueryCollectionExtensionInterface
             return;
         }
 
-        $context = $request->attributes->get('_api_search_context');
+        $searchContext = $request->attributes->get('_api_search_context');
         $configuration = $request->attributes->get('_api_search_config');
-        $configPath = "{$resourceClass}#attributes[rollerworks_search][contexts][{$context}][elasticsearch]";
+        $configPath = "{$resourceClass}#attributes[rollerworks_search][contexts][{$searchContext}][elasticsearch]";
 
         if (empty($configuration['elasticsearch'])) {
             return;

@@ -14,7 +14,7 @@
         <service id="rollerworks_search.api_platform.event_listener.condition" class="Rollerworks\Component\Search\ApiPlatform\EventListener\SearchConditionListener">
             <argument type="service" id="rollerworks_search.factory" />
             <argument type="service" id="rollerworks_search.input_loader" />
-            <argument type="service" id="api_platform.metadata.resource.metadata_factory" />
+            <argument type="service" id="api_platform.metadata.resource.metadata_collection_factory" />
             <argument type="service" id="event_dispatcher" />
 
             <argument type="service">
@@ -44,7 +44,7 @@
         </service>
 
         <!-- MetadataFactory, execute after everything else but before caching. -->
-        <service id="rollerworks_search.api_platform.metadata.resource.default_context_factory" class="Rollerworks\Component\Search\ApiPlatform\Metadata\DefaultConfigurationMetadataFactory" decorates="api_platform.metadata.resource.metadata_factory" decoration-priority="-9" public="false">
+        <service id="rollerworks_search.api_platform.metadata.resource.default_context_factory" class="Rollerworks\Component\Search\ApiPlatform\Metadata\DefaultConfigurationMetadataFactory" decorates="api_platform.metadata.resource.metadata_collection_factory" decoration-priority="-9" public="false">
             <argument type="service" id="rollerworks_search.api_platform.metadata.resource.default_context_factory.inner" />
         </service>
 

@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Doctrine\Dbal;
 
-use Doctrine\DBAL\Types\Type as MappingType;
 use Rollerworks\Component\Search\Doctrine\Dbal\Query\QueryField;
 use Rollerworks\Component\Search\FieldSet;
 
@@ -45,7 +44,7 @@ final class FieldConfigurationSet
         $this->fields[$fieldName][$mappingIdx] = new QueryField(
             $fieldName . ($mappingIdx !== null ? "#{$mappingIdx}" : ''),
             $this->fieldSet->get($fieldName),
-            MappingType::getType($type),
+            $type,
             $column,
             $alias
         );

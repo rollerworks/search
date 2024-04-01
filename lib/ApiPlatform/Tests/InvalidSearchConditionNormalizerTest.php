@@ -30,9 +30,9 @@ final class InvalidSearchConditionNormalizerTest extends TestCase
     {
         $normalizer = new InvalidSearchConditionNormalizer();
 
-        self::assertTrue($normalizer->supportsNormalization(new InvalidSearchConditionException([]), InvalidSearchConditionNormalizer::FORMAT));
+        self::assertTrue($normalizer->supportsNormalization(new InvalidSearchConditionException([]), 'jsonproblem'));
         self::assertFalse($normalizer->supportsNormalization(new InvalidSearchConditionException([]), 'xml'));
-        self::assertFalse($normalizer->supportsNormalization(new \stdClass(), InvalidSearchConditionNormalizer::FORMAT));
+        self::assertFalse($normalizer->supportsNormalization(new \stdClass(), 'jsonproblem'));
     }
 
     /** @test */

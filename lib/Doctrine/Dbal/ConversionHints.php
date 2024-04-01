@@ -64,8 +64,22 @@ class ConversionHints
     /**
      * Returns a parameter-name to reference a value.
      */
-    public function createParamReferenceFor($value, Type $type = null): string
+    public function createParamReferenceFor($value, string|Type $type = null): string
     {
+        if (\is_object($type)) {
+            $type = Type::lookupName($type);
+
+            trigger_deprecation(
+                'rollerworks/search-doctrine-dbal',
+                'v2.0.0-BETA2',
+                sprintf(
+                    'passing a %s object is deprecated and will no longer be accepted in v3.0.0, pass the type actual name "%s" instead.',
+                    Type::class,
+                    $type
+                )
+            );
+        }
+
         return $this->queryPlatform->createParamReferenceFor($value, $type);
     }
 
@@ -82,7 +96,7 @@ class ConversionHints
                 return $this->originalValue;
 
             case self::CONTEXT_COMPARISON:
-                return $this->originalValue->value;
+                return $this->originalValue->getValue();
 
             case self::CONTEXT_RANGE_LOWER_BOUND:
                 return $this->originalValue->getLower();

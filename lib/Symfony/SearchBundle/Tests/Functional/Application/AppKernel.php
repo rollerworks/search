@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Rollerworks\Bundle\SearchBundle\Tests\Functional\Application;
 
-use ApiPlatform\Core\Bridge\Symfony\Bundle\ApiPlatformBundle;
+use ApiPlatform\Symfony\Bundle\ApiPlatformBundle;
 use Doctrine\Bundle\DoctrineBundle\DoctrineBundle;
 use Rollerworks\Bundle\SearchBundle\RollerworksSearchBundle;
 use Symfony\Bundle\FrameworkBundle\FrameworkBundle;

@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Tests\Doctrine\Orm;
 
-use Doctrine\DBAL\Types\Type as DbType;
 use PHPUnit\Framework\TestCase;
 use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
@@ -128,13 +127,13 @@ final class FieldConfigBuilderTest extends TestCase
         $fields = $fieldConfigBuilder->getFields();
 
         // Invoice
-        self::assertEquals(new QueryField('id', $fieldSet->get('id'), DbType::getType('smallint'), 'id', 'I'), $fields['id'][null]);
-        self::assertEquals(new QueryField('credit_parent#0', $fieldSet->get('credit_parent'), DbType::getType('integer'), 'parent', 'I'), $fields['credit_parent'][0]);
+        self::assertEquals(new QueryField('id', $fieldSet->get('id'), 'smallint', 'id', 'I'), $fields['id'][null]);
+        self::assertEquals(new QueryField('credit_parent#0', $fieldSet->get('credit_parent'), 'integer', 'parent', 'I'), $fields['credit_parent'][0]);
 
         // Customer
-        self::assertEquals(new QueryField('customer', $fieldSet->get('customer'), DbType::getType('integer'), 'id', 'C'), $fields['customer'][null]);
-        self::assertEquals(new QueryField('customer_name#first_name', $fieldSet->get('customer_name'), DbType::getType('string'), 'first_name', 'C'), $fields['customer_name']['first_name']);
-        self::assertEquals(new QueryField('customer_name#last_name', $fieldSet->get('customer_name'), DbType::getType('string'), 'last_name', 'C'), $fields['customer_name']['last_name']);
+        self::assertEquals(new QueryField('customer', $fieldSet->get('customer'), 'integer', 'id', 'C'), $fields['customer'][null]);
+        self::assertEquals(new QueryField('customer_name#first_name', $fieldSet->get('customer_name'), 'string', 'first_name', 'C'), $fields['customer_name']['first_name']);
+        self::assertEquals(new QueryField('customer_name#last_name', $fieldSet->get('customer_name'), 'string', 'last_name', 'C'), $fields['customer_name']['last_name']);
     }
 
     /** @test */
@@ -160,8 +159,8 @@ final class FieldConfigBuilderTest extends TestCase
         $fields = $fieldConfigBuilder->getFields();
 
         // Invoice
-        self::assertEquals(new QueryField('id', $fieldSet->get('id'), DbType::getType('smallint'), 'id', 'I'), $fields['id'][null]);
-        self::assertEquals(new QueryField('credit_parent#0', $fieldSet->get('credit_parent'), DbType::getType('integer'), 'parent', 'I'), $fields['credit_parent'][0]);
+        self::assertEquals(new QueryField('id', $fieldSet->get('id'), 'smallint', 'id', 'I'), $fields['id'][null]);
+        self::assertEquals(new QueryField('credit_parent#0', $fieldSet->get('credit_parent'), 'integer', 'parent', 'I'), $fields['credit_parent'][0]);
     }
 
     /** @test */

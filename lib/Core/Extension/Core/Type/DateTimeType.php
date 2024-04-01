@@ -125,7 +125,7 @@ final class DateTimeType extends BaseDateTimeType
 
         $view->vars['timezone'] = $options['view_timezone'] ?: date_default_timezone_get();
         $view->vars['allow_relative'] = $options['allow_relative'];
-        $view->vars['pattern'] = str_replace(' ', ' ', $pattern);
+        $view->vars['pattern'] = str_replace("\u{202f}", ' ', $pattern);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

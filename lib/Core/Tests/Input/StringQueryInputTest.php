@@ -86,6 +86,7 @@ final class StringQueryInputTest extends InputProcessorTestCase
 
     /**
      * @test
+     *
      * @dataProvider provideAliasedFieldsTests
      */
     public function it_processes_aliased_fields($input): void
@@ -213,6 +214,7 @@ final class StringQueryInputTest extends InputProcessorTestCase
 
     /**
      * @test
+     *
      * @dataProvider provideQueryExceptionTests
      */
     public function it_errors_when_the_syntax_is_invalid(string $input, StringLexerException $exception): void
@@ -224,7 +226,7 @@ final class StringQueryInputTest extends InputProcessorTestCase
         $this->assertConditionContainsErrors($input, $config, [$error]);
     }
 
-    public function provideQueryExceptionTests()
+    public function provideQueryExceptionTests(): iterable
     {
         return [
             [
@@ -402,7 +404,7 @@ final class StringQueryInputTest extends InputProcessorTestCase
         ];
     }
 
-    public function provideAliasedFieldsTests()
+    public function provideAliasedFieldsTests(): iterable
     {
         return [
             ['first-name: value1; first-name: value, value2;'],

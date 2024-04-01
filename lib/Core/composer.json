@@ -20,19 +20,19 @@
     ],
     "homepage": "https://rollerworks.github.io/",
     "require": {
-        "php": ">=8.0",
-        "nesbot/carbon": "^2.38",
-        "psr/container": "^1.1|^2.0",
-        "symfony/intl": "^6.0",
-        "symfony/options-resolver": "^6.0",
-        "symfony/property-access": "^6.0",
-        "symfony/string": "^6.0"
+        "php": ">=8.1",
+        "nesbot/carbon": "^2.38 || ^3.0",
+        "psr/container": "^1.1 || ^2.0",
+        "symfony/intl": "^6.0 || ^7.0",
+        "symfony/options-resolver": "^6.4 || ^7.0",
+        "symfony/property-access": "^6.4 || ^7.0",
+        "symfony/string": "^6.4 || ^7.0"
     },
     "require-dev": {
         "moneyphp/money": "^3.2.0 || ^4.0",
         "phpunit/phpunit": "^9.5",
-        "symfony/phpunit-bridge": "^6.0",
-        "symfony/var-dumper": "^6.0"
+        "symfony/phpunit-bridge": "^6.4 || ^7.0",
+        "symfony/var-dumper": "^6.4 || ^7.0"
     },
     "conflict": {
         "moneyphp/money": "<3.2.0"

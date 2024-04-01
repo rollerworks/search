@@ -13,11 +13,12 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\ApiPlatform\Tests\Doctrine\Orm\Extension;
 
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Util\QueryNameGenerator;
-use ApiPlatform\Core\Exception\RuntimeException;
 use ApiPlatform\Core\Tests\Fixtures\TestBundle\Entity\Dummy;
 use ApiPlatform\Core\Tests\Fixtures\TestBundle\Entity\RelatedDummy;
 use ApiPlatform\Core\Tests\Fixtures\TestBundle\Entity\ThirdLevel;
+use ApiPlatform\Doctrine\Orm\Util\QueryNameGenerator;
+use ApiPlatform\Exception\RuntimeException;
+use ApiPlatform\Metadata\Get;
 use Doctrine\ORM\QueryBuilder;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
@@ -69,7 +70,7 @@ final class SearchExtensionTest extends TestCase
         $requestStack->push($request);
 
         $orderExtensionTest = new SearchExtension($requestStack, $ormFactoryProphecy->reveal());
-        $orderExtensionTest->applyToCollection($queryBuilder, new QueryNameGenerator(), Dummy::class, 'get');
+        $orderExtensionTest->applyToCollection($queryBuilder, new QueryNameGenerator(), Dummy::class, new Get(name: 'get'));
     }
 
     /** @test */
@@ -122,7 +123,7 @@ final class SearchExtensionTest extends TestCase
         $requestStack->push($request);
 
         $orderExtensionTest = new SearchExtension($requestStack, $ormFactoryProphecy->reveal());
-        $orderExtensionTest->applyToCollection($queryBuilder, new QueryNameGenerator(), RelatedDummy::class, 'get');
+        $orderExtensionTest->applyToCollection($queryBuilder, new QueryNameGenerator(), RelatedDummy::class, new Get(name: 'get'));
     }
 
     /**
@@ -156,10 +157,10 @@ final class SearchExtensionTest extends TestCase
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage($message);
 
-        $orderExtensionTest->applyToCollection($queryBuilder, new QueryNameGenerator(), RelatedDummy::class, 'get');
+        $orderExtensionTest->applyToCollection($queryBuilder, new QueryNameGenerator(), RelatedDummy::class, new Get(name: 'get'));
     }
 
-    public function provideInvalidConfigurations(): array
+    public function provideInvalidConfigurations(): iterable
     {
         $resourceClass = \ApiPlatform\Core\Tests\Fixtures\TestBundle\Entity\RelatedDummy::class;
 
@@ -245,7 +246,7 @@ final class SearchExtensionTest extends TestCase
         $requestStack->push($request);
 
         $orderExtensionTest = new SearchExtension($requestStack, $ormFactoryProphecy->reveal());
-        $orderExtensionTest->applyToCollection($queryBuilder, new QueryNameGenerator(), Dummy::class, 'get');
+        $orderExtensionTest->applyToCollection($queryBuilder, new QueryNameGenerator(), Dummy::class, new Get(name: 'get'));
     }
 
     private function createCondition(?string $setName = 'dummy_fieldset'): SearchCondition

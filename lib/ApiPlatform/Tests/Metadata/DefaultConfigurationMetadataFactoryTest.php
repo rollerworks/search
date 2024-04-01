@@ -13,23 +13,23 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\ApiPlatform\Tests\Metadata;
 
-use ApiPlatform\Core\Metadata\Resource\Factory\ResourceMetadataFactoryInterface;
-use ApiPlatform\Core\Metadata\Resource\ResourceMetadata;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Resource\ResourceMetadataCollection;
 use PHPUnit\Framework\TestCase;
-use Prophecy\PhpUnit\ProphecyTrait;
 use Rollerworks\Component\Search\ApiPlatform\Metadata\DefaultConfigurationMetadataFactory;
+use Rollerworks\Component\Search\ApiPlatform\Tests\MetadataFactoryTrait;
 
 /**
  * @internal
  */
 final class DefaultConfigurationMetadataFactoryTest extends TestCase
 {
-    use ProphecyTrait;
+    use MetadataFactoryTrait;
 
     /** @test */
     public function it_merges_defaults_into_all_configs(): void
     {
-        $resourceMetadata = new ResourceMetadata(null, 'My desc', null, null, null, [
+        $decorated = $this->createResourceMetadataFactory([
             'rollerworks_search' => [
                 'contexts' => [
                     '_defaults' => [
@@ -58,13 +58,9 @@ final class DefaultConfigurationMetadataFactoryTest extends TestCase
             ],
         ]);
 
-        $decoratedProphecy = $this->prophesize(ResourceMetadataFactoryInterface::class);
-        $decoratedProphecy->create('Foo')->willReturn($resourceMetadata)->shouldBeCalled();
-        $decorated = $decoratedProphecy->reveal();
-
         $factory = new DefaultConfigurationMetadataFactory($decorated);
 
-        $resourceMetadata = new ResourceMetadata(null, 'My desc', null, null, null, [
+        $resourceMetadata = $this->getMetadataCollection([
             'rollerworks_search' => [
                 'contexts' => [
                     'foo' => [
@@ -83,13 +79,13 @@ final class DefaultConfigurationMetadataFactoryTest extends TestCase
             ],
         ]);
 
-        self::assertEquals($resourceMetadata, $factory->create('Foo'));
+        self::assertEquals($resourceMetadata, $factory->create('dummy'));
     }
 
     /** @test */
     public function it_returns_without_updating_when_no_defaults_were_set(): void
     {
-        $resourceMetadata = new ResourceMetadata(null, 'My desc', null, null, null, [
+        $resourceMetadata = $this->getMetadataCollection([
             'rollerworks_search' => [
                 'contexts' => [
                     'foo' => [
@@ -106,9 +102,7 @@ final class DefaultConfigurationMetadataFactoryTest extends TestCase
             ],
         ]);
 
-        $decoratedProphecy = $this->prophesize(ResourceMetadataFactoryInterface::class);
-        $decoratedProphecy->create('Foo')->willReturn($resourceMetadata)->shouldBeCalled();
-        $decorated = $decoratedProphecy->reveal();
+        $decorated = $this->createResourceMetadataFactory($resourceMetadata, 'Foo');
 
         $factory = new DefaultConfigurationMetadataFactory($decorated);
 
@@ -118,25 +112,20 @@ final class DefaultConfigurationMetadataFactoryTest extends TestCase
     /** @test */
     public function it_returns_without_updating_when_no_search_config_was_set(): void
     {
-        $resourceMetadata = new ResourceMetadata(null, 'My desc', null, null, null, [
-            'contexts' => [
-                'foo' => [
-                    'processor' => [
-                        'export_format' => 'array',
-                    ],
-                    'doctrine_orm' => [
-                        'mappings' => [
-                            'dummy-name' => ['property' => 'userName'],
-                        ],
-                    ],
-                ],
-            ],
-        ]);
+        $resourceMetadata = $this->getMetadataCollection([]);
 
-        $decoratedProphecy = $this->prophesize(ResourceMetadataFactoryInterface::class);
-        $decoratedProphecy->create('Foo')->willReturn($resourceMetadata)->shouldBeCalled();
-        $decorated = $decoratedProphecy->reveal();
+        $decorated = $this->createResourceMetadataFactory($resourceMetadata, 'Foo');
+        $factory = new DefaultConfigurationMetadataFactory($decorated);
 
+        self::assertSame($resourceMetadata, $factory->create('Foo'));
+    }
+
+    /** @test */
+    public function it_returns_when_no_operations_were_set(): void
+    {
+        $resourceMetadata = new ResourceMetadataCollection('Foo', [new ApiResource()]);
+
+        $decorated = $this->createResourceMetadataFactory($resourceMetadata, 'Foo');
         $factory = new DefaultConfigurationMetadataFactory($decorated);
 
         self::assertSame($resourceMetadata, $factory->create('Foo'));

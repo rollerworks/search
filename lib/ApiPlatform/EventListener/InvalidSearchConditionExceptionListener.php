@@ -13,12 +13,15 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\ApiPlatform\EventListener;
 
-use ApiPlatform\Core\Util\ErrorFormatGuesser;
+use ApiPlatform\Util\ErrorFormatGuesser;
 use Rollerworks\Component\Search\Exception\InvalidSearchConditionException;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\Serializer\SerializerInterface;
 
+/**
+ * @deprecated use the API-Platform error handler instead
+ */
 final class InvalidSearchConditionExceptionListener
 {
     private $serializer;

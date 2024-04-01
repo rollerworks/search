@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Tests\Doctrine\Dbal;
 
+use Doctrine\DBAL\ParameterType;
 use Doctrine\DBAL\Query\QueryBuilder;
 use Doctrine\DBAL\Types\Type;
 use Rollerworks\Component\Search\Doctrine\Dbal\ColumnConversion;
@@ -74,7 +75,7 @@ final class SqlConditionGeneratorTest extends DbalTestCase
         QueryBuilderAssertion::assertQueryBuilderEquals(
             $conditionGenerator,
             ' WHERE (((i.customer = :search_0 OR i.customer = :search_1)))',
-            [':search_0' => [2, 'integer'], ':search_1' => [5, 'integer']]
+            ['search_0' => [2, 'integer'], 'search_1' => [5, 'integer']]
         );
     }
 
@@ -121,10 +122,10 @@ final class SqlConditionGeneratorTest extends DbalTestCase
             $conditionGenerator,
             ' WHERE (((i.status = :search_0 OR i.status = :search_1))) AND (((i.customer = :search_2 OR i.customer = :search_3)))',
             [
-                ':search_0' => [1, 'integer'],
-                ':search_1' => [2, 'integer'],
-                ':search_2' => [2, 'integer'],
-                ':search_3' => [5, 'integer'],
+                'search_0' => [1, 'integer'],
+                'search_1' => [2, 'integer'],
+                'search_2' => [2, 'integer'],
+                'search_3' => [5, 'integer'],
             ]
         );
     }
@@ -156,8 +157,8 @@ final class SqlConditionGeneratorTest extends DbalTestCase
             $this->getConditionGenerator($condition),
             ' WHERE (((i.status = :search_0 OR i.status = :search_1)))',
             [
-                ':search_0' => [1, 'integer'],
-                ':search_1' => [2, 'integer'],
+                'search_0' => [1, 'integer'],
+                'search_1' => [2, 'integer'],
             ]
         );
     }
@@ -183,10 +184,10 @@ final class SqlConditionGeneratorTest extends DbalTestCase
             $conditionGenerator,
             ' WHERE (((i.customer = :search_0 OR i.customer = :search_1)) AND ((i.status = :search_2 OR i.status = :search_3)))',
             [
-                ':search_0' => [2, 'integer'],
-                ':search_1' => [5, 'integer'],
-                ':search_2' => [2, 'integer'],
-                ':search_3' => [5, 'integer'],
+                'search_0' => [2, 'integer'],
+                'search_1' => [5, 'integer'],
+                'search_2' => [2, 'integer'],
+                'search_3' => [5, 'integer'],
             ]
         );
     }
@@ -210,10 +211,10 @@ final class SqlConditionGeneratorTest extends DbalTestCase
             $conditionGenerator,
             ' WHERE (((id = :search_0 OR id = :search_1 OR number2 = :search_2 OR number2 = :search_3)))',
             [
-                ':search_0' => [2, 'integer'],
-                ':search_1' => [5, 'integer'],
-                ':search_2' => [2, 'integer'],
-                ':search_3' => [5, 'integer'],
+                'search_0' => [2, 'integer'],
+                'search_1' => [5, 'integer'],
+                'search_2' => [2, 'integer'],
+                'search_3' => [5, 'integer'],
             ]
         );
     }
@@ -237,10 +238,10 @@ final class SqlConditionGeneratorTest extends DbalTestCase
             $conditionGenerator,
             ' WHERE (((id = :search_0 OR id = :search_1 OR c.number2 = :search_2 OR c.number2 = :search_3)))',
             [
-                ':search_0' => [2, 'integer'],
-                ':search_1' => [5, 'integer'],
-                ':search_2' => [2, 'string'],
-                ':search_3' => [5, 'string'],
+                'search_0' => [2, 'integer'],
+                'search_1' => [5, 'integer'],
+                'search_2' => [2, 'string'],
+                'search_3' => [5, 'string'],
             ]
         );
     }
@@ -274,8 +275,8 @@ final class SqlConditionGeneratorTest extends DbalTestCase
             $conditionGenerator,
             ' WHERE (((i.customer <> :search_0 AND i.customer <> :search_1)))',
             [
-                ':search_0' => [2, 'integer'],
-                ':search_1' => [5, 'integer'],
+                'search_0' => [2, 'integer'],
+                'search_1' => [5, 'integer'],
             ]
         );
     }
@@ -297,8 +298,8 @@ final class SqlConditionGeneratorTest extends DbalTestCase
             $conditionGenerator,
             ' WHERE ((i.customer = :search_0 AND i.customer <> :search_1))',
             [
-                ':search_0' => [2, 'integer'],
-                ':search_1' => [5, 'integer'],
+                'search_0' => [2, 'integer'],
+                'search_1' => [5, 'integer'],
             ]
         );
     }
@@ -323,14 +324,14 @@ final class SqlConditionGeneratorTest extends DbalTestCase
             ' WHERE ((((i.customer >= :search_0 AND i.customer <= :search_1) OR (i.customer >= :search_2 AND i.customer <= :search_3) OR ' .
             '(i.customer > :search_4 AND i.customer <= :search_5) OR (i.customer >= :search_6 AND i.customer < :search_7))))',
             [
-                ':search_0' => [2, 'integer'],
-                ':search_1' => [5, 'integer'],
-                ':search_2' => [10, 'integer'],
-                ':search_3' => [20, 'integer'],
-                ':search_4' => [60, 'integer'],
-                ':search_5' => [70, 'integer'],
-                ':search_6' => [100, 'integer'],
-                ':search_7' => [150, 'integer'],
+                'search_0' => [2, 'integer'],
+                'search_1' => [5, 'integer'],
+                'search_2' => [10, 'integer'],
+                'search_3' => [20, 'integer'],
+                'search_4' => [60, 'integer'],
+                'search_5' => [70, 'integer'],
+                'search_6' => [100, 'integer'],
+                'search_7' => [150, 'integer'],
             ]
         );
     }
@@ -356,14 +357,14 @@ final class SqlConditionGeneratorTest extends DbalTestCase
             'i.customer >= :search_3) AND (i.customer < :search_4 OR i.customer >= :search_5) AND ' .
             '(i.customer <= :search_6 OR i.customer > :search_7))))',
             [
-                ':search_0' => [2, 'integer'],
-                ':search_1' => [5, 'integer'],
-                ':search_2' => [10, 'integer'],
-                ':search_3' => [20, 'integer'],
-                ':search_4' => [60, 'integer'],
-                ':search_5' => [70, 'integer'],
-                ':search_6' => [100, 'integer'],
-                ':search_7' => [150, 'integer'],
+                'search_0' => [2, 'integer'],
+                'search_1' => [5, 'integer'],
+                'search_2' => [10, 'integer'],
+                'search_3' => [20, 'integer'],
+                'search_4' => [60, 'integer'],
+                'search_5' => [70, 'integer'],
+                'search_6' => [100, 'integer'],
+                'search_7' => [150, 'integer'],
             ]
         );
     }
@@ -384,7 +385,7 @@ final class SqlConditionGeneratorTest extends DbalTestCase
             $conditionGenerator,
             ' WHERE ((i.customer > :search_0))',
             [
-                ':search_0' => [2, 'integer'],
+                'search_0' => [2, 'integer'],
             ]
         );
     }
@@ -406,8 +407,8 @@ final class SqlConditionGeneratorTest extends DbalTestCase
             $conditionGenerator,
             ' WHERE (((i.customer > :search_0 AND i.customer < :search_1)))',
             [
-                ':search_0' => [2, 'integer'],
-                ':search_1' => [10, 'integer'],
+                'search_0' => [2, 'integer'],
+                'search_1' => [10, 'integer'],
             ]
         );
     }
@@ -439,10 +440,10 @@ final class SqlConditionGeneratorTest extends DbalTestCase
             $conditionGenerator,
             ' WHERE ((((i.customer = :search_0 OR (i.customer > :search_1 AND i.customer < :search_2)))) OR ((i.customer > :search_3)))',
             [
-                ':search_0' => [20, 'integer'],
-                ':search_1' => [2, 'integer'],
-                ':search_2' => [10, 'integer'],
-                ':search_3' => [30, 'integer'],
+                'search_0' => [20, 'integer'],
+                'search_1' => [2, 'integer'],
+                'search_2' => [10, 'integer'],
+                'search_3' => [30, 'integer'],
             ]
         );
     }
@@ -464,8 +465,8 @@ final class SqlConditionGeneratorTest extends DbalTestCase
             $conditionGenerator,
             ' WHERE ((i.customer <> :search_0 AND i.customer <> :search_1))',
             [
-                ':search_0' => [2, 'integer'],
-                ':search_1' => [5, 'integer'],
+                'search_0' => [2, 'integer'],
+                'search_1' => [5, 'integer'],
             ]
         );
     }
@@ -489,10 +490,10 @@ final class SqlConditionGeneratorTest extends DbalTestCase
             $conditionGenerator,
             ' WHERE (((i.customer > :search_0 AND i.customer < :search_1) AND i.customer <> :search_2 AND i.customer <> :search_3))',
             [
-                ':search_0' => [30, 'integer'],
-                ':search_1' => [50, 'integer'],
-                ':search_2' => [35, 'integer'],
-                ':search_3' => [45, 'integer'],
+                'search_0' => [30, 'integer'],
+                'search_1' => [50, 'integer'],
+                'search_2' => [35, 'integer'],
+                'search_3' => [45, 'integer'],
             ]
         );
     }
@@ -519,13 +520,13 @@ final class SqlConditionGeneratorTest extends DbalTestCase
             $conditionGenerator,
             " WHERE (((c.name LIKE '%' || :search_0 OR c.name LIKE '%' || :search_1 OR c.name = :search_2 OR LOWER(c.name) = LOWER(:search_3)) AND (LOWER(c.name) NOT LIKE LOWER(:search_4 || '%') AND c.name <> :search_5 AND LOWER(c.name) <> LOWER(:search_6))))",
             [
-                ':search_0' => ['foo', 'text'],
-                ':search_1' => ['fo\\\'o', 'text'],
-                ':search_2' => ['My name', 'text'],
-                ':search_3' => ['Spider', 'text'],
-                ':search_4' => ['bar', 'text'],
-                ':search_5' => ['Last', 'text'],
-                ':search_6' => ['Piggy', 'text'],
+                'search_0' => ['foo', 'text'],
+                'search_1' => ['fo\\\'o', 'text'],
+                'search_2' => ['My name', 'text'],
+                'search_3' => ['Spider', 'text'],
+                'search_4' => ['bar', 'text'],
+                'search_5' => ['Last', 'text'],
+                'search_6' => ['Piggy', 'text'],
             ]
         );
     }
@@ -549,8 +550,8 @@ final class SqlConditionGeneratorTest extends DbalTestCase
             $conditionGenerator,
             ' WHERE (((i.customer = :search_0)) OR ((i.customer = :search_1)))',
             [
-                ':search_0' => [2, 'integer'],
-                ':search_1' => [3, 'integer'],
+                'search_0' => [2, 'integer'],
+                'search_1' => [3, 'integer'],
             ]
         );
     }
@@ -576,8 +577,8 @@ final class SqlConditionGeneratorTest extends DbalTestCase
             $conditionGenerator,
             " WHERE (((i.customer = :search_0)) AND (((c.name LIKE '%' || :search_1))))",
             [
-                ':search_0' => [2, 'integer'],
-                ':search_1' => ['foo', 'text'],
+                'search_0' => [2, 'integer'],
+                'search_1' => ['foo', 'text'],
             ]
         );
     }
@@ -601,8 +602,8 @@ final class SqlConditionGeneratorTest extends DbalTestCase
             $conditionGenerator,
             " WHERE ((i.customer = :search_0) OR (c.name LIKE '%' || :search_1))",
             [
-                ':search_0' => [2, 'integer'],
-                ':search_1' => ['foo', 'text'],
+                'search_0' => [2, 'integer'],
+                'search_1' => ['foo', 'text'],
             ]
         );
     }
@@ -630,8 +631,8 @@ final class SqlConditionGeneratorTest extends DbalTestCase
             $conditionGenerator,
             " WHERE ((((i.customer = :search_0) OR (c.name LIKE '%' || :search_1))))",
             [
-                ':search_0' => [2, 'integer'],
-                ':search_1' => ['foo', 'text'],
+                'search_0' => [2, 'integer'],
+                'search_1' => ['foo', 'text'],
             ]
         );
     }
@@ -671,8 +672,8 @@ final class SqlConditionGeneratorTest extends DbalTestCase
             $conditionGenerator,
             ' WHERE (((CAST(i.customer AS customer_type) = :search_0 OR CAST(i.customer AS customer_type) = :search_1)))',
             [
-                ':search_0' => [2, 'integer'],
-                ':search_1' => [5, 'integer'],
+                'search_0' => [2, 'integer'],
+                'search_1' => [5, 'integer'],
             ]
         );
     }
@@ -688,7 +689,7 @@ final class SqlConditionGeneratorTest extends DbalTestCase
                 self::assertArrayHasKey('grouping', $options);
                 self::assertTrue($options['grouping']);
 
-                $value = $hints->createParamReferenceFor($value);
+                $value = $hints->createParamReferenceFor($value, 'integer');
 
                 return "get_customer_type({$value})";
             })
@@ -711,8 +712,8 @@ final class SqlConditionGeneratorTest extends DbalTestCase
             $conditionGenerator,
             ' WHERE (((i.customer = get_customer_type(:search_0) OR i.customer = get_customer_type(:search_1))))',
             [
-                ':search_0' => 2,
-                ':search_1' => 5,
+                'search_0' => [2, 'integer'],
+                'search_1' => [5, 'integer'],
             ]
         );
     }
@@ -753,8 +754,8 @@ final class SqlConditionGeneratorTest extends DbalTestCase
             $conditionGenerator,
             ' WHERE (((c.birthday = :search_0 OR c.birthday = CAST(:search_1 AS AGE))))',
             [
-                ':search_0' => [18, 'integer'],
-                ':search_1' => ['2001-01-15', 'string'],
+                'search_0' => [18, 'integer'],
+                'search_1' => ['2001-01-15', 'string'],
             ]
         );
     }
@@ -793,8 +794,8 @@ final class SqlConditionGeneratorTest extends DbalTestCase
             $conditionGenerator,
             ' WHERE (((search_conversion_age(c.birthday) = :search_0 OR c.birthday = :search_1)))',
             [
-                ':search_0' => [18, 'string'],
-                ':search_1' => ['2001-01-15', 'string'],
+                'search_0' => [18, 'string'],
+                'search_1' => ['2001-01-15', 'string'],
             ]
         );
     }
@@ -836,8 +837,8 @@ final class SqlConditionGeneratorTest extends DbalTestCase
             $conditionGenerator,
             ' WHERE (((CAST(i.customer AS customer_type) = :search_0 OR CAST(i.customer AS customer_type) = :search_1)))',
             [
-                ':search_0' => [2, 'integer'],
-                ':search_1' => [5, 'integer'],
+                'search_0' => [2, 'integer'],
+                'search_1' => [5, 'integer'],
             ]
         );
     }

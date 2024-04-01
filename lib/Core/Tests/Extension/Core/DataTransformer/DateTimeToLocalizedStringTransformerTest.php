@@ -59,7 +59,7 @@ final class DateTimeToLocalizedStringTransformerTest extends TestCase
         parent::assertEquals($expected, $actual, $message, $delta, $maxDepth, $canonicalize, $ignoreCase);
     }
 
-    public function dataProvider()
+    public function dataProvider(): iterable
     {
         return [
             [\IntlDateFormatter::SHORT, null, null, '03.02.10, 04:05', '2010-02-03 04:05:00 UTC'],

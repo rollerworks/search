@@ -29,8 +29,6 @@ use Symfony\Component\Validator\ConstraintViolationListInterface;
  */
 final class InvalidSearchConditionNormalizer implements NormalizerInterface
 {
-    public const FORMAT = 'jsonproblem';
-
     private $serializePayloadFields;
     private $nameConverter;
 
@@ -71,9 +69,9 @@ final class InvalidSearchConditionNormalizer implements NormalizerInterface
         ];
     }
 
-    public function supportsNormalization($data, string $format = null): bool
+    public function supportsNormalization(mixed $data, string $format = null, array $context = []): bool
     {
-        return $format === self::FORMAT && $data instanceof InvalidSearchConditionException;
+        return ($format === 'json' || $format === 'jsonproblem') && $data instanceof InvalidSearchConditionException;
     }
 
     /**
@@ -104,5 +102,16 @@ final class InvalidSearchConditionNormalizer implements NormalizerInterface
         }
 
         return [$messages, $violations];
+    }
+
+    public function getSupportedTypes(?string $format): array
+    {
+        if ($format === 'json' || $format === 'jsonproblem') {
+            return [
+                InvalidSearchConditionException::class => true,
+            ];
+        }
+
+        return [];
     }
 }

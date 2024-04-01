@@ -253,7 +253,7 @@ See :doc:`doctrine/index` for more information on usage details.
 
 .. code-block:: bash
 
-    $ composer require --no-update "doctrine/doctrine-bundle:^1.1"
+    $ composer require --no-update "doctrine/doctrine-bundle"
     $ composer require --no-update "rollerworks/search-doctrine-dbal"
     $ composer update
 
