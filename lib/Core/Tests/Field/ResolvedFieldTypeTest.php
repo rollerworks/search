@@ -31,22 +31,22 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 final class ResolvedFieldTypeTest extends TestCase
 {
     /**
-     * @var FieldType|MockObject
+     * @var FieldType&MockObject
      */
     private $parentType;
 
     /**
-     * @var FieldType|MockObject
+     * @var FieldType&MockObject
      */
     private $type;
 
     /**
-     * @var FieldTypeExtension|MockObject
+     * @var FieldTypeExtension&MockObject
      */
     private $extension1;
 
     /**
-     * @var FieldTypeExtension|MockObject
+     * @var FieldTypeExtension&MockObject
      */
     private $extension2;
 
@@ -265,7 +265,7 @@ final class ResolvedFieldTypeTest extends TestCase
     }
 
     /**
-     * @return FieldType|MockObject
+     * @return FieldType&MockObject
      */
     private function getMockFieldType(string $typeClass = AbstractFieldType::class)
     {
@@ -273,7 +273,7 @@ final class ResolvedFieldTypeTest extends TestCase
     }
 
     /**
-     * @return AbstractFieldTypeExtension|MockObject
+     * @return AbstractFieldTypeExtension&MockObject
      */
     private function getMockFieldTypeExtension()
     {
@@ -281,7 +281,7 @@ final class ResolvedFieldTypeTest extends TestCase
     }
 
     /**
-     * @return MockObject
+     * @return OptionsResolver&MockObject
      */
     private function createOptionsResolverMock()
     {
@@ -292,7 +292,7 @@ final class ResolvedFieldTypeTest extends TestCase
     }
 
     /**
-     * @return FieldConfig|MockObject
+     * @return FieldConfig&MockObject
      */
     private function createFieldMock()
     {
@@ -300,7 +300,7 @@ final class ResolvedFieldTypeTest extends TestCase
     }
 
     /**
-     * @return MockObject|SearchFieldView
+     * @return MockObject&SearchFieldView
      */
     private function createSearchFieldViewMock()
     {

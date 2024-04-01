@@ -13,9 +13,6 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\ApiPlatform\Tests\Doctrine\Orm\Extension;
 
-use ApiPlatform\Core\Tests\Fixtures\TestBundle\Entity\Dummy;
-use ApiPlatform\Core\Tests\Fixtures\TestBundle\Entity\RelatedDummy;
-use ApiPlatform\Core\Tests\Fixtures\TestBundle\Entity\ThirdLevel;
 use ApiPlatform\Doctrine\Orm\Util\QueryNameGenerator;
 use ApiPlatform\Exception\RuntimeException;
 use ApiPlatform\Metadata\Get;
@@ -46,8 +43,8 @@ final class SearchExtensionTest extends TestCase
         $queryBuilder = $queryBuilderProphecy->reveal();
 
         $cachedConditionGeneratorProphecy = $this->prophesize(CachedDqlConditionGenerator::class);
-        $cachedConditionGeneratorProphecy->setField('dummy-id', 'id', 'o', Dummy::class, null)->shouldBeCalled();
-        $cachedConditionGeneratorProphecy->setField('dummy-name', 'name', 'o', Dummy::class, null)->shouldBeCalled();
+        $cachedConditionGeneratorProphecy->setField('dummy-id', 'id', 'o', 'dummy', null)->shouldBeCalled();
+        $cachedConditionGeneratorProphecy->setField('dummy-name', 'name', 'o', 'dummy', null)->shouldBeCalled();
         $cachedConditionGeneratorProphecy->apply()->shouldBeCalled();
 
         $ormFactoryProphecy = $this->prophesize(DoctrineOrmFactory::class);
@@ -70,7 +67,7 @@ final class SearchExtensionTest extends TestCase
         $requestStack->push($request);
 
         $orderExtensionTest = new SearchExtension($requestStack, $ormFactoryProphecy->reveal());
-        $orderExtensionTest->applyToCollection($queryBuilder, new QueryNameGenerator(), Dummy::class, new Get(name: 'get'));
+        $orderExtensionTest->applyToCollection($queryBuilder, new QueryNameGenerator(), 'dummy', new Get(name: 'get'));
     }
 
     /** @test */
@@ -84,10 +81,10 @@ final class SearchExtensionTest extends TestCase
         $queryBuilder = $queryBuilderProphecy->reveal();
 
         $cachedConditionGeneratorProphecy = $this->prophesize(CachedDqlConditionGenerator::class);
-        $cachedConditionGeneratorProphecy->setField('dummy-id', 'id', 'o', RelatedDummy::class, null)->shouldBeCalled();
-        $cachedConditionGeneratorProphecy->setField('dummy-name', 'name', 'o', RelatedDummy::class, null)->shouldBeCalled();
-        $cachedConditionGeneratorProphecy->setField('fiend-name', 'name', 'r', RelatedDummy::class, null)->shouldBeCalled();
-        $cachedConditionGeneratorProphecy->setField('level', 'level', 't', ThirdLevel::class, 'integer')->shouldBeCalled();
+        $cachedConditionGeneratorProphecy->setField('dummy-id', 'id', 'o', 'RelatedDummy', null)->shouldBeCalled();
+        $cachedConditionGeneratorProphecy->setField('dummy-name', 'name', 'o', 'RelatedDummy', null)->shouldBeCalled();
+        $cachedConditionGeneratorProphecy->setField('fiend-name', 'name', 'r', 'RelatedDummy', null)->shouldBeCalled();
+        $cachedConditionGeneratorProphecy->setField('level', 'level', 't', 'ThirdLevel', 'integer')->shouldBeCalled();
 
         $cachedConditionGeneratorProphecy->apply()->shouldBeCalled();
 
@@ -106,10 +103,10 @@ final class SearchExtensionTest extends TestCase
                         'level' => ['property' => 'level', 'alias' => 't', 'type' => 'integer'],
                     ],
                     'relations' => [
-                        'r' => ['join' => 'o.relatedToDummyFriend', 'entity' => RelatedDummy::class],
+                        'r' => ['join' => 'o.relatedToDummyFriend', 'entity' => 'RelatedDummy'],
                         't' => [
                             'join' => 'o.thirdLevel',
-                            'entity' => ThirdLevel::class,
+                            'entity' => 'ThirdLevel',
                             'conditionType' => 'WITH',
                             'condition' => 't.id = o.id',
                             'index' => 'o.id',
@@ -123,7 +120,7 @@ final class SearchExtensionTest extends TestCase
         $requestStack->push($request);
 
         $orderExtensionTest = new SearchExtension($requestStack, $ormFactoryProphecy->reveal());
-        $orderExtensionTest->applyToCollection($queryBuilder, new QueryNameGenerator(), RelatedDummy::class, new Get(name: 'get'));
+        $orderExtensionTest->applyToCollection($queryBuilder, new QueryNameGenerator(), 'RelatedDummy', new Get(name: 'get'));
     }
 
     /**
@@ -157,12 +154,12 @@ final class SearchExtensionTest extends TestCase
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage($message);
 
-        $orderExtensionTest->applyToCollection($queryBuilder, new QueryNameGenerator(), RelatedDummy::class, new Get(name: 'get'));
+        $orderExtensionTest->applyToCollection($queryBuilder, new QueryNameGenerator(), 'RelatedDummy', new Get(name: 'get'));
     }
 
-    public function provideInvalidConfigurations(): iterable
+    public static function provideInvalidConfigurations(): iterable
     {
-        $resourceClass = \ApiPlatform\Core\Tests\Fixtures\TestBundle\Entity\RelatedDummy::class;
+        $resourceClass = 'RelatedDummy';
 
         return [
             [
@@ -193,7 +190,7 @@ final class SearchExtensionTest extends TestCase
                         'fiend-name' => ['alias' => 'r'],
                     ],
                     'relations' => [
-                        'r' => ['join' => 'o.relatedToDummyFriend', 'entity' => RelatedDummy::class],
+                        'r' => ['join' => 'o.relatedToDummyFriend', 'entity' => 'RelatedDummy'],
                     ],
                 ],
             ],
@@ -225,7 +222,7 @@ final class SearchExtensionTest extends TestCase
                         'fiend-name' => ['field' => 'name', 'alias' => 'r'],
                     ],
                     'relations' => [
-                        'r' => ['join' => 'o.relatedToDummyFriend', 'entity' => RelatedDummy::class, 'type' => 'outer'],
+                        'r' => ['join' => 'o.relatedToDummyFriend', 'entity' => 'RelatedDummy', 'type' => 'outer'],
                     ],
                 ],
             ],
@@ -246,7 +243,7 @@ final class SearchExtensionTest extends TestCase
         $requestStack->push($request);
 
         $orderExtensionTest = new SearchExtension($requestStack, $ormFactoryProphecy->reveal());
-        $orderExtensionTest->applyToCollection($queryBuilder, new QueryNameGenerator(), Dummy::class, new Get(name: 'get'));
+        $orderExtensionTest->applyToCollection($queryBuilder, new QueryNameGenerator(), 'dummy', new Get(name: 'get'));
     }
 
     private function createCondition(?string $setName = 'dummy_fieldset'): SearchCondition

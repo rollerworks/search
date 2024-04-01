@@ -22,7 +22,7 @@ use Symfony\Component\Validator\ConstraintViolationList;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 
 /**
- * Converts {@see \Rollerworks\Component\Search\Exception\InvalidSearchConditionException}
+ * Converts {@see InvalidSearchConditionException}
  * to a Hydra error representation.
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
@@ -32,13 +32,13 @@ final class InvalidSearchConditionNormalizer implements NormalizerInterface
     private $serializePayloadFields;
     private $nameConverter;
 
-    public function __construct(array $serializePayloadFields = null, NameConverterInterface $nameConverter = null)
+    public function __construct(?array $serializePayloadFields = null, ?NameConverterInterface $nameConverter = null)
     {
         $this->nameConverter = $nameConverter;
         $this->serializePayloadFields = $serializePayloadFields;
     }
 
-    public function normalize($object, string $format = null, array $context = []): array
+    public function normalize($object, ?string $format = null, array $context = []): array
     {
         $list = new ConstraintViolationList();
 
@@ -69,7 +69,7 @@ final class InvalidSearchConditionNormalizer implements NormalizerInterface
         ];
     }
 
-    public function supportsNormalization(mixed $data, string $format = null, array $context = []): bool
+    public function supportsNormalization(mixed $data, ?string $format = null, array $context = []): bool
     {
         return ($format === 'json' || $format === 'jsonproblem') && $data instanceof InvalidSearchConditionException;
     }

@@ -27,7 +27,7 @@ trait ChoiceLoaderTrait
      */
     protected $choiceList;
 
-    public function loadChoicesForValues(array $values, callable $value = null): array
+    public function loadChoicesForValues(array $values, ?callable $value = null): array
     {
         // Optimize
         if (empty($values)) {
@@ -42,7 +42,7 @@ trait ChoiceLoaderTrait
         return $this->loadChoiceList($value)->getChoicesForValues($values);
     }
 
-    public function loadValuesForChoices(array $choices, callable $value = null): array
+    public function loadValuesForChoices(array $choices, ?callable $value = null): array
     {
         // Optimize
         if (empty($choices)) {
@@ -62,5 +62,5 @@ trait ChoiceLoaderTrait
      *
      * @see \Rollerworks\Component\Search\Extension\Core\ChoiceList\Loader\ChoiceLoader::loadChoiceList
      */
-    abstract public function loadChoiceList(callable $value = null): ChoiceList;
+    abstract public function loadChoiceList(?callable $value = null): ChoiceList;
 }

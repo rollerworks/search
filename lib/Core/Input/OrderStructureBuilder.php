@@ -64,7 +64,7 @@ final class OrderStructureBuilder implements StructureBuilder
         $this->fieldSet = $config->getFieldSet();
         $this->validator = $validator;
         $this->path = $path ?: 'order';
-        $this->errorList = $errorList ?? new ErrorList();
+        $this->errorList = $errorList;
         $this->valuesGroup = new ValuesGroup();
     }
 

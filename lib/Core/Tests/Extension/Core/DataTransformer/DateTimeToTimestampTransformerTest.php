@@ -51,7 +51,7 @@ final class DateTimeToTimestampTransformerTest extends TestCase
 
         $input = new \DateTimeImmutable('2010-02-03 04:05:06 America/New_York');
         $output = $input->format('U');
-        $input->setTimezone(new \DateTimeZone('Asia/Hong_Kong'));
+        $input = $input->setTimezone(new \DateTimeZone('Asia/Hong_Kong'));
 
         self::assertEquals($output, $transformer->transform($input));
     }
@@ -64,7 +64,7 @@ final class DateTimeToTimestampTransformerTest extends TestCase
         $input = new \DateTimeImmutable('2010-02-03 04:05:06 Asia/Hong_Kong');
 
         $dateTime = clone $input;
-        $dateTime->setTimezone(new \DateTimeZone('UTC'));
+        $dateTime = $dateTime->setTimezone(new \DateTimeZone('UTC'));
         $output = $dateTime->format('U');
 
         self::assertEquals($output, $transformer->transform($input));

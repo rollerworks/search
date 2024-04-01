@@ -36,7 +36,7 @@ final class ChoiceType extends AbstractFieldType
 {
     private $choiceListFactory;
 
-    public function __construct(ChoiceListFactory $choiceListFactory = null)
+    public function __construct(?ChoiceListFactory $choiceListFactory = null)
     {
         $this->choiceListFactory = $choiceListFactory ?? new CachingFactoryDecorator(
             new PropertyAccessDecorator(

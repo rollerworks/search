@@ -14,7 +14,7 @@ declare(strict_types=1);
 error_reporting(\E_ALL | \E_STRICT);
 
 if (! file_exists(__DIR__ . '/../vendor/autoload.php')) {
-    throw new \RuntimeException('Did not find vendor/autoload.php. Did you run "composer install --prefer-source --dev"?');
+    throw new RuntimeException('Did not find vendor/autoload.php. Did you run "composer install --prefer-source --dev"?');
 }
 
 date_default_timezone_set('UTC');

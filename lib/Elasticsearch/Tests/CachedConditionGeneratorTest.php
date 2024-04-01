@@ -139,7 +139,6 @@ final class CachedConditionGeneratorTest extends ElasticsearchTestCase
         parent::setUp();
 
         $searchCondition = new SearchCondition(new GenericFieldSet([], 'invoice'), new ValuesGroup());
-        /** @var ConditionGenerator conditionGenerator */
         $this->conditionGenerator = $this->createMock(ConditionGenerator::class);
         $this->conditionGenerator
             ->expects(self::any())
@@ -147,9 +146,7 @@ final class CachedConditionGeneratorTest extends ElasticsearchTestCase
             ->willReturn($searchCondition)
         ;
 
-        /** @var Cache cacheDriver */
         $this->cacheDriver = $this->createMock(Cache::class);
-
         $this->cachedConditionGenerator = new CachedConditionGenerator(
             $this->conditionGenerator,
             $this->cacheDriver,
@@ -159,8 +156,6 @@ final class CachedConditionGeneratorTest extends ElasticsearchTestCase
 
     private function mockQuery(): Query
     {
-        return $this->getMockBuilder(Query::class)
-            ->getMock()
-        ;
+        return $this->createMock(Query::class);
     }
 }

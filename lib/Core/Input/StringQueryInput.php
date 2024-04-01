@@ -35,7 +35,7 @@ final class StringQueryInput extends StringInput
      *                                     If null the `label` option value is
      *                                     used instead
      */
-    public function __construct(Validator $validator = null, callable $labelResolver = null)
+    public function __construct(?Validator $validator = null, ?callable $labelResolver = null)
     {
         parent::__construct($validator);
         $this->labelResolver = $labelResolver ?? static fn (FieldConfig $field) => $field->getOption('label', $field->getName());
@@ -55,7 +55,9 @@ final class StringQueryInput extends StringInput
             $label = $callable($field);
             $labels[$label] = $name;
 
-            if (null !== $customerMatcher = $field->getOption(self::FIELD_LEXER_OPTION_NAME)) {
+            $customerMatcher = $field->getOption(self::FIELD_LEXER_OPTION_NAME);
+
+            if ($customerMatcher !== null) {
                 $this->valueLexers[$name] = $customerMatcher;
             }
         }

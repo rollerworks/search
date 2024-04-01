@@ -64,7 +64,7 @@ class ConversionHints
     /**
      * Returns a parameter-name to reference a value.
      */
-    public function createParamReferenceFor($value, string|Type $type = null): string
+    public function createParamReferenceFor($value, string|Type|null $type = null): string
     {
         if (\is_object($type)) {
             $type = Type::lookupName($type);

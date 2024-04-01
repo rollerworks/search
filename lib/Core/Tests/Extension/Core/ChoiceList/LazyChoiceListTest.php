@@ -47,8 +47,7 @@ final class LazyChoiceListTest extends TestCase
     {
         $this->loadedList = $this->createMock(ChoiceList::class);
         $this->loader = $this->createMock(ChoiceLoader::class);
-        $this->value = static function (): void {
-        };
+        $this->value = static function (): void {};
 
         $this->list = new LazyChoiceList($this->loader, $this->value);
     }

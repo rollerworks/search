@@ -13,9 +13,10 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Tests\Doctrine\Dbal\Mocks;
 
+use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 
-class ConnectionMock extends \Doctrine\DBAL\Connection
+class ConnectionMock extends Connection
 {
     private $_fetchOneResult;
     private $_platform;
@@ -54,7 +55,7 @@ class ConnectionMock extends \Doctrine\DBAL\Connection
      *
      * @param mixed|null $seqName
      */
-    public function lastInsertId($seqName = null): string|int|false
+    public function lastInsertId($seqName = null): false|int|string
     {
         return $this->_lastInsertId;
     }

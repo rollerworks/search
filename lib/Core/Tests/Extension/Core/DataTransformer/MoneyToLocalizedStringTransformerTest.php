@@ -46,7 +46,7 @@ final class MoneyToLocalizedStringTransformerTest extends TestCase
         return $moneyParser->parse((string) $input, new Currency($currency));
     }
 
-    public function provideTransformations(): iterable
+    public static function provideTransformations(): iterable
     {
         return [
             [null, '', 'de_AT'],
@@ -118,7 +118,7 @@ final class MoneyToLocalizedStringTransformerTest extends TestCase
         self::assertEquals('1234,50', $transformer->transform($from));
     }
 
-    public function provideTransformationsWithGrouping(): iterable
+    public static function provideTransformationsWithGrouping(): iterable
     {
         return [
             [1234.5, '1.234,50 €', 'de_DE'],

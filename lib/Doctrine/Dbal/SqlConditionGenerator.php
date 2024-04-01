@@ -51,7 +51,7 @@ final class SqlConditionGenerator implements ConditionGenerator
         $this->fieldsConfig = new FieldConfigurationSet($searchCondition->getFieldSet());
     }
 
-    public function setField(string $fieldName, string $column, string $alias = null, string $type = 'string'): self
+    public function setField(string $fieldName, string $column, ?string $alias = null, string $type = 'string'): self
     {
         if ($this->isApplied) {
             throw new BadMethodCallException(

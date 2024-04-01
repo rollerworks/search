@@ -15,7 +15,6 @@ namespace Rollerworks\Component\Search\Extension\Core\DataTransformer;
 
 use Rollerworks\Component\Search\DataTransformer;
 use Rollerworks\Component\Search\Exception\TransformationFailedException;
-use Throwable;
 
 /**
  * Allows to use multiple transformers based on their type.
@@ -60,7 +59,7 @@ final class MultiTypeDataTransformer implements DataTransformer
         foreach ($this->transformers as $transformer) {
             try {
                 return $transformer->reverseTransform($value);
-            } catch (Throwable $e) {
+            } catch (\Throwable $e) {
                 $finalException = new TransformationFailedException($e->getMessage() . \PHP_EOL . $e->getTraceAsString(), $e->getCode(), $finalException);
 
                 continue;

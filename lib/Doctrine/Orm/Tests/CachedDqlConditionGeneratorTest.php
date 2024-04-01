@@ -157,7 +157,7 @@ final class CachedDqlConditionGeneratorTest extends OrmTestCase
         $this->assertQueryBuilderEquals(
             " WHERE me = 'foo' ORDER BY I.id DESC",
             ['search' => [1, 'integer']],
-            $this->createCachedConditionGenerator($this->cacheDriver, $searchCondition, $this->createQuery())
+            $this->createCachedConditionGenerator($this->cacheDriver, $searchCondition, $this->getQuery())
         );
 
         $searchCondition = SearchConditionBuilder::create($this->getFieldSet())
@@ -174,7 +174,7 @@ final class CachedDqlConditionGeneratorTest extends OrmTestCase
         $this->assertQueryBuilderEquals(
             " WHERE me = 'foo' ORDER BY I.id DESC",
             ['search' => [1, 'integer']],
-            $this->createCachedConditionGenerator($this->cacheDriver, $searchCondition, $this->createQuery())
+            $this->createCachedConditionGenerator($this->cacheDriver, $searchCondition, $this->getQuery())
         );
 
         $searchCondition = SearchConditionBuilder::create($this->getFieldSet())
@@ -192,7 +192,7 @@ final class CachedDqlConditionGeneratorTest extends OrmTestCase
         $this->assertQueryBuilderEquals(
             " WHERE me = 'foo' ORDER BY I.id DESC, C.id DESC",
             ['search' => [1, 'integer']],
-            $this->createCachedConditionGenerator($this->cacheDriver, $searchCondition, $this->createQuery())
+            $this->createCachedConditionGenerator($this->cacheDriver, $searchCondition, $this->getQuery())
         );
     }
 
@@ -252,7 +252,7 @@ final class CachedDqlConditionGeneratorTest extends OrmTestCase
         ->getSearchCondition()
         ;
 
-        $query1 = $this->createQuery();
+        $query1 = $this->getQuery();
         $cachedConditionGenerator = $this->createCachedConditionGenerator($cacheDriver, $searchCondition, $query1);
 
         $searchCondition2 = SearchConditionBuilder::create($this->getFieldSet())
@@ -268,7 +268,7 @@ final class CachedDqlConditionGeneratorTest extends OrmTestCase
         ->getSearchCondition()
         ;
 
-        $query2 = $this->createQuery();
+        $query2 = $this->getQuery();
         $cachedConditionGenerator2 = $this->createCachedConditionGenerator($cacheDriver, $searchCondition2, $query2);
 
         $this->assertQueryBuilderEquals(" WHERE me = 'foo'", ['search_1' => ['duck', 'text']], $cachedConditionGenerator);
@@ -280,7 +280,7 @@ final class CachedDqlConditionGeneratorTest extends OrmTestCase
         parent::setUp();
 
         $this->cacheDriver = $this->getMockBuilder('Doctrine\Common\Cache\Cache')->getMock();
-        $this->query = $this->createQuery();
+        $this->query = $this->getQuery();
 
         $searchCondition = SearchConditionBuilder::create($this->getFieldSet())
             ->field('customer')
@@ -294,7 +294,7 @@ final class CachedDqlConditionGeneratorTest extends OrmTestCase
         $this->conditionGenerator = $this->createCachedConditionGenerator($this->cacheDriver, $searchCondition);
     }
 
-    private function createQuery(): QueryBuilder
+    protected function getQuery(): QueryBuilder
     {
         return $this->em->createQueryBuilder()
             ->select('I')

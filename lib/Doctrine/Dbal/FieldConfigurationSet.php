@@ -22,7 +22,7 @@ use Rollerworks\Component\Search\FieldSet;
 final class FieldConfigurationSet
 {
     private FieldSet $fieldSet;
-    /** @var array<string, QueryField> */
+    /** @var array<string, array<string|null, QueryField>> */
     public $fields = [];
 
     public function __construct(FieldSet $fieldSet)
@@ -30,7 +30,7 @@ final class FieldConfigurationSet
         $this->fieldSet = $fieldSet;
     }
 
-    public function setField(string $fieldName, string $column, string $alias = null, string $type = 'string'): void
+    public function setField(string $fieldName, string $column, ?string $alias = null, string $type = 'string'): void
     {
         $mappingIdx = null;
 

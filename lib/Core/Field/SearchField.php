@@ -142,7 +142,7 @@ class SearchField implements FieldConfig
         return $this->valueComparator;
     }
 
-    public function setViewTransformer(DataTransformer $viewTransformer = null)
+    public function setViewTransformer(?DataTransformer $viewTransformer = null)
     {
         if ($this->locked) {
             throw new BadMethodCallException(
@@ -160,7 +160,7 @@ class SearchField implements FieldConfig
         return $this->viewTransformer;
     }
 
-    public function setNormTransformer(DataTransformer $viewTransformer = null)
+    public function setNormTransformer(?DataTransformer $viewTransformer = null)
     {
         if ($this->locked) {
             throw new BadMethodCallException(

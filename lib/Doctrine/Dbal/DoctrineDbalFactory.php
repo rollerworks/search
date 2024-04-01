@@ -27,7 +27,7 @@ final class DoctrineDbalFactory
      */
     private $cacheDriver;
 
-    public function __construct(Cache $cacheDriver = null)
+    public function __construct(?Cache $cacheDriver = null)
     {
         $this->cacheDriver = $cacheDriver;
     }

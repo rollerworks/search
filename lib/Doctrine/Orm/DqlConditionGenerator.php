@@ -53,7 +53,7 @@ final class DqlConditionGenerator
     private $fieldsConfig;
 
     /**
-     * @var ArrayCollection
+     * @var ArrayCollection|null
      */
     private $parameters;
 

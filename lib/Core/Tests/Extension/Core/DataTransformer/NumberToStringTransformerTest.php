@@ -29,7 +29,7 @@ final class NumberToStringTransformerTest extends TestCase
         \Locale::setDefault('en');
     }
 
-    public function provideTransformations(): iterable
+    public static function provideTransformations(): iterable
     {
         return [
             [null, ''],
@@ -61,7 +61,7 @@ final class NumberToStringTransformerTest extends TestCase
         self::assertSame('678.92', $transformer->transform(678.916));
     }
 
-    public function transformWithRoundingProvider(): iterable
+    public static function transformWithRoundingProvider(): iterable
     {
         return [
             // towards positive infinity (1.6 -> 2, -1.6 -> -1)
@@ -182,7 +182,7 @@ final class NumberToStringTransformerTest extends TestCase
         self::assertEquals($to, $transformer->reverseTransform($from));
     }
 
-    public function reverseTransformWithRoundingProvider(): iterable
+    public static function reverseTransformWithRoundingProvider(): iterable
     {
         return [
             // towards positive infinity (1.6 -> 2, -1.6 -> -1)

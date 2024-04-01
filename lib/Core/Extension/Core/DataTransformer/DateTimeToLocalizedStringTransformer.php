@@ -68,10 +68,10 @@ final class DateTimeToLocalizedStringTransformer extends BaseDateTimeTransformer
      *
      * @param \DateTimeImmutable|null $dateTime
      *
+     * @return string Localized date string
+     *
      * @throws TransformationFailedException if the given value is not a \DateTimeImmutable
      *                                       or if the date could not be transformed
-     *
-     * @return string Localized date string
      */
     public function transform($dateTime): string
     {

@@ -38,7 +38,7 @@ final class MoneyToStringTransformerTest extends TestCase
         return $moneyParser->parse((string) $input, new Currency($currency));
     }
 
-    public function provideTransformations(): iterable
+    public static function provideTransformations(): iterable
     {
         return [
             [null, ''],

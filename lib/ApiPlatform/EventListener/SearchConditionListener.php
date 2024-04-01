@@ -47,7 +47,7 @@ final class SearchConditionListener
     private $eventDispatcher;
     private $cache;
 
-    public function __construct(SearchFactory $searchFactory, InputProcessorLoader $inputProcessorLoader, ResourceMetadataCollectionFactoryInterface $resourceMetadataFactory, EventDispatcherInterface $eventDispatcher, CacheInterface $cache = null)
+    public function __construct(SearchFactory $searchFactory, InputProcessorLoader $inputProcessorLoader, ResourceMetadataCollectionFactoryInterface $resourceMetadataFactory, EventDispatcherInterface $eventDispatcher, ?CacheInterface $cache = null)
     {
         $this->searchFactory = $searchFactory;
         $this->inputProcessorLoader = $inputProcessorLoader;

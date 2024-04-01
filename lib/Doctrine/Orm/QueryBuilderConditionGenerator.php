@@ -78,7 +78,7 @@ final class QueryBuilderConditionGenerator implements ConditionGenerator
         }
     }
 
-    public function setField(string $fieldName, string $property, string $alias = null, string $entity = null, string $dbType = null)
+    public function setField(string $fieldName, string $property, ?string $alias = null, ?string $entity = null, ?string $dbType = null)
     {
         $this->guardNotGenerated();
         $this->fieldsConfig->setField($fieldName, $property, $alias, $entity, $dbType);

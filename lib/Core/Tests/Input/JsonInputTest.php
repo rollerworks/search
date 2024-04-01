@@ -44,7 +44,7 @@ final class JsonInputTest extends InputProcessorTestCase
         $this->assertConditionContainsErrorsWithoutCause('{]', $config, [$error]);
     }
 
-    public function provideEmptyInputTests()
+    public static function provideEmptyInputTests(): iterable
     {
         return [
             [''],
@@ -52,7 +52,7 @@ final class JsonInputTest extends InputProcessorTestCase
         ];
     }
 
-    public function provideSingleValuePairTests()
+    public static function provideSingleValuePairTests(): iterable
     {
         return [
             [
@@ -93,7 +93,7 @@ final class JsonInputTest extends InputProcessorTestCase
         ];
     }
 
-    public function provideMultipleValues()
+    public static function provideMultipleValues(): iterable
     {
         return [
             [
@@ -113,7 +113,7 @@ final class JsonInputTest extends InputProcessorTestCase
         ];
     }
 
-    public function provideRangeValues()
+    public static function provideRangeValues(): iterable
     {
         return [
             [
@@ -143,7 +143,7 @@ final class JsonInputTest extends InputProcessorTestCase
         ];
     }
 
-    public function provideComparisonValues()
+    public static function provideComparisonValues(): iterable
     {
         return [
             [
@@ -171,7 +171,7 @@ final class JsonInputTest extends InputProcessorTestCase
         ];
     }
 
-    public function provideMatcherValues()
+    public static function provideMatcherValues(): iterable
     {
         return [
             [
@@ -198,7 +198,7 @@ final class JsonInputTest extends InputProcessorTestCase
         ];
     }
 
-    public function provideGroupTests()
+    public static function provideGroupTests(): iterable
     {
         return [
             [
@@ -232,7 +232,7 @@ final class JsonInputTest extends InputProcessorTestCase
         ];
     }
 
-    public function provideRootLogicalTests()
+    public static function provideRootLogicalTests(): iterable
     {
         return [
             [
@@ -274,7 +274,7 @@ final class JsonInputTest extends InputProcessorTestCase
         ];
     }
 
-    public function provideMultipleSubGroupTests()
+    public static function provideMultipleSubGroupTests(): iterable
     {
         return [
             [
@@ -302,7 +302,7 @@ final class JsonInputTest extends InputProcessorTestCase
         ];
     }
 
-    public function provideNestedGroupTests()
+    public static function provideNestedGroupTests(): iterable
     {
         return [
             [
@@ -327,7 +327,7 @@ final class JsonInputTest extends InputProcessorTestCase
         ];
     }
 
-    public function provideValueOverflowTests()
+    public static function provideValueOverflowTests(): iterable
     {
         return [
             [
@@ -412,7 +412,7 @@ final class JsonInputTest extends InputProcessorTestCase
         ];
     }
 
-    public function provideGroupsOverflowTests()
+    public static function provideGroupsOverflowTests(): iterable
     {
         return [
             [
@@ -511,7 +511,7 @@ final class JsonInputTest extends InputProcessorTestCase
         ];
     }
 
-    public function provideNestingLevelExceededTests()
+    public static function provideNestingLevelExceededTests(): iterable
     {
         return [
             [
@@ -537,7 +537,7 @@ final class JsonInputTest extends InputProcessorTestCase
         ];
     }
 
-    public function providePrivateFieldTests()
+    public static function providePrivateFieldTests(): iterable
     {
         return [
             [
@@ -570,7 +570,7 @@ final class JsonInputTest extends InputProcessorTestCase
         ];
     }
 
-    public function provideUnknownFieldTests()
+    public static function provideUnknownFieldTests(): iterable
     {
         return [
             [
@@ -587,7 +587,7 @@ final class JsonInputTest extends InputProcessorTestCase
         ];
     }
 
-    public function provideUnsupportedValueTypeExceptionTests()
+    public static function provideUnsupportedValueTypeExceptionTests(): iterable
     {
         return [
             [
@@ -648,7 +648,7 @@ final class JsonInputTest extends InputProcessorTestCase
     /**
      * @return array[]
      */
-    public function provideInvalidRangeTests()
+    public static function provideInvalidRangeTests(): iterable
     {
         return [
             [
@@ -686,7 +686,7 @@ final class JsonInputTest extends InputProcessorTestCase
         ];
     }
 
-    public function provideInvalidValueTests()
+    public static function provideInvalidValueTests(): iterable
     {
         return [
             [
@@ -709,7 +709,7 @@ final class JsonInputTest extends InputProcessorTestCase
         ];
     }
 
-    public function provideInvalidWithMessageValueTests()
+    public static function provideInvalidWithMessageValueTests(): iterable
     {
         return [
             [
@@ -730,7 +730,7 @@ final class JsonInputTest extends InputProcessorTestCase
         ];
     }
 
-    public function provideNestedErrorsTests()
+    public static function provideNestedErrorsTests(): iterable
     {
         return [
             [

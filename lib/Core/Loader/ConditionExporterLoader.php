@@ -42,8 +42,6 @@ final class ConditionExporterLoader
     /**
      * Create a new ConditionExporterLoader with the build-in ConditionExporters
      * loadable.
-     *
-     * @return ConditionExporterLoader
      */
     public static function create(): self
     {

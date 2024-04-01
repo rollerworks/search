@@ -44,7 +44,7 @@ final class ConditionExporterLoaderTest extends TestCase
         self::assertInstanceOf($className, $loader->get($alias));
     }
 
-    public function provideProcessors(): iterable
+    public static function provideProcessors(): iterable
     {
         return [
             ['json', Exporter\JsonExporter::class],

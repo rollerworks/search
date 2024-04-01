@@ -158,7 +158,7 @@ abstract class StringInput extends AbstractInput
     /** @var StringLexer */
     private $lexer;
 
-    public function __construct(Validator $validator = null)
+    public function __construct(?Validator $validator = null)
     {
         $this->lexer = new StringLexer();
         parent::__construct($validator);

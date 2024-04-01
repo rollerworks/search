@@ -227,7 +227,7 @@ final class ConditionGeneratorResultsTest extends FunctionalElasticsearchTestCas
             } else {
                 echo 'Please install symfony/var-dumper as dev-requirement to get a readable structure.' . \PHP_EOL;
                 // Don't use var-dump or print-r as this crashes php...
-                echo \get_class($e) . '::' . (string) $e;
+                echo $e::class . '::' . (string) $e;
             }
             self::fail('Condition contains errors.');
         }

@@ -58,12 +58,12 @@ interface ConditionGenerator
      * @param string $alias     Table alias as used in the query "u" for `FROM users AS u`
      * @param string $type      Doctrine DBAL supported type, either "string" (not "text")
      *
+     * @return static
+     *
      * @throws UnknownFieldException  When the field is not registered in the fieldset
      * @throws BadMethodCallException When the where-clause is already generated
-     *
-     * @return static
      */
-    public function setField(string $fieldName, string $column, string $alias = null, string $type = 'string');
+    public function setField(string $fieldName, string $column, ?string $alias = null, string $type = 'string');
 
     public function getSearchCondition(): SearchCondition;
 

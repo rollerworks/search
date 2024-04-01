@@ -73,7 +73,7 @@ class QueryField implements \Serializable
      */
     public $tableColumn;
 
-    public function __construct(string $mappingName, FieldConfig $fieldConfig, string $dbType, string $column, string $alias = null)
+    public function __construct(string $mappingName, FieldConfig $fieldConfig, string $dbType, string $column, ?string $alias = null)
     {
         $this->mappingName = $mappingName;
         $this->fieldConfig = $fieldConfig;

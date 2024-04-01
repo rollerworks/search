@@ -145,8 +145,7 @@ final class CachingFactoryDecoratorTest extends TestCase
     {
         $choices = [1];
         $list = $this->createMock(ChoiceList::class);
-        $closure = static function (): void {
-        };
+        $closure = static function (): void {};
 
         $this->decoratedFactory->expects(self::once())
             ->method('createListFromChoices')
@@ -219,8 +218,7 @@ final class CachingFactoryDecoratorTest extends TestCase
     {
         $loader = $this->createMock(ChoiceLoader::class);
         $list = $this->createMock(ChoiceList::class);
-        $closure = static function (): void {
-        };
+        $closure = static function (): void {};
 
         $this->decoratedFactory->expects(self::once())
             ->method('createListFromLoader')
@@ -238,10 +236,8 @@ final class CachingFactoryDecoratorTest extends TestCase
         $loader = $this->createMock(ChoiceLoader::class);
         $list1 = $this->createMock(ChoiceList::class);
         $list2 = $this->createMock(ChoiceList::class);
-        $closure1 = static function (): void {
-        };
-        $closure2 = static function (): void {
-        };
+        $closure1 = static function (): void {};
+        $closure2 = static function (): void {};
 
         $this->decoratedFactory->expects(self::exactly(2))
             ->method('createListFromLoader')
@@ -292,8 +288,7 @@ final class CachingFactoryDecoratorTest extends TestCase
     /** @test */
     public function create_view_same_preferred_choices_closure(): void
     {
-        $preferred = static function (): void {
-        };
+        $preferred = static function (): void {};
         $list = $this->createMock(ChoiceList::class);
         $view = new ChoiceListView();
 
@@ -329,8 +324,7 @@ final class CachingFactoryDecoratorTest extends TestCase
     /** @test */
     public function create_view_same_label_closure(): void
     {
-        $labels = static function (): void {
-        };
+        $labels = static function (): void {};
         $list = $this->createMock(ChoiceList::class);
         $view = new ChoiceListView();
 
@@ -366,8 +360,7 @@ final class CachingFactoryDecoratorTest extends TestCase
     /** @test */
     public function create_view_same_index_closure(): void
     {
-        $index = static function (): void {
-        };
+        $index = static function (): void {};
         $list = $this->createMock(ChoiceList::class);
         $view = new ChoiceListView();
 
@@ -403,8 +396,7 @@ final class CachingFactoryDecoratorTest extends TestCase
     /** @test */
     public function create_view_same_group_by_closure(): void
     {
-        $groupBy = static function (): void {
-        };
+        $groupBy = static function (): void {};
         $list = $this->createMock(ChoiceList::class);
         $view = new ChoiceListView();
 
@@ -479,8 +471,7 @@ final class CachingFactoryDecoratorTest extends TestCase
     /** @test */
     public function create_view_same_attributes_closure(): void
     {
-        $attr = static function (): void {
-        };
+        $attr = static function (): void {};
         $list = $this->createMock(ChoiceList::class);
         $view = new ChoiceListView();
 
@@ -513,7 +504,7 @@ final class CachingFactoryDecoratorTest extends TestCase
         self::assertSame($view2, $this->factory->createView($list, null, null, null, null, $attr2));
     }
 
-    public function provideSameChoices(): array
+    public static function provideSameChoices(): iterable
     {
         $object = (object) ['foo' => 'bar'];
 
@@ -526,7 +517,7 @@ final class CachingFactoryDecoratorTest extends TestCase
         ];
     }
 
-    public function provideDistinguishedChoices(): array
+    public static function provideDistinguishedChoices(): iterable
     {
         return [
             [0, false],
@@ -544,7 +535,7 @@ final class CachingFactoryDecoratorTest extends TestCase
         ];
     }
 
-    public function provideSameKeyChoices(): array
+    public static function provideSameKeyChoices(): iterable
     {
         // Only test types here that can be used as array keys
         return [
@@ -555,7 +546,7 @@ final class CachingFactoryDecoratorTest extends TestCase
         ];
     }
 
-    public function provideDistinguishedKeyChoices(): array
+    public static function provideDistinguishedKeyChoices(): iterable
     {
         // Only test types here that can be used as array keys
         return [

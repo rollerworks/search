@@ -28,7 +28,7 @@ trait MetadataFactoryTrait
 {
     use ProphecyTrait;
 
-    private function createResourceMetadataFactory(array|ResourceMetadataCollection $metadata = null, string $resourceClass = 'dummy'): ResourceMetadataCollectionFactoryInterface
+    private function createResourceMetadataFactory(array|ResourceMetadataCollection|null $metadata = null, string $resourceClass = 'dummy'): ResourceMetadataCollectionFactoryInterface
     {
         if (\is_array($metadata)) {
             $metadata = $this->getMetadataCollection($metadata, $resourceClass);

@@ -58,7 +58,7 @@ abstract class AbstractQueryPlatform
         return $this->createParamReferenceFor($value, $mappingConfig->dbTypeName);
     }
 
-    public function createParamReferenceFor($value, string $type = null): string
+    public function createParamReferenceFor($value, ?string $type = null): string
     {
         $name = 'search_' . (++$this->parameterIdx);
         $this->parameters->set($name, [$value, $type]);

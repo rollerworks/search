@@ -15,10 +15,10 @@ namespace Rollerworks\Component\Search\Tests\Doctrine\Orm;
 
 use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\ORMSetup;
 use Doctrine\ORM\Query\Parameter;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Tools\SchemaTool;
-use Doctrine\ORM\Tools\Setup;
 use PHPUnit\Framework\AssertionFailedError;
 use PHPUnit\Framework\Exception;
 use PHPUnit\Framework\Warning;
@@ -47,7 +47,7 @@ abstract class OrmTestCase extends DbalTestCase
     protected const INVOICE_CLASS = Fixtures\Entity\ECommerceInvoice::class;
 
     /**
-     * @var \Doctrine\ORM\EntityManager|null
+     * @var EntityManager|null
      */
     protected $em;
 
@@ -69,7 +69,7 @@ abstract class OrmTestCase extends DbalTestCase
     private static $sharedConn;
 
     /**
-     * @var \Doctrine\ORM\EntityManager|null
+     * @var EntityManager|null
      */
     private static $sharedEm;
 
@@ -78,7 +78,7 @@ abstract class OrmTestCase extends DbalTestCase
         parent::setUp();
 
         if (! isset(self::$sharedConn)) {
-            $config = Setup::createAttributeMetadataConfiguration([__DIR__ . '/Fixtures/Entity'], true, null, null, false);
+            $config = ORMSetup::createAttributeMetadataConfiguration([__DIR__ . '/Fixtures/Entity'], true, null, null);
 
             self::$sharedConn = TestUtil::getConnection();
             self::$sharedEm = EntityManager::create(self::$sharedConn, $config);
@@ -158,9 +158,7 @@ abstract class OrmTestCase extends DbalTestCase
     /**
      * Returns the QueryBuilder for the ConditionGenerator.
      */
-    protected function getQuery(): QueryBuilder
-    {
-    }
+    abstract protected function getQuery(): QueryBuilder;
 
     /**
      * Configure fields of the ConditionGenerator.
@@ -170,7 +168,7 @@ abstract class OrmTestCase extends DbalTestCase
     }
 
     /**
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws \Doctrine\DBAL\Exception
      */
     protected function assertRecordsAreFound(SearchCondition $condition, array $ids): void
     {
@@ -217,7 +215,7 @@ abstract class OrmTestCase extends DbalTestCase
             $rows
         );
 
-        static::assertSame(
+        self::assertSame(
             $ids,
             array_merge([], array_unique($idRows)),
             sprintf(
@@ -247,7 +245,7 @@ abstract class OrmTestCase extends DbalTestCase
             }
         }
 
-        static::assertEquals($parameters, $actualParameters);
+        self::assertEquals($parameters, $actualParameters);
     }
 
     protected function onNotSuccessfulTest(\Throwable $e): void
@@ -265,7 +263,7 @@ abstract class OrmTestCase extends DbalTestCase
                 $params = array_map(
                     static function ($p) {
                         if (\is_object($p)) {
-                            return \get_class($p);
+                            return $p::class;
                         }
 
                         return "'" . var_export($p, true) . "'";
@@ -292,7 +290,7 @@ abstract class OrmTestCase extends DbalTestCase
             }
 
             $message =
-                '[' . \get_class($e) . '] ' .
+                '[' . $e::class . '] ' .
                 $e->getMessage() .
                 \PHP_EOL . \PHP_EOL .
                 'With queries:' . \PHP_EOL .

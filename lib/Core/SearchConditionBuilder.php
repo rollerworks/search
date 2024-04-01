@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search;
 
-use LogicException;
 use Rollerworks\Component\Search\Exception\BadMethodCallException;
 use Rollerworks\Component\Search\Exception\InvalidArgumentException;
 use Rollerworks\Component\Search\Field\OrderField;
@@ -56,7 +55,7 @@ final class SearchConditionBuilder
         return new self($logical, $fieldSet);
     }
 
-    private function __construct(string $logical, FieldSet $fieldSet, self $parent = null)
+    private function __construct(string $logical, FieldSet $fieldSet, ?self $parent = null)
     {
         $this->valuesGroup = new ValuesGroup($logical);
         $this->parent = $parent;
@@ -340,11 +339,11 @@ final class SearchConditionBuilder
 
     public function __serialize(): array
     {
-        throw new LogicException('Unable serialize a SearchConditionBuilder. Call getSearchCondition() and serialize the SearchCondition itself.');
+        throw new \LogicException('Unable serialize a SearchConditionBuilder. Call getSearchCondition() and serialize the SearchCondition itself.');
     }
 
     public function __sleep(): array
     {
-        throw new LogicException('Unable serialize a SearchConditionBuilder. Call getSearchCondition() and serialize the SearchCondition itself.');
+        throw new \LogicException('Unable serialize a SearchConditionBuilder. Call getSearchCondition() and serialize the SearchCondition itself.');
     }
 }

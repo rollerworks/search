@@ -47,7 +47,7 @@ final class CallbackChoiceLoader implements ChoiceLoader
         $this->valuesAreConstant = $valuesAreConstant;
     }
 
-    public function loadChoiceList(callable $value = null): ChoiceList
+    public function loadChoiceList(?callable $value = null): ChoiceList
     {
         if ($this->choiceList !== null) {
             return $this->choiceList;

@@ -83,7 +83,7 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
     /** @var ParameterBag|null */
     private $parameterBag;
 
-    public function __construct(SearchCondition $searchCondition, ParameterBag $parameterBag = null)
+    public function __construct(SearchCondition $searchCondition, ?ParameterBag $parameterBag = null)
     {
         $this->searchCondition = $searchCondition;
         $this->parameterBag = $parameterBag;

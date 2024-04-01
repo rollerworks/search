@@ -103,7 +103,7 @@ final class GenericTypeRegistry implements TypeRegistry
     private function resolveType(FieldType $type): ResolvedFieldType
     {
         $parentType = $type->getParent();
-        $fqcn = \get_class($type);
+        $fqcn = $type::class;
 
         $typeExtensions = [];
 

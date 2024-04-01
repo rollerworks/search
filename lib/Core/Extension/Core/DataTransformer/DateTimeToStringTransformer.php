@@ -44,7 +44,7 @@ final class DateTimeToStringTransformer extends BaseDateTimeTransformer
      *
      * @see \DateTimeImmutable::format() for supported formats
      */
-    public function __construct(string $inputTimezone = null, string $outputTimezone = null, string $format = 'Y-m-d H:i:s')
+    public function __construct(?string $inputTimezone = null, ?string $outputTimezone = null, string $format = 'Y-m-d H:i:s')
     {
         parent::__construct($inputTimezone, $outputTimezone);
 
@@ -69,9 +69,9 @@ final class DateTimeToStringTransformer extends BaseDateTimeTransformer
      *
      * @param \DateTimeImmutable|null $dateTime
      *
-     * @throws TransformationFailedException If the given value is not a \DateTimeImmutable
-     *
      * @return string A value as produced by PHP's date() function
+     *
+     * @throws TransformationFailedException If the given value is not a \DateTimeImmutable
      */
     public function transform($dateTime): string
     {

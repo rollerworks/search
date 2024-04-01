@@ -42,7 +42,7 @@ final class GenericSearchFactory implements SearchFactory
         $builder = $this->createFieldSetBuilder();
         $configurator->buildFieldSet($builder);
 
-        return $builder->getFieldSet(\get_class($configurator));
+        return $builder->getFieldSet($configurator::class);
     }
 
     public function createField(string $name, string $type, array $options = []): FieldConfig

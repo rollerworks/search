@@ -35,7 +35,7 @@ final class GenericFieldSet implements FieldSetWithView
      * @param string|null   $name        FQCN of the FieldSet configurator
      * @param callable      $viewBuilder A callable to finalize the FieldSetView
      */
-    public function __construct(array $fields, ?string $name = null, callable $viewBuilder = null)
+    public function __construct(array $fields, ?string $name = null, ?callable $viewBuilder = null)
     {
         $this->fields = $fields;
         $this->name = $name;

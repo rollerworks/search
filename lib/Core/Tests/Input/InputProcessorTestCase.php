@@ -87,6 +87,7 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
 
     /**
      * @test
+     *
      * @dataProvider provideEmptyInputTests
      */
     public function it_processes_an_empty_input($input): void
@@ -103,10 +104,11 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
     /**
      * @return array[]
      */
-    abstract public function provideEmptyInputTests();
+    abstract public static function provideEmptyInputTests(): iterable;
 
     /**
      * @test
+     *
      * @dataProvider provideSingleValuePairTests
      */
     public function it_processes_values($input, array $order = []): void
@@ -147,10 +149,11 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
     /**
      * @return array[]
      */
-    abstract public function provideSingleValuePairTests();
+    abstract public static function provideSingleValuePairTests();
 
     /**
      * @test
+     *
      * @dataProvider provideMultipleValues
      */
     public function it_processes_multiple_fields($input): void
@@ -179,10 +182,11 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
     /**
      * @return array[]
      */
-    abstract public function provideMultipleValues();
+    abstract public static function provideMultipleValues();
 
     /**
      * @dataProvider provideRangeValues
+     *
      * @test
      */
     public function it_processes_range_values($input): void
@@ -215,10 +219,11 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
     /**
      * @return array[]
      */
-    abstract public function provideRangeValues();
+    abstract public static function provideRangeValues();
 
     /**
      * @dataProvider provideComparisonValues
+     *
      * @test
      */
     public function it_processes_comparisons($input): void
@@ -250,10 +255,11 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
     /**
      * @return array[]
      */
-    abstract public function provideComparisonValues();
+    abstract public static function provideComparisonValues();
 
     /**
      * @test
+     *
      * @dataProvider provideMatcherValues
      */
     public function it_processes_matchers($input): void
@@ -282,10 +288,11 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
     /**
      * @return array[]
      */
-    abstract public function provideMatcherValues();
+    abstract public static function provideMatcherValues();
 
     /**
      * @test
+     *
      * @dataProvider provideGroupTests
      */
     public function it_processes_groups($input): void
@@ -324,10 +331,11 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
     /**
      * @return array[]
      */
-    abstract public function provideGroupTests();
+    abstract public static function provideGroupTests();
 
     /**
      * @test
+     *
      * @dataProvider provideRootLogicalTests
      */
     public function it_processes_root_logical($input, string $logical = ValuesGroup::GROUP_LOGICAL_AND): void
@@ -350,10 +358,11 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
     /**
      * @return array[]
      */
-    abstract public function provideRootLogicalTests();
+    abstract public static function provideRootLogicalTests();
 
     /**
      * @test
+     *
      * @dataProvider provideMultipleSubGroupTests
      */
     public function it_processes_multiple_subgroups($input): void
@@ -387,10 +396,11 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
     /**
      * @return array[]
      */
-    abstract public function provideMultipleSubGroupTests();
+    abstract public static function provideMultipleSubGroupTests();
 
     /**
      * @test
+     *
      * @dataProvider provideNestedGroupTests
      */
     public function it_processes_nested_subgroups($input): void
@@ -418,10 +428,11 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
     /**
      * @return array[]
      */
-    abstract public function provideNestedGroupTests();
+    abstract public static function provideNestedGroupTests();
 
     /**
      * @test
+     *
      * @dataProvider provideValueOverflowTests
      */
     public function it_errors_when_maximum_values_count_is_exceeded($input, string $fieldName, string $path): void
@@ -438,10 +449,11 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
     /**
      * @return array[]
      */
-    abstract public function provideValueOverflowTests();
+    abstract public static function provideValueOverflowTests();
 
     /**
      * @test
+     *
      * @dataProvider provideGroupsOverflowTests
      */
     public function it_errors_when_maximum_groups_count_is_exceeded($input, string $path): void
@@ -458,12 +470,13 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
     /**
      * @return array[]
      */
-    abstract public function provideGroupsOverflowTests();
+    abstract public static function provideGroupsOverflowTests();
 
     /**
      * This tests ensures a private field will throw an UnknownFieldException.
      *
      * @test
+     *
      * @dataProvider providePrivateFieldTests
      */
     public function it_errors_when_private_field_was_used($input, string $fieldName): void
@@ -479,10 +492,11 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
     /**
      * @return array[]
      */
-    abstract public function providePrivateFieldTests();
+    abstract public static function providePrivateFieldTests();
 
     /**
      * @test
+     *
      * @dataProvider provideNestingLevelExceededTests
      */
     public function it_errors_when_maximum_nesting_level_is_reached($input, string $path): void
@@ -499,10 +513,11 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
     /**
      * @return array[]
      */
-    abstract public function provideNestingLevelExceededTests();
+    abstract public static function provideNestingLevelExceededTests();
 
     /**
      * @test
+     *
      * @dataProvider provideUnknownFieldTests
      */
     public function it_errors_when_the_field_does_not_exist_in_fieldset($input): void
@@ -518,10 +533,11 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
     /**
      * @return array[]
      */
-    abstract public function provideUnknownFieldTests();
+    abstract public static function provideUnknownFieldTests();
 
     /**
      * @test
+     *
      * @dataProvider provideUnsupportedValueTypeExceptionTests
      */
     public function it_errors_when_the_field_does_not_support_the_value_type($input, string $fieldName, string $valueType): void
@@ -537,10 +553,11 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
     /**
      * @return array[]
      */
-    abstract public function provideUnsupportedValueTypeExceptionTests();
+    abstract public static function provideUnsupportedValueTypeExceptionTests();
 
     /**
      * @test
+     *
      * @dataProvider provideInvalidRangeTests
      */
     public function it_errors_when_a_range_has_invalid_bounds($input, array $path): void
@@ -558,12 +575,13 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
     /**
      * @return array[]
      */
-    abstract public function provideInvalidRangeTests();
+    abstract public static function provideInvalidRangeTests();
 
     /**
      * @param ConditionErrorMessage[] $errors
      *
      * @test
+     *
      * @dataProvider provideInvalidValueTests
      */
     public function it_errors_when_transformation_fails($input, array $errors): void
@@ -576,12 +594,13 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
     /**
      * @return array[]
      */
-    abstract public function provideInvalidValueTests();
+    abstract public static function provideInvalidValueTests();
 
     /**
      * @param ConditionErrorMessage[] $errors
      *
      * @test
+     *
      * @dataProvider provideInvalidWithMessageValueTests
      */
     public function it_errors_with_invalid_message_when_transformation_fails($input, array $errors): void
@@ -632,12 +651,13 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
     /**
      * @return array[]
      */
-    abstract public function provideInvalidWithMessageValueTests();
+    abstract public static function provideInvalidWithMessageValueTests();
 
     /**
      * @param ConditionErrorMessage[] $errors
      *
      * @test
+     *
      * @dataProvider provideNestedErrorsTests
      */
     public function it_checks_nested_fields($input, array $errors): void
@@ -651,7 +671,7 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
     /**
      * @return array[]
      */
-    abstract public function provideNestedErrorsTests();
+    abstract public static function provideNestedErrorsTests();
 
     /**
      * @param ConditionErrorMessage[] $errors
@@ -663,11 +683,11 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
         try {
             $processor->process($config, $input);
 
-            static::fail('Condition should be invalid.');
+            self::fail('Condition should be invalid.');
         } catch (\Exception $e) {
             /* @var InvalidSearchConditionException $e */
             self::detectSystemException($e);
-            static::assertInstanceOf(InvalidSearchConditionException::class, $e);
+            self::assertInstanceOf(InvalidSearchConditionException::class, $e);
 
             $errorsList = $e->getErrors();
 
@@ -680,7 +700,7 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
                 $error->cause = null;
             }
 
-            static::assertEquals($errors, $errorsList);
+            self::assertEquals($errors, $errorsList);
         }
     }
 
@@ -694,12 +714,12 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
         try {
             $processor->process($config, $input);
 
-            static::fail('Condition should be invalid.');
+            self::fail('Condition should be invalid.');
         } catch (\Exception $e) {
             /* @var InvalidSearchConditionException $e */
             self::detectSystemException($e);
-            static::assertInstanceOf(InvalidSearchConditionException::class, $e);
-            static::assertEquals($errors, $e->getErrors());
+            self::assertInstanceOf(InvalidSearchConditionException::class, $e);
+            self::assertEquals($errors, $e->getErrors());
         }
     }
 }

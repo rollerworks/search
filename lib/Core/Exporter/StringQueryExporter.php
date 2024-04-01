@@ -32,7 +32,7 @@ final class StringQueryExporter extends StringExporter
      *                                     If the resolver is null, the `label` option value
      *                                     of the field is tried instead
      */
-    public function __construct(callable $labelResolver = null)
+    public function __construct(?callable $labelResolver = null)
     {
         $this->labelResolver = $labelResolver ?? static fn (FieldConfig $field) => $field->getOption('label', $field->getName());
     }

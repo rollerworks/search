@@ -33,7 +33,7 @@ final class StringUtilTest extends TestCase
         self::assertSame($expectedBlockPrefix, $blockPrefix);
     }
 
-    public function fqcnToBlockPrefixProvider(): iterable
+    public static function fqcnToBlockPrefixProvider(): iterable
     {
         return [
             ['TYPE', 'type'],
