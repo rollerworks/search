@@ -136,6 +136,89 @@ final class CachingInputProcessorTest extends TestCase
     }
 
     /** @test */
+    public function it_stores_processed_result_in_cache_with_processor_config_ttl(): void
+    {
+        $serializer = $this->createMock(SearchConditionSerializer::class);
+        $serializer
+            ->expects(self::once())
+            ->method('unserialize')
+            ->willThrowException(new InvalidArgumentException())
+        ;
+
+        $serializer
+            ->expects(self::once())
+            ->method('serialize')
+            ->with(SpyingInputProcessor::getCondition())
+            ->willReturn(['noop', 'serializedResult'])
+        ;
+
+        $cache = $this->createMock(CacheInterface::class);
+        $cache
+            ->expects(self::once())
+            ->method('get')
+            ->willReturn([])
+        ;
+
+        $cache
+            ->expects(self::once())
+            ->method('set')
+            ->with('57844014a80a2251e25a05e3c94ffdc2f47cb6ff06b3e2dcc27c5d5124dff22a', ['noop', 'serializedResult'], new \DateInterval('P1D'))
+        ;
+
+        $inputProcessor = new SpyingInputProcessor();
+        $processor = new CachingInputProcessor($cache, $serializer, $inputProcessor, new \DateInterval('P2D'));
+
+        $config = new ProcessorConfig(new FieldSetStub());
+        $config->setCacheTTL(new \DateInterval('P1D'));
+
+        $processor->process($config, $input = 'Hello');
+
+        self::assertEquals($config, $inputProcessor->getConfig());
+        self::assertEquals($input, $inputProcessor->getInput());
+    }
+
+    /** @test */
+    public function it_stores_processed_result_in_cache_with_default_ttl(): void
+    {
+        $serializer = $this->createMock(SearchConditionSerializer::class);
+        $serializer
+            ->expects(self::once())
+            ->method('unserialize')
+            ->willThrowException(new InvalidArgumentException())
+        ;
+
+        $serializer
+            ->expects(self::once())
+            ->method('serialize')
+            ->with(SpyingInputProcessor::getCondition())
+            ->willReturn(['noop', 'serializedResult'])
+        ;
+
+        $ttl = new \DateInterval('P1D');
+
+        $cache = $this->createMock(CacheInterface::class);
+        $cache
+            ->expects(self::once())
+            ->method('get')
+            ->willReturn([])
+        ;
+
+        $cache
+            ->expects(self::once())
+            ->method('set')
+            ->with('57844014a80a2251e25a05e3c94ffdc2f47cb6ff06b3e2dcc27c5d5124dff22a', ['noop', 'serializedResult'], $ttl)
+        ;
+
+        $inputProcessor = new SpyingInputProcessor();
+        $processor = new CachingInputProcessor($cache, $serializer, $inputProcessor, $ttl);
+
+        $processor->process($config = new ProcessorConfig(new FieldSetStub()), $input = 'Hello');
+
+        self::assertEquals($config, $inputProcessor->getConfig());
+        self::assertEquals($input, $inputProcessor->getInput());
+    }
+
+    /** @test */
     public function it_does_not_store_empty_condition(): void
     {
         $serializer = $this->createMock(SearchConditionSerializer::class);

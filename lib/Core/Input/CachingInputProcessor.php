@@ -26,6 +26,9 @@ use Rollerworks\Component\Search\SearchConditionSerializer;
  * search condition. Most conditions can be processed with easy, and the
  * overhead of caching is not worth it.
  *
+ * The FieldSet name and input (as string) are used to generate the cache-key,
+ * therefor any changes in the FieldSet configuration MUST invalidate the cache.
+ *
  * The cache is should not be a filesystem or long-term storage!
  */
 final class CachingInputProcessor implements InputProcessor
@@ -36,12 +39,16 @@ final class CachingInputProcessor implements InputProcessor
     private $ttl;
 
     /**
-     * @param \DateInterval|int|null $ttl Optional. The TTL value of this item. If no value is sent and
-     *                                    the driver supports TTL then the library may set a default value
-     *                                    for it or let the driver take care of that.
+     * @param \DateInterval|string|int|null $ttl The default Time to life for caches. If no value is sent and
+     *                                           the driver supports TTL then the library may set a default value
+     *                                           for it or let the driver take care of that. Null means no expiration
      */
-    public function __construct(CacheInterface $cache, SearchConditionSerializer $conditionSerializer, InputProcessor $inputProcessor, $ttl = null)
+    public function __construct(CacheInterface $cache, SearchConditionSerializer $conditionSerializer, InputProcessor $inputProcessor, \DateInterval|string|int|null $ttl = null)
     {
+        if (\is_string($ttl)) {
+            $ttl = new \DateInterval($ttl);
+        }
+
         $this->conditionSerializer = $conditionSerializer;
         $this->inputProcessor = $inputProcessor;
         $this->cache = $cache;
@@ -62,7 +69,7 @@ final class CachingInputProcessor implements InputProcessor
             $result = $this->inputProcessor->process($config, $input);
 
             if (! $result->isEmpty()) {
-                $this->cache->set($cacheKey, $this->conditionSerializer->serialize($result));
+                $this->cache->set($cacheKey, $this->conditionSerializer->serialize($result), $config->getCacheTTL() ?? $this->ttl);
             }
 
             return $result;
