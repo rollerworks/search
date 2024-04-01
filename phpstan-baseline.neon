@@ -21,11 +21,6 @@ parameters:
 			path: lib/Core/Field/OrderField.php
 
 		-
-			message: "#^Property Rollerworks\\\\Component\\\\Search\\\\Input\\\\CachingInputProcessor\\:\\:\\$ttl is never read, only written\\.$#"
-			count: 1
-			path: lib/Core/Input/CachingInputProcessor.php
-
-		-
 			message: "#^Method Rollerworks\\\\Component\\\\Search\\\\Tests\\\\Extension\\\\Core\\\\ChoiceList\\\\Factory\\\\DefaultChoiceListFactoryTest\\:\\:assertScalarListWithCustomValues\\(\\) is unused\\.$#"
 			count: 1
 			path: lib/Core/Tests/Extension/Core/ChoiceList/Factory/DefaultChoiceListFactoryTest.php

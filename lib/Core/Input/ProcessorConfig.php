@@ -43,10 +43,7 @@ class ProcessorConfig
      */
     private $fieldSet;
 
-    /**
-     * @var \DateInterval|int|null
-     */
-    private $cacheTTL;
+    private int|\DateInterval|null $cacheTTL = null;
 
     /** @var string|null */
     private $defaultField;
@@ -112,20 +109,14 @@ class ProcessorConfig
         return $this->maxGroups;
     }
 
-    /**
-     * @param \DateInterval|int|null $cacheTTL
-     */
-    public function setCacheTTL($cacheTTL): self
+    public function setCacheTTL(\DateInterval|int|null $cacheTTL): self
     {
         $this->cacheTTL = $cacheTTL;
 
         return $this;
     }
 
-    /**
-     * @return \DateInterval|int|null
-     */
-    public function getCacheTTL()
+    public function getCacheTTL(): \DateInterval|int|null
     {
         return $this->cacheTTL;
     }
