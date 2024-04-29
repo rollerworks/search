@@ -1,9 +1,10 @@
 <?php
 
-// See https://www.park-manager.com/hubkit/config.html
+// See https://hupkit.github.io/hupkit/config.html#local-configuration
 
 return [
     'schema_version' => 2,
+    'main_branch' => 'main',
     'branches' => [
         ':default' => [
             'sync-tags' => true,
