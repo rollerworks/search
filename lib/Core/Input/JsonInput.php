@@ -35,6 +35,8 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
  * Each entry must contain an array with 'fields' and/or 'groups' structures.
  * Optionally the array can contain 'logical-case' => 'OR' to make it OR-cased.
  *
+ * The 'order' setting can only be applied at root level, and must NOT begin with the @-sign.
+ *
  * The 'groups' array contains groups with the keys as described above ('fields' and/or 'groups').
  *
  * The fields array is an hash-map where each key is the field-name

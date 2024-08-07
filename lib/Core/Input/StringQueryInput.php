@@ -71,7 +71,9 @@ final class StringQueryInput extends StringInput
         $this->orderStructureBuilder = new OrderStructureBuilder(
             $this->config,
             $this->validator,
-            $this->errors
+            $this->errors,
+            '',
+            true
         );
     }
 }

@@ -16,41 +16,46 @@ namespace Rollerworks\Component\Search\Extension\Core\DataTransformer;
 use Rollerworks\Component\Search\DataTransformer;
 use Rollerworks\Component\Search\Exception\TransformationFailedException;
 
-/**
- * @author Dalibor Karlović <dalibor@flexolabs.io>
- */
-final class OrderTransformer implements DataTransformer
+final class OrderToLocalizedTransformer implements DataTransformer
 {
-    public const CASE_LOWERCASE = 'LOWERCASE';
-    public const CASE_UPPERCASE = 'UPPERCASE';
+    private array $alias;
+    private array $viewLabel;
+    private string $case;
 
-    /**
-     * @var array
-     */
-    private $alias;
-
-    /**
-     * @var string
-     */
-    private $case;
-
-    public function __construct(array $alias, string $case = self::CASE_UPPERCASE)
+    public function __construct(array $alias, array $viewLabel, string $case = OrderTransformer::CASE_UPPERCASE)
     {
-        $this->alias = $alias;
         $this->case = $case;
+        $this->alias = $alias;
+        $this->viewLabel = $viewLabel;
     }
 
     public function transform($value)
     {
-        if ($value !== null && ! \is_string($value)) {
-            throw new TransformationFailedException('Expected a string or null.');
-        }
-
         if ($value === null) {
             return '';
         }
 
-        return $value;
+        if (! \is_string($value)) {
+            throw new TransformationFailedException('Expected a string or null.');
+        }
+
+        switch ($this->case) {
+            case OrderTransformer::CASE_LOWERCASE:
+                $value = mb_strtolower($value);
+
+                break;
+
+            case OrderTransformer::CASE_UPPERCASE:
+                $value = mb_strtoupper($value);
+
+                break;
+        }
+
+        if (! isset($this->viewLabel[$value])) {
+            throw new TransformationFailedException(sprintf('No localized label configured for "%s".', $value));
+        }
+
+        return $this->viewLabel[$value];
     }
 
     public function reverseTransform($value)
@@ -64,12 +69,12 @@ final class OrderTransformer implements DataTransformer
         }
 
         switch ($this->case) {
-            case self::CASE_LOWERCASE:
+            case OrderTransformer::CASE_LOWERCASE:
                 $value = mb_strtolower($value);
 
                 break;
 
-            case self::CASE_UPPERCASE:
+            case OrderTransformer::CASE_UPPERCASE:
                 $value = mb_strtoupper($value);
 
                 break;

@@ -32,7 +32,32 @@ final class JsonExporter extends AbstractExporter
 {
     public function exportCondition(SearchCondition $condition): string
     {
-        return (string) json_encode($this->exportGroup($condition->getValuesGroup(), $condition->getFieldSet(), true));
+        $fieldSet = $condition->getFieldSet();
+
+        return (string) json_encode(
+            array_merge(
+                $this->exportOrder($condition, $fieldSet),
+                $this->exportGroup($condition->getValuesGroup(), $fieldSet, true)
+            ),
+            \JSON_THROW_ON_ERROR
+        );
+    }
+
+    protected function exportOrder(SearchCondition $condition, FieldSet $fieldSet): array
+    {
+        $order = $condition->getOrder();
+
+        if ($order === null) {
+            return [];
+        }
+
+        $result = [];
+
+        foreach ($order->getFields() as $name => $direction) {
+            $result[mb_substr($name, 1)] = $this->modelToNorm($direction, $fieldSet->get($name));
+        }
+
+        return $result ? ['order' => $result] : [];
     }
 
     protected function exportGroup(ValuesGroup $valuesGroup, FieldSet $fieldSet, bool $isRoot = false): array

@@ -37,12 +37,30 @@ abstract class StringExporter extends AbstractExporter
 
     public function exportCondition(SearchCondition $condition): string
     {
-        $this->fields = $this->resolveLabels($condition->getFieldSet());
+        $this->fields = $this->resolveLabels($fieldSet = $condition->getFieldSet());
 
-        return $this->exportGroup($condition->getValuesGroup(), $condition->getFieldSet(), true);
+        return $this->exportOrder($condition, $fieldSet) . $this->exportGroup($condition->getValuesGroup(), $fieldSet, true);
     }
 
     abstract protected function resolveLabels(FieldSet $fieldSet): array;
+
+    protected function exportOrder(SearchCondition $condition, FieldSet $fieldSet): string
+    {
+        $order = $condition->getOrder();
+
+        if ($order === null) {
+            return '';
+        }
+
+        $result = '';
+
+        foreach ($order->getFields() as $name => $direction) {
+            $result .= $this->getFieldLabel($name);
+            $result .= ': ' . $this->modelToExported($direction, $fieldSet->get($name)) . '; ';
+        }
+
+        return trim($result);
+    }
 
     protected function exportGroup(ValuesGroup $valuesGroup, FieldSet $fieldSet, bool $isRoot = false): string
     {

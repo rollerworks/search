@@ -18,10 +18,12 @@ use Rollerworks\Component\Search\Extension\Core\Type\DateType;
 use Rollerworks\Component\Search\Extension\Core\Type\IntegerType;
 use Rollerworks\Component\Search\Extension\Core\Type\MoneyType;
 use Rollerworks\Component\Search\Extension\Core\Type\TextType;
+use Rollerworks\Component\Search\Field\OrderFieldType;
 use Rollerworks\Component\Search\GenericFieldSetBuilder;
 use Rollerworks\Component\Search\Input\ProcessorConfig;
 use Rollerworks\Component\Search\InputProcessor;
 use Rollerworks\Component\Search\SearchCondition;
+use Rollerworks\Component\Search\SearchOrder;
 use Rollerworks\Component\Search\Value\Compare;
 use Rollerworks\Component\Search\Value\ExcludedRange;
 use Rollerworks\Component\Search\Value\PatternMatch;
@@ -52,6 +54,9 @@ abstract class SearchConditionExporterTestCase extends SearchIntegrationTestCase
         $fieldSet->add('lastname', TextType::class);
         $fieldSet->add('date', DateType::class, ['pattern' => 'MM-dd-yyyy']);
         $fieldSet->set($priceField);
+
+        $fieldSet->add('@id', OrderFieldType::class);
+        $fieldSet->add('@status', OrderFieldType::class);
 
         return $build ? $fieldSet->getFieldSet() : $fieldSet;
     }
@@ -365,6 +370,28 @@ abstract class SearchConditionExporterTestCase extends SearchIntegrationTestCase
     }
 
     abstract public function provideEmptyGroupTest();
+
+    /** @test */
+    public function it_exports_with_ordering(): void
+    {
+        $exporter = $this->getExporter();
+        $config = new ProcessorConfig($this->getFieldSet());
+
+        $condition = new SearchCondition($config->getFieldSet(), new ValuesGroup());
+
+        $orderGroup = (new ValuesGroup())
+            ->addField('@id', (new ValuesBag())->addSimpleValue('DESC'))
+            ->addField('@status', (new ValuesBag())->addSimpleValue('ASC'))
+        ;
+        $condition->setOrder(new SearchOrder($orderGroup));
+
+        $this->assertExportEquals($this->provideOrderTest(), $exporter->exportCondition($condition));
+
+        $processor = $this->getInputProcessor();
+        $this->assertConditionEquals($this->provideOrderTest(), $condition, $processor, $config);
+    }
+
+    abstract public function provideOrderTest();
 
     protected function assertExportEquals($expected, $actual): void
     {

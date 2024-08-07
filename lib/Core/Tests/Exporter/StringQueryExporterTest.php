@@ -16,10 +16,12 @@ namespace Rollerworks\Component\Search\Tests\Exporter;
 use Rollerworks\Component\Search\ConditionExporter;
 use Rollerworks\Component\Search\Exporter\StringQueryExporter;
 use Rollerworks\Component\Search\Field\FieldConfig;
+use Rollerworks\Component\Search\Field\OrderFieldType;
 use Rollerworks\Component\Search\Input\ProcessorConfig;
 use Rollerworks\Component\Search\Input\StringQueryInput;
 use Rollerworks\Component\Search\InputProcessor;
 use Rollerworks\Component\Search\SearchCondition;
+use Rollerworks\Component\Search\SearchOrder;
 use Rollerworks\Component\Search\Test\SearchConditionExporterTestCase;
 use Rollerworks\Component\Search\Value\ValuesBag;
 use Rollerworks\Component\Search\Value\ValuesGroup;
@@ -93,6 +95,35 @@ final class StringQueryExporterTest extends SearchConditionExporterTestCase
         $this->assertConditionEquals($this->provideSingleValuePairTest(), $condition, $processor, $config);
     }
 
+    /** @test */
+    public function it_exports_with_ordering_aliases(): void
+    {
+        $exporter = $this->getExporter();
+        $fieldSet = $this->getFieldSet(false)
+            ->add('@id', OrderFieldType::class)
+            ->add('@status', OrderFieldType::class, ['view_label' => ['ASC' => 'down', 'DESC' => 'up']])
+            ->getFieldSet()
+        ;
+
+        $config = new ProcessorConfig($fieldSet);
+
+        $condition = new SearchCondition($config->getFieldSet(), new ValuesGroup());
+
+        $orderGroup = (new ValuesGroup())
+            ->addField('@id', (new ValuesBag())->addSimpleValue('DESC'))
+            ->addField('@status', (new ValuesBag())->addSimpleValue('ASC'))
+        ;
+        $condition->setOrder(new SearchOrder($orderGroup));
+
+        $this->assertExportEquals('@id: desc; @status: down;', $exporter->exportCondition($condition));
+
+        $processor = $this->getInputProcessor();
+        $this->assertConditionEquals('@id: desc; @status: down;', $condition, $processor, $config);
+
+        $processor = $this->getInputProcessor();
+        $this->assertConditionEquals('@id: desc; @status: asc;', $condition, $processor, $config);
+    }
+
     public function provideSingleValuePairTest()
     {
         return 'name: "value ", -value2, value2-, 10.00, "10,00", hÌ, ٤٤٤٦٥٤٦٠٠, "doctor""who""""", !value3; price: € 12.00, "12,00 $", $ 12.00;';
@@ -146,6 +177,11 @@ final class StringQueryExporterTest extends SearchConditionExporterTestCase
     public function provideEmptyGroupTest()
     {
         return '(  );';
+    }
+
+    public function provideOrderTest()
+    {
+        return '@id: desc; @status: asc;';
     }
 
     protected function getExporter(?callable $labelResolver = null): ConditionExporter
