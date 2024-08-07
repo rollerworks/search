@@ -18,8 +18,6 @@ use Rollerworks\Component\Search\FieldSet;
 
 /**
  * Holds the configuration for an Input processor.
- *
- * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
 class ProcessorConfig
 {
@@ -60,10 +58,14 @@ class ProcessorConfig
 
     /**
      * Set the maximum group nesting level.
+     *
+     * @return $this
      */
-    public function setMaxNestingLevel(int $maxNestingLevel): void
+    public function setMaxNestingLevel(int $maxNestingLevel): static
     {
         $this->maxNestingLevel = $maxNestingLevel;
+
+        return $this;
     }
 
     /**
@@ -76,10 +78,14 @@ class ProcessorConfig
 
     /**
      * Set the maximum number of values per group.
+     *
+     * @return $this
      */
-    public function setMaxValues(int $maxValues): void
+    public function setMaxValues(int $maxValues): static
     {
         $this->maxValues = $maxValues;
+
+        return $this;
     }
 
     /**
@@ -95,10 +101,14 @@ class ProcessorConfig
      *
      * To calculate an absolute maximum use following formula:
      * maxGroups * maxNestingLevel.
+     *
+     * @return $this
      */
-    public function setMaxGroups(int $maxGroups): void
+    public function setMaxGroups(int $maxGroups): static
     {
         $this->maxGroups = $maxGroups;
+
+        return $this;
     }
 
     /**
@@ -109,6 +119,9 @@ class ProcessorConfig
         return $this->maxGroups;
     }
 
+    /**
+     * @return $this
+     */
     public function setCacheTTL(\DateInterval|int|null $cacheTTL): self
     {
         $this->cacheTTL = $cacheTTL;
@@ -121,6 +134,7 @@ class ProcessorConfig
         return $this->cacheTTL;
     }
 
+
     public function getDefaultField(bool $error = false): ?string
     {
         if ($this->defaultField === null && $error) {
@@ -130,8 +144,13 @@ class ProcessorConfig
         return $this->defaultField;
     }
 
-    public function setDefaultField(string $defaultField): void
+    /**
+     * @return $this
+     */
+    public function setDefaultField(string $defaultField): static
     {
         $this->defaultField = $defaultField;
+
+        return $this;
     }
 }
