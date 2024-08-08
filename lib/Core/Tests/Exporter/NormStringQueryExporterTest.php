@@ -115,6 +115,11 @@ final class NormStringQueryExporterTest extends SearchConditionExporterTestCase
         return '(  );';
     }
 
+    public function provideOrderTest()
+    {
+        return '@id: desc; @status: asc;';
+    }
+
     protected function getExporter(): ConditionExporter
     {
         return new NormStringQueryExporter();

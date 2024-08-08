@@ -236,6 +236,11 @@ final class JsonExporterTest extends SearchConditionExporterTestCase
         return json_encode(['groups' => [[]]]);
     }
 
+    public function provideOrderTest()
+    {
+        return json_encode(['order' => ['id' => 'desc', 'status' => 'asc']], \JSON_THROW_ON_ERROR);
+    }
+
     protected function getExporter(): ConditionExporter
     {
         return new JsonExporter();

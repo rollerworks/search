@@ -11,11 +11,6 @@ parameters:
 			path: lib/Core/Extension/Core/DataTransformer/DateTimeToLocalizedStringTransformer.php
 
 		-
-			message: "#^Property Rollerworks\\\\Component\\\\Search\\\\Extension\\\\Core\\\\DataTransformer\\\\OrderTransformer\\:\\:\\$default is never read, only written\\.$#"
-			count: 1
-			path: lib/Core/Extension/Core/DataTransformer/OrderTransformer.php
-
-		-
 			message: "#^Property Rollerworks\\\\Component\\\\Search\\\\Field\\\\OrderField\\:\\:\\$valueComparator is never written, only read\\.$#"
 			count: 1
 			path: lib/Core/Field/OrderField.php

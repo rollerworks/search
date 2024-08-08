@@ -43,6 +43,10 @@
                 <source>This value is not a valid datetime.</source>
                 <target>Deze waarde is geen geldige datum en tijd.</target>
             </trans-unit>
+            <trans-unit id="11">
+                <source>This value is not a valid sorting direction. Accepted directions are "{{ directions }}".</source>
+                <target>Deze waarde is geen geldige sorteer richting. De geaccepteerde richtingen zijn : "{{ directions }}".</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

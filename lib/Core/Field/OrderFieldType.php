@@ -13,7 +13,9 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Field;
 
+use Rollerworks\Component\Search\Extension\Core\DataTransformer\OrderToLocalizedTransformer;
 use Rollerworks\Component\Search\Extension\Core\DataTransformer\OrderTransformer;
+use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -32,6 +34,7 @@ final class OrderFieldType implements FieldType
             'default' => null,
             'case' => OrderTransformer::CASE_UPPERCASE,
             'alias' => ['ASC' => 'ASC', 'DESC' => 'DESC'],
+            'view_label' => ['ASC' => 'asc', 'DESC' => 'desc'],
             'type' => null,
             'type_options' => [],
         ]);
@@ -41,17 +44,46 @@ final class OrderFieldType implements FieldType
             OrderTransformer::CASE_UPPERCASE,
         ]);
         $resolver->setAllowedTypes('alias', 'array');
+        $resolver->setAllowedTypes('view_label', ['array']);
         $resolver->setAllowedTypes('default', ['null', 'string']);
         $resolver->setAllowedTypes('type', ['string', 'null']);
         $resolver->setAllowedTypes('type_options', ['array']);
+
+        // Ensure view-labels are part of the alias list.
+        $resolver->addNormalizer('alias', static function (Options $options, array $value): mixed {
+            // Must always exist for interoperability, but it's still possible to overwrite.
+            $value = array_merge($value,
+                $options['case'] === OrderTransformer::CASE_LOWERCASE ? ['asc' => 'ASC', 'desc' => 'DESC'] : ['ASC' => 'ASC', 'DESC' => 'DESC']
+            );
+
+            foreach ($options['view_label'] as $direction => $label) {
+                switch ($options['case']) {
+                    case OrderTransformer::CASE_LOWERCASE:
+                        $label = mb_strtolower($label);
+
+                        break;
+
+                    case OrderTransformer::CASE_UPPERCASE:
+                        $label = mb_strtoupper($label);
+
+                        break;
+                }
+
+                if (isset($value[$label])) {
+                    continue;
+                }
+
+                $value[$label] = $direction;
+            }
+
+            return $value;
+        });
     }
 
     public function buildType(FieldConfig $config, array $options): void
     {
-        $transformer = new OrderTransformer($options['alias'], $options['case'], $options['default']);
-
-        $config->setNormTransformer($transformer);
-        $config->setViewTransformer($transformer);
+        $config->setNormTransformer(new OrderTransformer($options['alias'], $options['case']));
+        $config->setViewTransformer(new OrderToLocalizedTransformer($options['alias'], $options['view_label'], $options['case']));
     }
 
     public function buildView(SearchFieldView $view, FieldConfig $config, array $options): void

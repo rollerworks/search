@@ -134,7 +134,6 @@ class ProcessorConfig
         return $this->cacheTTL;
     }
 
-
     public function getDefaultField(bool $error = false): ?string
     {
         if ($this->defaultField === null && $error) {

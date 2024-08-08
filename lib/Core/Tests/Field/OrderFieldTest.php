@@ -136,13 +136,13 @@ final class OrderFieldTest extends TestCase
     }
 
     /** @test */
-    public function it_has_no__norm_transformer_by_default(): void
+    public function it_has_no_norm_transformer_by_default(): void
     {
         self::assertNull($this->field->getNormTransformer());
     }
 
     /** @test */
-    public function it_allows_setting_a__norm_transformer(): void
+    public function it_allows_setting_a_norm_transformer(): void
     {
         $normTransformer = $this->getMockBuilder(DataTransformer::class)->getMock();
         $this->field->setNormTransformer($normTransformer);

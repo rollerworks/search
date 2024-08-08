@@ -59,13 +59,16 @@ final class OrderStructureBuilder implements StructureBuilder
      */
     private $inputTransformer;
 
-    public function __construct(ProcessorConfig $config, Validator $validator, ErrorList $errorList, string $path = '')
+    private bool $viewFormat;
+
+    public function __construct(ProcessorConfig $config, Validator $validator, ErrorList $errorList, string $path = '', bool $viewFormat = false)
     {
         $this->fieldSet = $config->getFieldSet();
         $this->validator = $validator;
         $this->path = $path ?: 'order';
         $this->errorList = $errorList;
         $this->valuesGroup = new ValuesGroup();
+        $this->viewFormat = $viewFormat;
     }
 
     public function getErrors(): ErrorList
@@ -100,6 +103,7 @@ final class OrderStructureBuilder implements StructureBuilder
         }
 
         $this->fieldConfig = $this->fieldSet->get($name);
+        $this->inputTransformer = ($this->viewFormat ? $this->fieldConfig->getViewTransformer() : $this->fieldConfig->getNormTransformer()) ?? false;
 
         $this->valuesBag = $this->valuesGroup->getField($name);
 
@@ -182,10 +186,6 @@ final class OrderStructureBuilder implements StructureBuilder
      */
     private function inputToNorm($value, string $path)
     {
-        if ($this->inputTransformer === null) {
-            $this->inputTransformer = $this->fieldConfig->getNormTransformer() ?? false;
-        }
-
         if ($this->inputTransformer === false) {
             if ($value !== null && ! \is_scalar($value)) {
                 $e = new \RuntimeException(

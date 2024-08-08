@@ -42,6 +42,10 @@
                 <source>This value is not a valid datetime.</source>
                 <target>This value is not a valid datetime.</target>
             </trans-unit>
+            <trans-unit id="11">
+                <source>This value is not a valid sorting direction. Accepted directions are "{{ directions }}".</source>
+                <target>This value is not a valid sorting direction. Accepted directions are "{{ directions }}".</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
