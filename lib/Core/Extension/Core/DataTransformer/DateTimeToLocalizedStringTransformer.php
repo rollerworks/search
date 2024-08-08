@@ -120,7 +120,7 @@ final class DateTimeToLocalizedStringTransformer extends BaseDateTimeTransformer
 
         $timestamp = $this->getIntlDateFormatter($dateOnly)->parse($value);
 
-        if (intl_get_error_code() !== 0) {
+        if (intl_get_error_code() !== 0 || $timestamp === false) {
             throw new TransformationFailedException(intl_get_error_message());
         }
 

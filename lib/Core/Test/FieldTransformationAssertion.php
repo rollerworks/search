@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Rollerworks\Component\Search\Test;
 
 use PHPUnit\Framework\Assert;
+use PHPUnit\Framework\ExpectationFailedException;
 use Rollerworks\Component\Search\Exception\TransformationFailedException;
 use Rollerworks\Component\Search\Field\FieldConfig;
 
@@ -79,7 +80,7 @@ final class FieldTransformationAssertion
         return $this;
     }
 
-    public function failsToTransforms(): void
+    public function failsToTransforms(TransformationFailedException $exceptionForView = null, TransformationFailedException $exceptionForModel = null): void
     {
         if ($this->inputView === null) {
             throw new \LogicException('withInput() must be called first.');
@@ -90,19 +91,27 @@ final class FieldTransformationAssertion
         }
 
         try {
-            $this->modelToView($this->inputView);
+            $this->viewToModel($this->inputView);
 
             Assert::fail(sprintf('Expected view-input "%s" to be invalid', $this->inputView));
         } catch (TransformationFailedException $e) {
-            Assert::assertTrue(true); // no-op
+            if ($exceptionForView) {
+                self::assertTransformationFailedExceptionEquals($exceptionForView, $e);
+            } else {
+                Assert::assertTrue(true); // no-op
+            }
         }
 
         try {
-            $this->modelToNorm($this->inputNorm);
+            $this->normToModel($this->inputNorm);
 
             Assert::fail(sprintf('Expected norm-input "%s" to be invalid', $this->inputNorm));
         } catch (TransformationFailedException $e) {
-            Assert::assertTrue(true); // no-op
+            if ($exceptionForModel) {
+                self::assertTransformationFailedExceptionEquals($exceptionForModel, $e);
+            } else {
+                Assert::assertTrue(true); // no-op
+            }
         }
     }
 
@@ -176,5 +185,21 @@ final class FieldTransformationAssertion
         }
 
         return (string) $transformer->transform($value);
+    }
+
+    private static function assertTransformationFailedExceptionEquals(TransformationFailedException $expected, TransformationFailedException $actual): void
+    {
+        try {
+            if ($expected->getPrevious()) {
+                Assert::assertEquals($expected->getPrevious(), $actual->getPrevious(), 'Previous exception does not equal.');
+            }
+
+            Assert::assertEquals($expected->getMessage(), $actual->getMessage(), 'Message does not equal.');
+            Assert::assertEquals($expected->getCode(), $actual->getCode(), 'Code does not equal.');
+            Assert::assertEquals($expected->getInvalidMessage(), $actual->getInvalidMessage(), 'Invalid message does not equal.');
+            Assert::assertEquals($expected->getInvalidMessageParameters(), $actual->getInvalidMessageParameters(), 'Invalid-messages parameters does not equal.');
+        } catch (ExpectationFailedException $e) {
+            Assert::assertEquals($expected, $actual, $e->getMessage());
+        }
     }
 }
