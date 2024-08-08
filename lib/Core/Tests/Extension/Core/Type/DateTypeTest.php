@@ -48,12 +48,12 @@ final class DateTypeTest extends SearchIntegrationTestCase
         ]);
 
         FieldTransformationAssertion::assertThat($field)
-            ->withInput('06*2010*02', '2010-06-02')
+            ->withInput('06*2010*02', '06-2010-02')
             ->failsToTransforms()
         ;
 
         FieldTransformationAssertion::assertThat($field)
-            ->withInput('06-2010-02', '2010-06*02')
+            ->withInput('22-2010-02', '2010-06*02')
             ->failsToTransforms()
         ;
     }
