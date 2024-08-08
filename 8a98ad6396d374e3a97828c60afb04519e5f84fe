@@ -1,0 +1,8 @@
+---------------------------------------------------------------------------
+
+by sstok at 2024-08-08T10:04:05Z
+
+~~I discovered some serious bugs in `FieldTransformationAssertion`, which need to be fixed in another pr first.~~
+
+Fixed in #311 
+
