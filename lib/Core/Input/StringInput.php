@@ -16,6 +16,7 @@ namespace Rollerworks\Component\Search\Input;
 use Rollerworks\Component\Search\ErrorList;
 use Rollerworks\Component\Search\Exception\InputProcessorException;
 use Rollerworks\Component\Search\Exception\InvalidSearchConditionException;
+use Rollerworks\Component\Search\Exception\OrderStructureException;
 use Rollerworks\Component\Search\Exception\StringLexerException;
 use Rollerworks\Component\Search\Exception\UnexpectedTypeException;
 use Rollerworks\Component\Search\Exception\UnknownFieldException;
@@ -276,6 +277,10 @@ abstract class StringInput extends AbstractInput
                 $fieldName = $this->getFieldName($this->lexer->fieldIdentification());
             } else {
                 $fieldName = $this->config->getDefaultField(true);
+            }
+
+            if (OrderField::isOrder($fieldName) && $inGroup ) {
+                throw OrderStructureException::noGrouping();
             }
 
             $this->lexer->skipEmptyLines();

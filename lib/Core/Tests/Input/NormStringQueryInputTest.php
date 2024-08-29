@@ -14,14 +14,17 @@ declare(strict_types=1);
 namespace Rollerworks\Component\Search\Tests\Input;
 
 use Rollerworks\Component\Search\Exception\InvalidSearchConditionException;
+use Rollerworks\Component\Search\Exception\OrderStructureException;
 use Rollerworks\Component\Search\Exception\UnknownFieldException;
 use Rollerworks\Component\Search\Extension\Core\Type\DateType;
 use Rollerworks\Component\Search\Extension\Core\Type\IntegerType;
 use Rollerworks\Component\Search\Extension\Core\Type\TextType;
+use Rollerworks\Component\Search\Field\OrderFieldType;
 use Rollerworks\Component\Search\GenericFieldSetBuilder;
 use Rollerworks\Component\Search\Input\NormStringQueryInput;
 use Rollerworks\Component\Search\Input\ProcessorConfig;
 use Rollerworks\Component\Search\Input\StringLexer;
+use Rollerworks\Component\Search\InputProcessor;
 use Rollerworks\Component\Search\SearchCondition;
 use Rollerworks\Component\Search\Test\SearchIntegrationTestCase;
 use Rollerworks\Component\Search\Value\Compare;
@@ -41,6 +44,11 @@ use Rollerworks\Component\Search\ValueComparator;
  */
 final class NormStringQueryInputTest extends SearchIntegrationTestCase
 {
+    protected function getProcessor(): InputProcessor
+    {
+        return new NormStringQueryInput();
+    }
+
     protected function getFieldSet(bool $build = true)
     {
         $fieldSet = new GenericFieldSetBuilder($this->getFactory());
@@ -52,6 +60,7 @@ final class NormStringQueryInputTest extends SearchIntegrationTestCase
             $this->getFactory()->createField('no-range-field', IntegerType::class)
                 ->setValueTypeSupport(Range::class, false)
         );
+        $fieldSet->add('@id', OrderFieldType::class);
 
         $fieldSet->set(
             $this->getFactory()->createField('no-compares-field', IntegerType::class)->setValueTypeSupport(
@@ -178,5 +187,47 @@ final class NormStringQueryInputTest extends SearchIntegrationTestCase
             self::assertInstanceOf(InvalidSearchConditionException::class, $e);
             self::assertEquals([$error], $e->getErrors());
         }
+    }
+
+    /**
+     * @test
+     *
+     * @dataProvider provideNestedOrderClauseTests
+     */
+    public function it_errors_when_order_clause_is_nested(string $input): void
+    {
+        $config = new ProcessorConfig($this->getFieldSet());
+        $error = OrderStructureException::noGrouping()->toErrorMessageObj();
+
+        $this->assertConditionContainsErrors($input, $config, [$error]);
+    }
+
+    /**
+     * @test
+     *
+     * @dataProvider provideInvalidOrderClauseValueTests
+     */
+    public function it_errors_when_order_clause_is_has_unsupported_values($input): void
+    {
+        $config = new ProcessorConfig($this->getFieldSet());
+        $error = OrderStructureException::invalidValue('@id')->toErrorMessageObj();
+
+        $this->assertConditionContainsErrors($input, $config, [$error]);
+    }
+
+    public static function provideInvalidOrderClauseValueTests(): iterable
+    {
+        yield 'multiple values' => ['@id: desc, asc;'];
+        yield 'negated value' => ['@id: !desc;'];
+        yield 'range' => ['@id: 1 ~ 12;'];
+        yield 'negated range' => ['@id: !1 ~ 12;'];
+        yield 'comparison' => ['@id: >1;'];
+        yield 'pattern' => ['@id: ~> desc;'];
+    }
+
+    public static function provideNestedOrderClauseTests(): iterable
+    {
+        yield ['(@id: asc;)'];
+        yield ['((@id: asc;))'];
     }
 }

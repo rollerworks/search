@@ -18,6 +18,7 @@ use Rollerworks\Component\Search\DataTransformer;
 use Rollerworks\Component\Search\Exception\GroupsNestingException;
 use Rollerworks\Component\Search\Exception\GroupsOverflowException;
 use Rollerworks\Component\Search\Exception\InvalidSearchConditionException;
+use Rollerworks\Component\Search\Exception\OrderStructureException;
 use Rollerworks\Component\Search\Exception\TransformationFailedException;
 use Rollerworks\Component\Search\Exception\UnknownFieldException;
 use Rollerworks\Component\Search\Exception\UnsupportedValueTypeException;
@@ -672,54 +673,4 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
      * @return array[]
      */
     abstract public static function provideNestedErrorsTests();
-
-    /**
-     * @param ConditionErrorMessage[] $errors
-     */
-    protected function assertConditionContainsErrorsWithoutCause($input, ProcessorConfig $config, array $errors): void
-    {
-        $processor = $this->getProcessor();
-
-        try {
-            $processor->process($config, $input);
-
-            self::fail('Condition should be invalid.');
-        } catch (\Exception $e) {
-            /* @var InvalidSearchConditionException $e */
-            self::detectSystemException($e);
-            self::assertInstanceOf(InvalidSearchConditionException::class, $e);
-
-            $errorsList = $e->getErrors();
-
-            foreach ($errorsList as $error) {
-                // Remove cause to make assertion possible.
-                $error->cause = null;
-            }
-
-            foreach ($errors as $error) {
-                $error->cause = null;
-            }
-
-            self::assertEquals($errors, $errorsList);
-        }
-    }
-
-    /**
-     * @param ConditionErrorMessage[] $errors
-     */
-    protected function assertConditionContainsErrors($input, ProcessorConfig $config, array $errors): void
-    {
-        $processor = $this->getProcessor();
-
-        try {
-            $processor->process($config, $input);
-
-            self::fail('Condition should be invalid.');
-        } catch (\Exception $e) {
-            /* @var InvalidSearchConditionException $e */
-            self::detectSystemException($e);
-            self::assertInstanceOf(InvalidSearchConditionException::class, $e);
-            self::assertEquals($errors, $e->getErrors());
-        }
-    }
 }

@@ -15,6 +15,7 @@ namespace Rollerworks\Component\Search\Tests\Input;
 
 use Rollerworks\Component\Search\ConditionErrorMessage;
 use Rollerworks\Component\Search\Exception\InputProcessorException;
+use Rollerworks\Component\Search\Exception\OrderStructureException;
 use Rollerworks\Component\Search\Exception\StringLexerException;
 use Rollerworks\Component\Search\Exception\UnexpectedTypeException;
 use Rollerworks\Component\Search\Extension\Core\Type\TextType;
@@ -315,6 +316,38 @@ final class StringQueryInputTest extends InputProcessorTestCase
         self::assertEquals($condition, $processor->process($config, '*(title:paris;subtitle:paris;teaser:paris)'));
     }
 
+    /**
+     * @test
+     *
+     * @dataProvider provideNestedOrderClauseTests
+     */
+    public function it_errors_when_order_clause_is_nested(string $input): void
+    {
+        $config = new ProcessorConfig($this->getFieldSet(true, true));
+        $error = OrderStructureException::noGrouping()->toErrorMessageObj();
+
+        $this->assertConditionContainsErrors($input, $config, [$error]);
+    }
+
+    /**
+     * @test
+     *
+     * @dataProvider provideInvalidOrderClauseValueTests
+     */
+    public function it_errors_when_order_clause_is_has_unsupported_values($input): void
+    {
+        $config = new ProcessorConfig($this->getFieldSet(true, true));
+        $error = OrderStructureException::invalidValue('@id')->toErrorMessageObj();
+
+        $this->assertConditionContainsErrors($input, $config, [$error]);
+    }
+
+    public static function provideNestedOrderClauseTests(): iterable
+    {
+        yield ['(@id: asc;)'];
+        yield ['((@id: asc;))'];
+    }
+
     public static function provideEmptyInputTests(): iterable
     {
         return [
@@ -511,5 +544,15 @@ final class StringQueryInputTest extends InputProcessorTestCase
             ['(date: 1;)', [new ConditionErrorMessage('[0][date][0]', 'This value is not valid.')]],
             ['((((((date: 1;))))))', [new ConditionErrorMessage('[0][0][0][0][0][0][date][0]', 'This value is not valid.')]],
         ];
+    }
+
+    public static function provideInvalidOrderClauseValueTests(): iterable
+    {
+        yield 'multiple values' => ['@id: desc, asc;'];
+        yield 'negated value' => ['@id: !desc;'];
+        yield 'range' => ['@id: 1 ~ 12;'];
+        yield 'negated range' => ['@id: !1 ~ 12;'];
+        yield 'comparison' => ['@id: >1;'];
+        yield 'pattern' => ['@id: ~> desc;'];
     }
 }
