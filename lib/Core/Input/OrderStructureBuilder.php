@@ -16,10 +16,8 @@ namespace Rollerworks\Component\Search\Input;
 use Rollerworks\Component\Search\ConditionErrorMessage;
 use Rollerworks\Component\Search\DataTransformer;
 use Rollerworks\Component\Search\ErrorList;
-use Rollerworks\Component\Search\Exception\InvalidArgumentException;
+use Rollerworks\Component\Search\Exception\OrderStructureException;
 use Rollerworks\Component\Search\Exception\TransformationFailedException;
-use Rollerworks\Component\Search\Exception\UnexpectedTypeException;
-use Rollerworks\Component\Search\Exception\ValuesOverflowException;
 use Rollerworks\Component\Search\Field\FieldConfig;
 use Rollerworks\Component\Search\FieldSet;
 use Rollerworks\Component\Search\StructureBuilder;
@@ -88,12 +86,12 @@ final class OrderStructureBuilder implements StructureBuilder
 
     public function enterGroup(string $groupLocal = 'AND', string $path = '[%d]'): void
     {
-        throw new InvalidArgumentException('Order clauses do not support nesting');
+        throw OrderStructureException::noGrouping();
     }
 
     public function leaveGroup(): void
     {
-        throw new InvalidArgumentException('Order clauses do not support nesting');
+        throw OrderStructureException::noGrouping();
     }
 
     public function field(string $name, string $path): void
@@ -117,7 +115,7 @@ final class OrderStructureBuilder implements StructureBuilder
         }
 
         if ($this->valuesBag->count()) {
-            throw new ValuesOverflowException($this->fieldConfig->getName(), 1, $path);
+            throw OrderStructureException::invalidValue($this->fieldConfig->getName());
         }
 
         if (($modelVal = $this->inputToNorm($value, $path)) !== null) {
@@ -129,7 +127,7 @@ final class OrderStructureBuilder implements StructureBuilder
 
     public function excludedSimpleValue($value, string $path): void
     {
-        throw new UnexpectedTypeException($this->fieldConfig->getName(), $path);
+        throw OrderStructureException::invalidValue($this->fieldConfig->getName());
     }
 
     /**
@@ -137,7 +135,7 @@ final class OrderStructureBuilder implements StructureBuilder
      */
     public function rangeValue($lower, $upper, bool $lowerInclusive, bool $upperInclusive, array $path): void
     {
-        throw new UnexpectedTypeException($this->fieldConfig->getName(), $path);
+        throw OrderStructureException::invalidValue($this->fieldConfig->getName());
     }
 
     /**
@@ -145,7 +143,7 @@ final class OrderStructureBuilder implements StructureBuilder
      */
     public function excludedRangeValue($lower, $upper, bool $lowerInclusive, bool $upperInclusive, array $path): void
     {
-        throw new UnexpectedTypeException($this->fieldConfig->getName(), $path);
+        throw OrderStructureException::invalidValue($this->fieldConfig->getName());
     }
 
     /**
@@ -154,7 +152,7 @@ final class OrderStructureBuilder implements StructureBuilder
      */
     public function comparisonValue($operator, $value, array $path): void
     {
-        throw new UnexpectedTypeException($this->fieldConfig->getName(), $path);
+        throw OrderStructureException::invalidValue($this->fieldConfig->getName());
     }
 
     /**
@@ -164,7 +162,7 @@ final class OrderStructureBuilder implements StructureBuilder
      */
     public function patterMatchValue($type, $value, bool $caseInsensitive, array $path): void
     {
-        throw new UnexpectedTypeException($this->fieldConfig->getName(), $path);
+        throw OrderStructureException::invalidValue($this->fieldConfig->getName());
     }
 
     public function endValues(): void

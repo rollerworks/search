@@ -15,6 +15,8 @@ namespace Rollerworks\Component\Search\Test;
 
 use PHPUnit\Framework\TestCase;
 use Prophecy\PhpUnit\ProphecyTrait;
+use Rollerworks\Component\Search\ConditionErrorMessage;
+use Rollerworks\Component\Search\Exception\InvalidSearchConditionException;
 use Rollerworks\Component\Search\Exception\SearchException;
 use Rollerworks\Component\Search\Extension\Core\Type\IntegerType;
 use Rollerworks\Component\Search\Extension\Core\Type\TextType;
@@ -26,7 +28,6 @@ use Rollerworks\Component\Search\SearchCondition;
 use Rollerworks\Component\Search\Searches;
 use Rollerworks\Component\Search\SearchFactory;
 use Rollerworks\Component\Search\SearchFactoryBuilder;
-use Rollerworks\Component\Search\Tests\Input\InputProcessorTestCase;
 use Rollerworks\Component\Search\Value\ValuesBag;
 use Rollerworks\Component\Search\Value\ValuesGroup;
 
@@ -112,6 +113,61 @@ abstract class SearchIntegrationTestCase extends TestCase
         }
     }
 
+    /**
+     * @param ConditionErrorMessage[] $errors
+     */
+    protected function assertConditionContainsErrorsWithoutCause($input, ProcessorConfig $config, array $errors, ?InputProcessor $processor = null): void
+    {
+        if (! $processor) {
+            if (! method_exists($this, 'getProcessor')) {
+                throw new \InvalidArgumentException('When $processor is not provided, the getProcessor() method should be defined.');
+            }
+
+            $processor = $this->getProcessor();
+        }
+
+        try {
+            $processor->process($config, $input);
+
+            self::fail('Condition should be invalid.');
+        } catch (InvalidSearchConditionException $e) {
+            $errorsList = $e->getErrors();
+
+            foreach ($errorsList as $error) {
+                // Remove cause to make assertion possible.
+                $error->cause = null;
+            }
+
+            foreach ($errors as $error) {
+                $error->cause = null;
+            }
+
+            self::assertEquals($errors, $errorsList);
+        }
+    }
+
+    /**
+     * @param ConditionErrorMessage[] $errors
+     */
+    protected function assertConditionContainsErrors($input, ProcessorConfig $config, array $errors, ?InputProcessor $processor = null): void
+    {
+        if (! $processor) {
+            if (! method_exists($this, 'getProcessor')) {
+                throw new \InvalidArgumentException('When $processor is not provided, the getProcessor() method should be defined.');
+            }
+
+            $processor = $this->getProcessor();
+        }
+
+        try {
+            $processor->process($config, $input);
+
+            self::fail('Condition should be invalid: ' . var_export($input, true));
+        } catch (InvalidSearchConditionException $e) {
+            self::assertEquals($errors, $e->getErrors());
+        }
+    }
+
     protected static function reindexValuesGroup(ValuesGroup $valuesGroup): ValuesGroup
     {
         $newValuesGroup = new ValuesGroup($valuesGroup->getGroupLogical());
@@ -149,8 +205,6 @@ abstract class SearchIntegrationTestCase extends TestCase
         try {
             self::assertEquals($condition, $processor->process($config, $input));
         } catch (\Exception $e) {
-            InputProcessorTestCase::detectSystemException($e);
-
             if (\function_exists('dump')) {
                 dump($e);
             } else {
@@ -164,6 +218,9 @@ abstract class SearchIntegrationTestCase extends TestCase
         }
     }
 
+    /**
+     * @deprecated Use a proper catch type instead.
+     */
     protected static function detectSystemException(\Exception $exception): void
     {
         if (! $exception instanceof SearchException) {
