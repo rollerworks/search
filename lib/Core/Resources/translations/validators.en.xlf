@@ -1,50 +1,58 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
-    <file source-language="en" datatype="plaintext" original="validators.xliff">
+    <file source-language="en" target-language="en" datatype="plaintext" original="validators.xliff">
         <body>
             <trans-unit id="1">
-                <source>Lower range-value {{ lower }} should be lower then upper range-value {{ upper }}.</source>
-                <target>Lower range-value {{ lower }} should be lower then upper range-value {{ upper }}.</target>
+                <source>No default field configured. Please provide a field name.</source>
+                <target>No default field configured. Please provide a field name.</target>
             </trans-unit>
             <trans-unit id="2">
-                <source>Field {{ field }} does not accept {{ type }} values.</source>
-                <target>Field {{ field }} does not accept {{ type }} values.</target>
+                <source>The field {{ field }} is not registered in the FieldSet or available as alias.</source>
+                <target>The field {{ field }} is not registered in the FieldSet or available as alias.</target>
             </trans-unit>
             <trans-unit id="3">
-                <source>Field {{ field }} is not registered in the FieldSet or available as alias.</source>
-                <target>Field {{ field }} is not registered in the FieldSet or available as alias.</target>
+                <source>The field {{ field }} only accepts a single simple value.</source>
+                <target>The field {{ field }} only accepts a single simple value.</target>
             </trans-unit>
             <trans-unit id="4">
-                <source>Group exceeds maximum nesting level of {{ max }}.</source>
-                <target>Group exceeds maximum nesting level of {{ max }}.</target>
+                <source>The lower range value {{ lower }} should be lower than the upper range value {{ upper }}.</source>
+                <target>The lower range value {{ lower }} should be lower than the upper range value {{ upper }}.</target>
             </trans-unit>
             <trans-unit id="5">
-                <source>Group exceeds maximum number of groups {{ max }}.</source>
-                <target>Group exceeds maximum number of groups {{ max }}.</target>
+                <source>This group exceeds maximum nesting level of {{ max }}.</source>
+                <target>This group exceeds maximum nesting level of {{ max }}.</target>
             </trans-unit>
             <trans-unit id="6">
-                <source>Field {{ field }} value exceeds the maximum number of values per group {{ max }}.</source>
-                <target>Field {{ field }} value exceeds the maximum number of values per group {{ max }}.</target>
+                <source>This group exceeds maximum number of groups {{ max }}.</source>
+                <target>This group exceeds maximum number of groups {{ max }}.</target>
             </trans-unit>
             <trans-unit id="7">
+                <source>This value exceeds the maximum number of values. Maximum values are {{ max }}.</source>
+                <target>This value exceeds the maximum number of values. Maximum values are {{ max }}.</target>
+            </trans-unit>
+            <trans-unit id="8">
+                <source>The field {{ field }} does not accept {{ type }} values.</source>
+                <target>The field {{ field }} does not accept {{ type }} values.</target>
+            </trans-unit>
+            <trans-unit id="9">
                 <source>This value is not a valid birthday or age.</source>
                 <target>This value is not a valid birthday or age.</target>
             </trans-unit>
-            <trans-unit id="8">
+            <trans-unit id="10">
                 <source>This value is not a valid birthday.</source>
                 <target>This value is not a valid birthday.</target>
             </trans-unit>
-            <trans-unit id="9">
+            <trans-unit id="11">
                 <source>This value is not a valid datetime or date interval.</source>
                 <target>This value is not a valid datetime or date interval.</target>
             </trans-unit>
-            <trans-unit id="10">
+            <trans-unit id="12">
                 <source>This value is not a valid datetime.</source>
                 <target>This value is not a valid datetime.</target>
             </trans-unit>
-            <trans-unit id="11">
-                <source>This value is not a valid sorting direction. Accepted directions are "{{ directions }}".</source>
-                <target>This value is not a valid sorting direction. Accepted directions are "{{ directions }}".</target>
+            <trans-unit id="13">
+                <source>This value is not a valid sorting direction. Accepted directions are: {{ directions }}.</source>
+                <target>This value is not a valid sorting direction. Accepted directions are: {{ directions }}.</target>
             </trans-unit>
         </body>
     </file>

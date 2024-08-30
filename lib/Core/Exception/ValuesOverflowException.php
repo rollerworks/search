@@ -22,11 +22,12 @@ final class ValuesOverflowException extends InputProcessorException
     {
         parent::__construct(
             $path,
-            'Field {{ field }} value exceeds the maximum number of values per group {{ max }}.',
+            'This value exceeds the maximum number of values. Maximum values are {{ max }}.',
             [
                 '{{ field }}' => $fieldName,
                 '{{ max }}' => $max,
-            ]
+            ],
+            $max
         );
     }
 }

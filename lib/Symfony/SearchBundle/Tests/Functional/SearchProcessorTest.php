@@ -54,6 +54,6 @@ final class SearchProcessorTest extends FunctionalTestCase
 
         $client->request('GET', '/search?search=first-name%3A%20user%3B');
 
-        self::assertEquals('INVALID: <ul><li>Field first-name is not registered in the FieldSet or available as alias.</li></ul>', $client->getResponse()->getContent());
+        self::assertEquals('INVALID: <ul><li>The field "first-name" is not registered in the FieldSet or available as alias.</li></ul>', $client->getResponse()->getContent());
     }
 }

@@ -137,7 +137,7 @@ class ProcessorConfig
     public function getDefaultField(bool $error = false): ?string
     {
         if ($this->defaultField === null && $error) {
-            throw new InputProcessorException('', 'No default field was configured.');
+            throw new InputProcessorException('', 'No default field configured. Please provide a field name.');
         }
 
         return $this->defaultField;

@@ -118,6 +118,8 @@ final class OrderStructureBuilder implements StructureBuilder
             throw OrderStructureException::invalidValue($this->fieldConfig->getName());
         }
 
+        $path = str_replace('{pos}', $this->fieldConfig->getName(), $path);
+
         if (($modelVal = $this->inputToNorm($value, $path)) !== null) {
             $this->validator->validate($modelVal, 'simple', $value, $path);
         }
@@ -216,6 +218,26 @@ final class OrderStructureBuilder implements StructureBuilder
         try {
             return $this->inputTransformer->reverseTransform($value);
         } catch (TransformationFailedException $e) {
+            $this->addError($this->transformationExceptionToError($e, $path));
+
+            return null;
+        }
+    }
+
+    private function transformationExceptionToError($e, string $path): ConditionErrorMessage
+    {
+        $invalidMessage = $e->getInvalidMessage();
+
+        if ($invalidMessage !== null) {
+            $error = new ConditionErrorMessage(
+                $path,
+                $invalidMessage,
+                $invalidMessage,
+                $e->getInvalidMessageParameters(),
+                null,
+                $e
+            );
+        } else {
             $error = new ConditionErrorMessage(
                 $path,
                 $this->fieldConfig->getOption('invalid_message', $e->getMessage()),
@@ -224,10 +246,8 @@ final class OrderStructureBuilder implements StructureBuilder
                 null,
                 $e
             );
-
-            $this->addError($error);
-
-            return null;
         }
+
+        return $error;
     }
 }

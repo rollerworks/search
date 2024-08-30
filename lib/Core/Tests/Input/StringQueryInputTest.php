@@ -189,7 +189,7 @@ final class StringQueryInputTest extends InputProcessorTestCase
     {
         $config = new ProcessorConfig($this->getFieldSet());
 
-        $e = new InputProcessorException('', 'No default field was configured.');
+        $e = new InputProcessorException('', 'No default field configured. Please provide a field name.');
         $error = $e->toErrorMessageObj();
 
         $this->assertConditionContainsErrors('value;', $config, [$error]);

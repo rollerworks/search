@@ -17,7 +17,7 @@ final class OrderStructureException extends InputProcessorException
 {
     public static function invalidValue(string $fieldName): self
     {
-        return new self('', 'Field {{ field }} only accepts a single simple-value.', ['{{ field }}' => $fieldName]);
+        return new self('', 'The field {{ field }} only accepts a single simple value.', ['{{ field }}' => $fieldName]);
     }
 
     public static function noGrouping(): self

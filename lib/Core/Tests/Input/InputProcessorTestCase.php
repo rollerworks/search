@@ -566,8 +566,8 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
         $config = new ProcessorConfig($this->getFieldSet());
 
         $errors = [
-            ConditionErrorMessage::withMessageTemplate($path[0], 'Lower range-value {{ lower }} should be lower then upper range-value {{ upper }}.', ['{{ lower }}' => '30', '{{ upper }}' => '10']),
-            ConditionErrorMessage::withMessageTemplate($path[1], 'Lower range-value {{ lower }} should be lower then upper range-value {{ upper }}.', ['{{ lower }}' => '40', '{{ upper }}' => '20']),
+            ConditionErrorMessage::withMessageTemplate($path[0], 'The lower range value {{ lower }} should be lower than the upper range value {{ upper }}.', ['{{ lower }}' => '30', '{{ upper }}' => '10']),
+            ConditionErrorMessage::withMessageTemplate($path[1], 'The lower range value {{ lower }} should be lower than the upper range value {{ upper }}.', ['{{ lower }}' => '40', '{{ upper }}' => '20']),
         ];
 
         $this->assertConditionContainsErrorsWithoutCause($input, $config, $errors);

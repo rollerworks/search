@@ -22,7 +22,7 @@ final class UnknownFieldException extends InputProcessorException
     {
         parent::__construct(
             '',
-            'Field {{ field }} is not registered in the FieldSet or available as alias.',
+            'The field {{ field }} is not registered in the FieldSet or available as alias.',
             ['{{ field }}' => $fieldName]
         );
     }

@@ -87,15 +87,15 @@ you have done so far is shown as a whole.
         $condition = $inputProcessor->process('firstName: sebastiaan, melany;');
     } catch (InvalidSearchConditionException $e) {
         // Each error message can be easily transformed to a localized version.
-        // Read the documentation for more details.
+        // See 'Handling errors' below for more details.
         foreach ($e->getErrors() as $error) {
             echo $error.PHP_EOL;
         }
     }
 
 That's it, this example shows the minimum amount of code needed process
-a search query. But using a static string is not what we are looking for
-So lets improve upon this example, with a form.
+a search query. But using a static string is not what we are looking for,
+so lets improve upon this example, with a form.
 
 .. note::
 
@@ -135,7 +135,11 @@ So lets improve upon this example, with a form.
         // and redirect back to the current page with the query passed-on,
         // if the input is valid.
 
-        $inputProcessor->process($processorConfig, $_POST['query'] ?? '');
+        $searchQuery = $isPost ? ($_POST['query'] ?? '') : ($_GET['search'] ?? '');
+
+        // The processor always needs to parse the query, see below to apply caching
+        // for better performance.
+        $condition = $inputProcessor->process($processorConfig, $searchQuery);
 
         if ($isPost) {
             // Redirect to this page with the search-code provided.
@@ -143,37 +147,37 @@ So lets improve upon this example, with a form.
             // be sure to apply proper format detection.
             // Or use a proper HTTP request abstraction.
 
-            header('Location: /search?search='.$_POST['query'] ?? '');
+            header('Location: /search?search='.$searchQuery);
             exit();
         }
-
-        // The processor always needs to parse the query again, see below
-        // to apply caching for better performance.
-        $condition = $inputProcessor->process($processorConfig, $_GET['query'] ?? '');
     } catch (InvalidSearchConditionException $e) {
         echo '<p>Your condition contains the following errors: <p>'.PHP_EOL;
         echo '<ul>'.PHP_EOL;
 
         foreach ($e->getErrors() as $error) {
            echo '<li>'.$error->path.': '.htmlspecialchars((string) $error).'</li>'.PHP_EOL;
+
+           // Alternatively the error can displayed in a user's local format.
+           // See 'Handling errors' below for more details.
+           // echo '<li>'.$error->path.': '.htmlspecialchars($error->trans($translator)).'</li>'.PHP_EOL;
         }
 
         echo '</ul>'.PHP_EOL;
     }
 
-    $query = htmlspecialchars($_POST['query'] ?? $_GET['query'] ?? '');
+    $searchQuery = htmlspecialchars($searchQuery);
 
     // Normally you would use a template system to take care of the presentation
     echo <<<HTML
-    <form action="/search" method="post">
+        <form action="/search" method="post">
 
-    <label for="search-condition">Condition: </label>
-    <textarea id="search-condition" name="query" cols="10" rows="20">{$query}</textarea>
+        <label for="search-condition">Condition: </label>
+        <textarea id="search-condition" name="query" cols="10" rows="20">{$searchQuery}</textarea>
 
-    <div>
-        <button type="submit">Search</button> <button type="Reset">Reset</button>
-    </div>
-    </form>
+        <div>
+            <button type="submit">Search</button> <button type="Reset">Reset</button>
+        </div>
+        </form>
     HTML;
 
 That's it, all input processing, and error handling is taken care of, however now
@@ -226,7 +230,7 @@ cases the information can be a little verbose (eg. unsupported value types).
 
 Fortunately each error is more then a simple string, in fact it's a
 :class:`Rollerworks\\Component\\Search\\ConditionErrorMessage` object
-with a ton of useful information:
+with a bunch of useful information:
 
 .. code-block:: php
 
@@ -303,21 +307,7 @@ but for more flexibility it's best to perform the rendering logic in a template.
     $translator->addResource('xlf', $resourcesDirectory.'/messages.nl.xlf', 'nl');
 
     // Change with your own locale.
-    $translator->setLocale('nl');
-
-    function translateConditionErrorMessage(ConditionErrorMessage $message)
-    {
-        if (null !== $message->messagePluralization) {
-            return $translator->transChoice(
-                $message->messageTemplate,
-                $message->messagePluralization,
-                $message->translatedParameters,
-                'messages'
-            );
-        }
-
-        return $translator->trans($message->messageTemplate, $message->translatedParameters, 'messages');
-    }
+    $translator->setLocale('en');
 
     ...
 
@@ -326,15 +316,11 @@ but for more flexibility it's best to perform the rendering logic in a template.
         echo '<ul>'.PHP_EOL;
 
         foreach ($e->getErrors() as $error) {
-           echo '<li>'.$error->path.': '.htmlspecialchars(translateConditionErrorMessage($error)).'</li>'.PHP_EOL;
+           echo '<li>'.$error->path.': '.htmlspecialchars($error->trans($translator)).'</li>'.PHP_EOL;
         }
 
         echo '</ul>'.PHP_EOL;
     }
-
-.. tip::
-
-    Framework integrations already provide a way to translate error messages.
 
 Debugging information
 ---------------------

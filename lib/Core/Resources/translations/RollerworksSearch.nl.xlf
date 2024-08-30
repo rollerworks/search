@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+    <file source-language="en" target-language="nl" datatype="plaintext" original="RollerworksSearch.xlf">
+        <body>
+            <!-- Value types (all translated in lowercase) -->
+            <trans-unit id="1">
+                <source>FieldIdentification</source>
+                <target>veldidentificatie</target>
+            </trans-unit>
+            <trans-unit id="2">
+                <source>StringValue</source>
+                <target>tekstwaarde</target>
+            </trans-unit>
+            <trans-unit id="3">
+                <source>CompareOperator</source>
+                <target>vergelijk-operator</target>
+            </trans-unit>
+            <trans-unit id="4">
+                <source>Range</source>
+                <target>bereik</target>
+            </trans-unit>
+            <trans-unit id="5">
+                <source>ExcludedValue</source>
+                <target>uitgesloten waarde</target>
+            </trans-unit>
+            <trans-unit id="6">
+                <source>ExcludedRange</source>
+                <target>uitgesloten bereik</target>
+            </trans-unit>
+            <trans-unit id="7">
+                <source>Compare</source>
+                <target>vergelijking</target>
+            </trans-unit>
+            <trans-unit id="8">
+                <source>PatternMatch</source>
+                <target>patroonvergelijking</target>
+            </trans-unit>
+            <trans-unit id="9">
+                <source>end of string</source>
+                <target>einde van tekst</target>
+            </trans-unit>
+            <trans-unit id="10">
+                <source>line end</source>
+                <target>lijn einde</target>
+            </trans-unit>
+            <!-- // -->
+
+            <trans-unit id="ORDER_CLAUSE_NOT_IN_GROUP">
+                <source>Order clauses cannot be placed in a group.</source>
+                <target>Volgorde clausules kunnen niet in een groep worden geplaatst.</target>
+            </trans-unit>
+            <trans-unit id="STRING_SYNTAX_ERROR_EXPECTED">
+                <source>[Syntax Error] line {{ line }} col {{ column }}: Expected {{ expected }}, got {{ got }}.</source>
+                <target>[Syntaxisfout] regel {{ line }} kolom {{ column }}: Verwacht {{ expected }}, kreeg {{ got }}.</target>
+            </trans-unit>
+            <trans-unit id="STRING_SYNTAX_ERROR_UNEXPECTED">
+                <source>[Syntax Error] line {{ line }} col {{ column }}: Unexpected {{ unexpected }}.</source>
+                <target>[Syntaxisfout] regel {{ line }} kolom {{ column }}: Onverwachte {{ unexpected }}.</target>
+            </trans-unit>
+            <trans-unit id="STRING_FORMAT_ERROR">
+                <source>[Format Error] line {{ line }} col {{ column }}: {{ message }}.</source>
+                <target>[Opmaakfout] regel {{ line }} kolom {{ column }}: {{ message }}.</target>
+            </trans-unit>
+            <trans-unit id="FIELD_REQUIRES_VALUES">
+                <source>A field must have at least one value</source>
+                <target>Een veld moet ten minste één waarde hebben.</target>
+            </trans-unit>
+            <trans-unit id="INCORRECT_VALUES_SEPARATOR">
+                <source>Values must be separated by a ",". A values list must end with ";" or ")"</source>
+                <target>Waardes moeten gescheiden zijn met een ",". Een waarden lijst moet eindigen met ";" of ")".</target>
+            </trans-unit>
+            <trans-unit id="CANNOT_CLOSE_UNOPENED_GROUP">
+                <source>Cannot close group as this field is not in a group</source>
+                <target>Kan groep niet sluiten omdat dit veld zich niet in een groep bevindt</target>
+            </trans-unit>
+            <trans-unit id="GROUP_LOGICAL_WITHOUT_GROUP">
+                <source>A group logical operator can only be used at the start of the input or before a group opening</source>
+                <target>Een groepslogische operator kan alleen aan het begin van de invoer of vóór een groepsopening worden gebruikt</target>
+            </trans-unit>
+            <trans-unit id="UNKNOWN_PATTERN_MATCH_FLAG">
+                <source>Unknown operator flag, expected "i" and/or "!"</source>
+                <target>Onbekende operator vlag, verwacht "i" en/of "!"</target>
+            </trans-unit>
+            <trans-unit id="NO_SPACES_IN_OPERATOR">
+                <source>Spaces are not allowed within an operator</source>
+                <target>Spaties zijn niet toegestaan binnen een operator</target>
+            </trans-unit>
+            <trans-unit id="INCOMPLETE_VALUE_PATTERN">
+                <source>Missing operator and value pattern</source>
+                <target>Ontbrekende operator en waardepatroon</target>
+            </trans-unit>
+            <trans-unit id="SPACES_REQ_QUOTING">
+                <source>A value containing spaces must be surrounded by quotes</source>
+                <target>Een waarde met spaties, moet tussen aanhalingstekens worden geplaatst</target>
+            </trans-unit>
+            <trans-unit id="SPECIAL_CHARS_REQ_QUOTING">
+                <source>A value containing special characters must be surrounded by quotes</source>
+                <target>Een waarde met speciale tekens, moet tussen aanhalingstekens worden geplaatst</target>
+            </trans-unit>
+            <trans-unit id="QUOTED_VALUE_REQUIRE_QUOTING">
+                <source>A value containing quotes must be surrounded by quotes</source>
+                <target>Een waarde met aanhalingstekens, moet tussen aanhalingstekens worden geplaatst</target>
+            </trans-unit>
+            <trans-unit id="VALUE_QUOTES_MUST_ESCAPE">
+                <source>Quotes in a quoted value must be escaped</source>
+                <target>Aanhalingstekens in een aangehaalde waarde moeten worden geëscaped</target>
+            </trans-unit>
+            <trans-unit id="MISSING_END_QUOTE">
+                <source>Missing quote to end the value</source>
+                <target>Ontbrekend aanhalingsteken om de waarde te beëindigen</target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

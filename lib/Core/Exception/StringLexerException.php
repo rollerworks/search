@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Exception;
 
+use Rollerworks\Component\Search\ConditionErrorMessage;
+
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
@@ -47,6 +49,8 @@ final class StringLexerException extends InputProcessorException
                     '{{ got }}' => $got,
                 ]
             );
+
+            $exp->setTranslatedParameters(['{{ expected }}']);
         } else {
             $exp = new self(
                 '',
@@ -59,7 +63,22 @@ final class StringLexerException extends InputProcessorException
             );
         }
 
-        $exp->setTranslatedParameters(['unexpected', 'got']);
+        return $exp;
+    }
+
+    public static function syntaxErrorUnexpectedEnd(int $column, int $line, $expected, string $got): self
+    {
+        $exp = new self(
+            '',
+            '[Syntax Error] line {{ line }} col {{ column }}: Expected {{ expected }}, got {{ got }}.',
+            [
+                '{{ line }}' => $line,
+                '{{ column }}' => $column,
+                '{{ expected }}' => $expected,
+                '{{ got }}' => $got,
+            ]
+        );
+        $exp->setTranslatedParameters(['{{ expected }}', '{{ got }}']);
 
         return $exp;
     }
@@ -76,8 +95,17 @@ final class StringLexerException extends InputProcessorException
             ]
         );
 
-        $exp->setTranslatedParameters(['message']);
+        $exp->setTranslatedParameters(['{{ message }}']);
 
         return $exp;
+    }
+
+
+    public function toErrorMessageObj(): ConditionErrorMessage
+    {
+        $message = parent::toErrorMessageObj();
+        $message->setTranslatedDomain('RollerworksSearch');
+
+        return $message;
     }
 }

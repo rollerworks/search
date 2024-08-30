@@ -13,6 +13,9 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search;
 
+use Symfony\Contracts\Translation\TranslatableInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
+
 /**
  * A ConditionErrorMessage holds an error message,
  * produced during processing.
@@ -22,7 +25,7 @@ namespace Rollerworks\Component\Search;
  *
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  */
-final class ConditionErrorMessage
+final class ConditionErrorMessage implements TranslatableInterface
 {
     /**
      * @var string
@@ -60,7 +63,9 @@ final class ConditionErrorMessage
     /**
      * @var string[]
      */
-    public $translatedParameters;
+    public $translatedParameters = [];
+
+    public string $translatedDomain = 'validators';
 
     /**
      * Any array key in $messageParameters will be used as a placeholder in
@@ -116,8 +121,62 @@ final class ConditionErrorMessage
         return $this;
     }
 
+    public function setTranslatedDomain(string $domain): self
+    {
+        $this->translatedDomain = $domain;
+
+        return $this;
+    }
+
     public function __toString(): string
     {
         return $this->message;
+    }
+
+    public function trans(TranslatorInterface $translator, ?string $locale = null): string
+    {
+        $parameters = $this->messageParameters;
+
+        // Note that when the input is less than 3 (0 index) characters we don't translate.
+        $nestedTranslator = static fn(string $v): string => isset($v[2]) ? $translator->trans($v, [], 'RollerworksSearch', $locale) : $v;
+
+        foreach ($this->translatedParameters as $name) {
+            $value = $parameters[$name];
+            $parameters[$name] = is_array($value) ? array_map($nestedTranslator, $value) : $nestedTranslator($value);
+        }
+
+        // Because of the formatting we need to pre-translate the parameters.
+        // Otherwise we could translate the parameters using a TranslatableInterface value.
+        $parameters = $this->formatParameters($parameters);
+
+        return $translator->trans($this->messageTemplate, $parameters, $this->translatedDomain, $locale);
+    }
+
+    private function formatParameters(array $messageParameters): array
+    {
+        $newParams = [];
+
+        foreach ($messageParameters as $name => $value) {
+            if (\is_array($value)) {
+                $value = implode(', ', array_map([$this, 'formatValue'], $value));
+            } else {
+                $value = $this->formatValue($value);
+            }
+
+            $newParams[$name] = $value;
+        }
+
+        return $newParams;
+    }
+
+    private function formatValue($value): string
+    {
+        $value = (string) $value;
+
+        if (! preg_match('/[\d]/u', $value)) {
+            $value = '"' . $value . '"';
+        }
+
+        return $value;
     }
 }
