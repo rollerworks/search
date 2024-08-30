@@ -93,12 +93,12 @@ abstract class AbstractQueryPlatform
         }
 
         $patternMap = [
-            PatternMatch::PATTERN_STARTS_WITH => ["'%%'", '%s'],
-            PatternMatch::PATTERN_NOT_STARTS_WITH => ["'%%'", '%s'],
+            PatternMatch::PATTERN_STARTS_WITH => ['%s', "'%%'"],
+            PatternMatch::PATTERN_NOT_STARTS_WITH => ['%s', "'%%'"],
             PatternMatch::PATTERN_CONTAINS => ["'%%'", '%s', "'%%'"],
             PatternMatch::PATTERN_NOT_CONTAINS => ["'%%'", '%s', "'%%'"],
-            PatternMatch::PATTERN_ENDS_WITH => ['%s', "'%%'"],
-            PatternMatch::PATTERN_NOT_ENDS_WITH => ['%s', "'%%'"],
+            PatternMatch::PATTERN_ENDS_WITH => ["'%%'", '%s'],
+            PatternMatch::PATTERN_NOT_ENDS_WITH => ["'%%'", '%s'],
         ];
 
         $value = addcslashes($patternMatch->getValue(), $this->getLikeEscapeChars());

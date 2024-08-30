@@ -671,6 +671,10 @@ final class DqlConditionGeneratorTest extends OrmTestCase
                 ->add(new PatternMatch('fo\'o', PatternMatch::PATTERN_STARTS_WITH))
                 ->add(new PatternMatch('fo\'\'o', PatternMatch::PATTERN_STARTS_WITH))
                 ->add(new PatternMatch('bar', PatternMatch::PATTERN_NOT_ENDS_WITH, true))
+                ->add(new PatternMatch('bar2', PatternMatch::PATTERN_CONTAINS))
+                ->add(new PatternMatch('rap', PatternMatch::PATTERN_NOT_CONTAINS))
+                ->add(new PatternMatch('oop', PatternMatch::PATTERN_ENDS_WITH))
+                ->add(new PatternMatch('boo', PatternMatch::PATTERN_NOT_ENDS_WITH))
             ->end()
         ->getSearchCondition()
         ;
@@ -680,7 +684,7 @@ final class DqlConditionGeneratorTest extends OrmTestCase
         if ($this->conn->getDatabasePlatform()->getName() === 'postgresql') {
             $this->assertDqlCompiles(
                 $conditionGenerator,
-                'WHERE (((C.firstName LIKE CONCAT(\'%\', :search_0) OR C.firstName LIKE CONCAT(\'%\', :search_1) OR C.firstName LIKE CONCAT(\'%\', :search_2) OR C.firstName LIKE CONCAT(\'%\', :search_3)) AND LOWER(C.firstName) NOT LIKE LOWER(CONCAT(:search_4, \'%\'))))',
+                "WHERE (((C.firstName LIKE CONCAT(:search_0, '%') OR C.firstName LIKE CONCAT(:search_1, '%') OR C.firstName LIKE CONCAT(:search_2, '%') OR C.firstName LIKE CONCAT(:search_3, '%') OR C.firstName LIKE CONCAT('%', :search_4, '%') OR C.firstName LIKE CONCAT('%', :search_5)) AND (LOWER(C.firstName) NOT LIKE LOWER(CONCAT('%', :search_6)) AND C.firstName NOT LIKE CONCAT('%', :search_7, '%') AND C.firstName NOT LIKE CONCAT('%', :search_8))))",
                 <<<'SQL'
                     SELECT
                         i0_.invoice_id AS invoice_id_0,
@@ -693,15 +697,25 @@ final class DqlConditionGeneratorTest extends OrmTestCase
                     FROM
                         invoices i0_
                             INNER JOIN customers c1_ ON i0_.customer = c1_.id
-                    WHERE (((c1_.first_name LIKE '%' || ? OR c1_.first_name LIKE '%' || ? OR c1_.first_name LIKE '%' || ? OR
-                             c1_.first_name LIKE '%' || ?) AND LOWER(c1_.first_name) NOT LIKE LOWER(? || '%')))
+                    WHERE (((c1_.first_name LIKE ? || '%' OR c1_.first_name LIKE ? || '%' OR c1_.first_name LIKE ? || '%' OR
+                             c1_.first_name LIKE ? || '%' OR c1_.first_name LIKE '%' || ? || '%' OR c1_.first_name LIKE '%' || ?) AND
+                            (LOWER(c1_.first_name) NOT LIKE LOWER('%' || ?) AND c1_.first_name NOT LIKE '%' || ? || '%' AND
+                             c1_.first_name NOT LIKE '%' || ?)))
                     SQL
             );
         } else {
             $this->assertDqlCompiles(
                 $conditionGenerator,
                 <<<'DQL'
-                    WHERE (((C.firstName LIKE CONCAT('%', :search_0) OR C.firstName LIKE CONCAT('%', :search_1) OR C.firstName LIKE CONCAT('%', :search_2) OR C.firstName LIKE CONCAT('%', :search_3)) AND LOWER(C.firstName) NOT LIKE LOWER(CONCAT(:search_4, '%'))))
+                    WHERE (((C.firstName LIKE CONCAT(:search_0, '%') OR
+                    C.firstName LIKE CONCAT(:search_1, '%') OR
+                    C.firstName LIKE CONCAT(:search_2, '%') OR
+                    C.firstName LIKE CONCAT(:search_3, '%') OR
+                    C.firstName LIKE CONCAT('%', :search_4, '%') OR
+                    C.firstName LIKE CONCAT('%', :search_5)) AND
+                    (LOWER(C.firstName) NOT LIKE LOWER(CONCAT('%', :search_6)) AND
+                    C.firstName NOT LIKE CONCAT('%', :search_7, '%') AND
+                    C.firstName NOT LIKE CONCAT('%', :search_8))))
                     DQL
             );
         }
@@ -748,7 +762,7 @@ final class DqlConditionGeneratorTest extends OrmTestCase
 
         $this->assertDqlCompiles(
             $conditionGenerator,
-            "WHERE (((C.id = :search_0)) AND ((((C.firstName LIKE CONCAT('%', :search_1) OR C.lastName LIKE CONCAT('%', :search_2))))))"
+            "WHERE (((C.id = :search_0)) AND ((((C.firstName LIKE CONCAT(:search_1, '%') OR C.lastName LIKE CONCAT(:search_2, '%'))))))"
         );
     }
 
@@ -769,7 +783,7 @@ final class DqlConditionGeneratorTest extends OrmTestCase
 
         $this->assertDqlCompiles(
             $conditionGenerator,
-            "WHERE ((C.id = :search_0) OR (C.firstName LIKE CONCAT('%', :search_1)))"
+            "WHERE ((C.id = :search_0) OR (C.firstName LIKE CONCAT(:search_1, '%')))"
         );
     }
 
@@ -794,7 +808,7 @@ final class DqlConditionGeneratorTest extends OrmTestCase
 
         $this->assertDqlCompiles(
             $conditionGenerator,
-            "WHERE ((((C.id = :search_0) OR (C.firstName LIKE CONCAT('%', :search_1)))))"
+            "WHERE ((((C.id = :search_0) OR (C.firstName LIKE CONCAT(:search_1, '%')))))"
         );
     }
 

@@ -170,7 +170,7 @@ abstract class OrmTestCase extends DbalTestCase
     /**
      * @throws \Doctrine\DBAL\Exception
      */
-    protected function assertRecordsAreFound(SearchCondition $condition, array $ids): void
+    protected function assertRecordsAreFound(SearchCondition $condition, array $ids, string $input): void
     {
         $qb = $this->getQuery();
 
@@ -219,7 +219,8 @@ abstract class OrmTestCase extends DbalTestCase
             $ids,
             array_merge([], array_unique($idRows)),
             sprintf(
-                "Found these records instead: \n%s\nWith WHERE-clause: %s\nSQL: %s\nAnd params: %s",
+                "With condition: `%s`\nFound these records instead: \n%s\nWith WHERE-clause: %s\nSQL: %s\nAnd params: %s",
+                $input,
                 print_r($rows, true),
                 $whereClause,
                 $query->getSQL(),

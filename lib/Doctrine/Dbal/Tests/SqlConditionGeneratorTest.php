@@ -517,7 +517,7 @@ final class SqlConditionGeneratorTest extends DbalTestCase
 
         QueryBuilderAssertion::assertQueryBuilderEquals(
             $conditionGenerator,
-            " WHERE (((c.name LIKE '%' || :search_0 OR c.name LIKE '%' || :search_1 OR c.name = :search_2 OR LOWER(c.name) = LOWER(:search_3)) AND (LOWER(c.name) NOT LIKE LOWER(:search_4 || '%') AND c.name <> :search_5 AND LOWER(c.name) <> LOWER(:search_6))))",
+            " WHERE (((c.name LIKE :search_0 || '%' OR c.name LIKE :search_1 || '%' OR c.name = :search_2 OR LOWER(c.name) = LOWER(:search_3)) AND (LOWER(c.name) NOT LIKE LOWER('%' || :search_4) AND c.name <> :search_5 AND LOWER(c.name) <> LOWER(:search_6))))",
             [
                 'search_0' => ['foo', 'text'],
                 'search_1' => ['fo\\\'o', 'text'],
@@ -574,7 +574,7 @@ final class SqlConditionGeneratorTest extends DbalTestCase
 
         QueryBuilderAssertion::assertQueryBuilderEquals(
             $conditionGenerator,
-            " WHERE (((i.customer = :search_0)) AND (((c.name LIKE '%' || :search_1))))",
+            " WHERE (((i.customer = :search_0)) AND (((c.name LIKE :search_1 || '%'))))",
             [
                 'search_0' => [2, 'integer'],
                 'search_1' => ['foo', 'text'],
@@ -599,7 +599,7 @@ final class SqlConditionGeneratorTest extends DbalTestCase
 
         QueryBuilderAssertion::assertQueryBuilderEquals(
             $conditionGenerator,
-            " WHERE ((i.customer = :search_0) OR (c.name LIKE '%' || :search_1))",
+            " WHERE ((i.customer = :search_0) OR (c.name LIKE :search_1 || '%'))",
             [
                 'search_0' => [2, 'integer'],
                 'search_1' => ['foo', 'text'],
@@ -628,7 +628,7 @@ final class SqlConditionGeneratorTest extends DbalTestCase
 
         QueryBuilderAssertion::assertQueryBuilderEquals(
             $conditionGenerator,
-            " WHERE ((((i.customer = :search_0) OR (c.name LIKE '%' || :search_1))))",
+            " WHERE ((((i.customer = :search_0) OR (c.name LIKE :search_1 || '%'))))",
             [
                 'search_0' => [2, 'integer'],
                 'search_1' => ['foo', 'text'],

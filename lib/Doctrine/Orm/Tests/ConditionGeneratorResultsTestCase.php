@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Rollerworks\Component\Search\Tests\Doctrine\Orm;
 
 use Rollerworks\Component\Search\Doctrine\Orm\FieldConfigBuilder;
+use Rollerworks\Component\Search\Exception\SearchException;
 use Rollerworks\Component\Search\Extension\Core\Type\BirthdayType;
 use Rollerworks\Component\Search\Extension\Core\Type\ChoiceType;
 use Rollerworks\Component\Search\Extension\Core\Type\DateTimeType;
@@ -167,6 +168,7 @@ abstract class ConditionGeneratorResultsTestCase extends OrmTestCase
 
         $conditionGenerator->setDefaultEntity(self::CUSTOMER_CLASS, 'C');
         $conditionGenerator->setField('customer', 'id');
+        $conditionGenerator->setField('customer-first-name', 'firstName');
         $conditionGenerator->setField('customer-name#first_name', 'firstName');
         $conditionGenerator->setField('customer-name#last_name', 'lastName');
         $conditionGenerator->setField('customer-birthday', 'birthday');
@@ -303,23 +305,35 @@ abstract class ConditionGeneratorResultsTestCase extends OrmTestCase
         $this->makeTest('row-label: ~=Armor, ~i=sword;', [2, 3]);
     }
 
+    /** @test */
+    public function it_finds_by_pattern(): void
+    {
+        $this->makeTest('customer-first-name: ~>Doc', [5]);
+        $this->makeTest('customer-first-name: ~*Doc', [5]);
+        $this->makeTest('customer-first-name: ~<r', [1, 5, 6]);
+        $this->makeTest('customer-first-name: ~i<R', [1, 5, 6]);
+        $this->makeTest('customer-first-name: ~<R', []);
+
+        $this->makeTest('row-label: ~*TAR', [5]);
+        $this->makeTest('row-label: ~*tar', [1]);
+        $this->makeTest('row-label: ~i*Tar', [1, 5]);
+    }
+
     private function makeTest($input, array $expectedRows): void
     {
         $config = new ProcessorConfig($this->getFieldSet());
 
         try {
             $condition = $this->inputProcessor->process($config, $input);
-            $this->assertRecordsAreFound($condition, $expectedRows);
-        } catch (\Exception $e) {
-            self::detectSystemException($e);
-
+            $this->assertRecordsAreFound($condition, $expectedRows, $input);
+        } catch (SearchException $e) {
             if (\function_exists('dump')) {
                 dump($e);
             } else {
                 echo 'Please install symfony/var-dumper as dev-requirement to get a readable structure.' . \PHP_EOL;
 
                 // Don't use var-dump or print-r as this crashes php...
-                echo $e::class . '::' . (string) $e;
+                echo $e::class . '::' . $e;
             }
 
             self::fail('Condition contains errors.');
@@ -333,17 +347,15 @@ abstract class ConditionGeneratorResultsTestCase extends OrmTestCase
         try {
             $condition = $this->inputProcessor->process($config, $input);
             $condition->setPrimaryCondition(new SearchPrimaryCondition($this->inputProcessor->process($config, $primaryCondition)->getValuesGroup()));
-            $this->assertRecordsAreFound($condition, $expectedRows);
-        } catch (\Exception $e) {
-            self::detectSystemException($e);
-
+            $this->assertRecordsAreFound($condition, $expectedRows, $input);
+        } catch (SearchException $e) {
             if (\function_exists('dump')) {
                 dump($e);
             } else {
                 echo 'Please install symfony/var-dumper as dev-requirement to get a readable structure.' . \PHP_EOL;
 
                 // Don't use var-dump or print-r as this crashes php...
-                echo $e::class . '::' . (string) $e;
+                echo $e::class . '::' . $e;
             }
 
             self::fail('Condition contains errors.');
