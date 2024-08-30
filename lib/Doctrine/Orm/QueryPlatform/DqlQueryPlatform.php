@@ -32,12 +32,12 @@ final class DqlQueryPlatform extends AbstractQueryPlatform
         }
 
         $patternMap = [
-            PatternMatch::PATTERN_STARTS_WITH => "CONCAT('%%', %s)",
-            PatternMatch::PATTERN_NOT_STARTS_WITH => "CONCAT('%%', %s)",
+            PatternMatch::PATTERN_STARTS_WITH => "CONCAT(%s, '%%')",
+            PatternMatch::PATTERN_NOT_STARTS_WITH => "CONCAT(%s, '%%')",
             PatternMatch::PATTERN_CONTAINS => "CONCAT('%%', %s, '%%')",
             PatternMatch::PATTERN_NOT_CONTAINS => "CONCAT('%%', %s, '%%')",
-            PatternMatch::PATTERN_ENDS_WITH => "CONCAT(%s, '%%')",
-            PatternMatch::PATTERN_NOT_ENDS_WITH => "CONCAT(%s, '%%')",
+            PatternMatch::PATTERN_ENDS_WITH => "CONCAT('%%', %s)",
+            PatternMatch::PATTERN_NOT_ENDS_WITH => "CONCAT('%%', %s)",
         ];
 
         $value = addcslashes($patternMatch->getValue(), $this->getLikeEscapeChars());
