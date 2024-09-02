@@ -39,7 +39,16 @@ abstract class StringExporter extends AbstractExporter
     {
         $this->fields = $this->resolveLabels($fieldSet = $condition->getFieldSet());
 
-        return $this->exportOrder($condition, $fieldSet) . $this->exportGroup($condition->getValuesGroup(), $fieldSet, true);
+        $valuesGroup = $condition->getValuesGroup();
+        $result = '';
+
+        if ($valuesGroup->countValues() > 0 && $valuesGroup->getGroupLogical() === ValuesGroup::GROUP_LOGICAL_OR) {
+            $result .= '* ';
+        }
+
+        $result .= $this->exportOrder($condition, $fieldSet);
+
+        return trim($result . $this->exportGroup($valuesGroup, $fieldSet, true));
     }
 
     abstract protected function resolveLabels(FieldSet $fieldSet): array;
@@ -59,17 +68,13 @@ abstract class StringExporter extends AbstractExporter
             $result .= ': ' . $this->modelToExported($direction, $fieldSet->get($name)) . '; ';
         }
 
-        return trim($result);
+        return ltrim($result);
     }
 
     protected function exportGroup(ValuesGroup $valuesGroup, FieldSet $fieldSet, bool $isRoot = false): string
     {
         $result = '';
         $exportedGroups = '';
-
-        if ($isRoot && $valuesGroup->countValues() > 0 && $valuesGroup->getGroupLogical() === ValuesGroup::GROUP_LOGICAL_OR) {
-            $result .= '*';
-        }
 
         foreach ($valuesGroup->getFields() as $name => $values) {
             if ($fieldSet->isPrivate($name) || $values->count() === 0) {

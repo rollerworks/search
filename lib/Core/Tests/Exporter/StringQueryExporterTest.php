@@ -124,6 +124,33 @@ final class StringQueryExporterTest extends SearchConditionExporterTestCase
         $this->assertConditionEquals('@id: desc; @status: asc;', $condition, $processor, $config);
     }
 
+    /** @test */
+    public function it_exports_with_ordering_and_root_group_logical(): void
+    {
+        $exporter = $this->getExporter();
+        $fieldSet = $this->getFieldSet(false)
+            ->add('@id', OrderFieldType::class)
+            ->add('@status', OrderFieldType::class)
+            ->getFieldSet()
+        ;
+
+        $config = new ProcessorConfig($fieldSet);
+
+        $condition = new SearchCondition(
+            $config->getFieldSet(),
+            (new ValuesGroup(ValuesGroup::GROUP_LOGICAL_OR))->addField('name', (new ValuesBag())->addSimpleValue('value '))
+        );
+
+        $orderGroup = (new ValuesGroup())
+            ->addField('@id', (new ValuesBag())->addSimpleValue('DESC'))
+            ->addField('@status', (new ValuesBag())->addSimpleValue('ASC'))
+        ;
+        $condition->setOrder(new SearchOrder($orderGroup));
+
+        $this->assertExportEquals('* @id: desc; @status: asc; name: "value ";', $exporter->exportCondition($condition));
+        $this->assertConditionEquals('* @id: desc; @status: asc; name: "value ";', $condition, $this->getInputProcessor(), $config);
+    }
+
     public function provideSingleValuePairTest()
     {
         return 'name: "value ", -value2, value2-, 10.00, "10,00", hÌ, ٤٤٤٦٥٤٦٠٠, "doctor""who""""", !value3; price: € 12.00, "12,00 $", $ 12.00;';

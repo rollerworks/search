@@ -15,7 +15,6 @@ namespace Rollerworks\Component\Search\Exporter;
 
 use Rollerworks\Component\Search\Field\FieldConfig;
 use Rollerworks\Component\Search\FieldSet;
-use Rollerworks\Component\Search\SearchCondition;
 
 /**
  * Exports the SearchCondition as StringQuery string.
