@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Rollerworks\Bundle\SearchBundle\DependencyInjection;
 
+use Rollerworks\Component\Search\Extension\Symfony\Validator\InputValidator;
 use Rollerworks\Component\Search\Field\FieldType;
 use Rollerworks\Component\Search\Field\FieldTypeExtension;
 use Rollerworks\Component\Search\FieldSet;
@@ -25,7 +26,6 @@ use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\Translation\Translator;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class RollerworksSearchExtension extends Extension implements PrependExtensionInterface
 {
@@ -65,7 +65,7 @@ class RollerworksSearchExtension extends Extension implements PrependExtensionIn
             $loader->load('elasticsearch.xml');
         }
 
-        if (interface_exists(ValidatorInterface::class)) {
+        if (class_exists(InputValidator::class)) {
             $loader->load('input_validator.xml');
         }
 
