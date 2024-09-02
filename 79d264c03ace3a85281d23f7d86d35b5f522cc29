@@ -1,0 +1,1 @@
+{"schema":1,"id":315,"category":"bug","title":"[Core] Fix wrong exported StringQuery with order","flags":[],"authors":["sstok"]}
