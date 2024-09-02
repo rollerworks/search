@@ -1,0 +1,1 @@
+{"schema":1,"id":317,"category":"bug","title":"[SearchBundle] Enable validator when class the exists, instead of only the Symfony validator component","flags":[],"authors":["sstok"]}
