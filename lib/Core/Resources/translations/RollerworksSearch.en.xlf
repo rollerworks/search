@@ -1,49 +1,66 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
-    <file source-language="en" datatype="plaintext" original="messages.xliff">
+    <file source-language="en" target-language="en" datatype="plaintext" original="RollerworksSearch.xlf">
         <body>
+            <!-- Value types (all translated in lowercase) -->
             <trans-unit id="1">
                 <source>FieldIdentification</source>
-                <target>Field identification</target>
+                <target>field identification</target>
             </trans-unit>
             <trans-unit id="2">
                 <source>StringValue</source>
-                <target>String value</target>
+                <target>string-value</target>
             </trans-unit>
             <trans-unit id="3">
                 <source>CompareOperator</source>
-                <target>Compare operator</target>
+                <target>compare-operator</target>
             </trans-unit>
             <trans-unit id="4">
+                <source>Range</source>
+                <target>range</target>
+            </trans-unit>
+            <trans-unit id="5">
+                <source>ExcludedValue</source>
+                <target>excluded-value</target>
+            </trans-unit>
+            <trans-unit id="6">
+                <source>ExcludedRange</source>
+                <target>excluded-range</target>
+            </trans-unit>
+            <trans-unit id="7">
+                <source>Compare</source>
+                <target>comparison</target>
+            </trans-unit>
+            <trans-unit id="8">
+                <source>PatternMatch</source>
+                <target>pattern-matcher</target>
+            </trans-unit>
+            <trans-unit id="9">
                 <source>end of string</source>
                 <target>end of string</target>
             </trans-unit>
-            <trans-unit id="5">
+            <trans-unit id="10">
                 <source>line end</source>
                 <target>line end</target>
             </trans-unit>
-            <trans-unit id="6">
-                <source>Range</source>
-                <target>Range</target>
-            </trans-unit>
-            <trans-unit id="7">
-                <source>ExcludedValue</source>
-                <target>ExcludedValue</target>
-            </trans-unit>
-            <trans-unit id="8">
-                <source>ExcludedRange</source>
-                <target>ExcludedRange</target>
-            </trans-unit>
-            <trans-unit id="9">
-                <source>Comparison</source>
-                <target>Comparison</target>
-            </trans-unit>
-            <trans-unit id="10">
-                <source>PatternMatch</source>
-                <target>PatternMatcher</target>
-            </trans-unit>
+            <!-- // -->
 
-            <!-- Extracted from \Rollerworks\Component\Search\Exception\StringLexerException -->
+            <trans-unit id="ORDER_CLAUSE_NOT_IN_GROUP">
+                <source>Order clauses cannot be placed in a group.</source>
+                <target>Order clauses cannot be placed in a group.</target>
+            </trans-unit>
+            <trans-unit id="STRING_SYNTAX_ERROR_EXPECTED">
+                <source>[Syntax Error] line {{ line }} col {{ column }}: Expected {{ expected }}, got {{ got }}.</source>
+                <target>[Syntax Error] line {{ line }} col {{ column }}: Expected {{ expected }}, got {{ got }}.</target>
+            </trans-unit>
+            <trans-unit id="STRING_SYNTAX_ERROR_UNEXPECTED">
+                <source>[Syntax Error] line {{ line }} col {{ column }}: Unexpected {{ unexpected }}.</source>
+                <target>[Syntax Error] line {{ line }} col {{ column }}: Unexpected {{ unexpected }}.</target>
+            </trans-unit>
+            <trans-unit id="STRING_FORMAT_ERROR">
+                <source>[Format Error] line {{ line }} col {{ column }}: {{ message }}.</source>
+                <target>[Format Error] line {{ line }} col {{ column }}: {{ message }}.</target>
+            </trans-unit>
             <trans-unit id="FIELD_REQUIRES_VALUES">
                 <source>A field must have at least one value</source>
                 <target>A field must have at least one value</target>

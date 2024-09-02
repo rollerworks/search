@@ -24,10 +24,10 @@ final class UnsupportedValueTypeException extends InputProcessorException
     {
         parent::__construct(
             '',
-            'Field {{ field }} does not accept {{ type }} values.',
+            'The field {{ field }} does not accept {{ type }} values.',
             [
                 '{{ field }}' => $fieldName,
-                '{{ type }}' => $valueType,
+                '{{ type }}' => str_contains($valueType, '\\') ? mb_substr($valueType, mb_strrpos($valueType, '\\')+1) : $valueType,
             ]
         );
 

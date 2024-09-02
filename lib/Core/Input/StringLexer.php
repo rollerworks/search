@@ -173,13 +173,29 @@ final class StringLexer
     {
         $expected = (array) $expected;
 
+        if ($this->isEnd()) {
+            return StringLexerException::syntaxErrorUnexpectedEnd(
+                $this->cursor,
+                $this->lineno,
+                $expected,
+                'end of string'
+            );
+        }
+
+        if ($this->data[$this->cursor] === "\n") {
+            return StringLexerException::syntaxErrorUnexpectedEnd(
+                $this->cursor,
+                $this->lineno,
+                $expected,
+                'line end'
+            );
+        }
+
         return StringLexerException::syntaxError(
             $this->cursor,
             $this->lineno,
             $expected,
-            $this->isEnd() ? 'end of string' :
-                ($this->data[$this->cursor] === "\n" ? 'line end' :
-                    mb_substr($this->data, $this->cursor, min(10, $this->end)))
+            mb_substr($this->data, $this->cursor, min(10, $this->end))
         );
     }
 

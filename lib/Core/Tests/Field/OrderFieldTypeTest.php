@@ -234,8 +234,8 @@ final class OrderFieldTypeTest extends SearchIntegrationTestCase
                     'Invalid sort direction "NEER" specified, expected one of: "ASC", "DESC", "UP", "DOWN"',
                     0,
                     null,
-                    'This value is not a valid sorting direction. Accepted directions are "{{ directions }}".',
-                    ['{{ directions }}' => 'asc", "desc", "up", "down']
+                    'This value is not a valid sorting direction. Accepted directions are: {{ directions }}.',
+                    ['{{ directions }}' => ['asc', 'desc', 'up', 'down']]
                 )
             )
         ;

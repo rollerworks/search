@@ -97,7 +97,7 @@ class InputProcessorException extends \InvalidArgumentException implements Searc
     {
         $value = (string) $value;
 
-        if (ctype_punct($value)) {
+        if (! preg_match('/[\d]/u', $value)) {
             $value = '"' . $value . '"';
         }
 

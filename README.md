@@ -100,10 +100,11 @@ try {
 } catch (InvalidSearchConditionException $e) {
     // Each error message can be transformed to a localized version
     // using the Symfony Translator contract.
-    //
-    // Read the documentation for more details.
+    
+    $translator = ...; // \Symfony\Contracts\Translation\TranslatorInterface
+    
     foreach ($e->getErrors() as $error) {
-       echo $error.PHP_EOL;
+       echo $error->trans($translator) . PHP_EOL;
     }
 }
 ```
