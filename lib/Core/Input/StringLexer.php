@@ -32,9 +32,10 @@ final class StringLexer
     private $cursor;
     private $char;
     private $lineno;
+    private $col;
     private $end;
-
     private $linenoSnapshot;
+    private $colSnapshot;
     private $cursorSnapshot;
     private $charSnapshot;
 
@@ -48,9 +49,16 @@ final class StringLexer
         $this->data = str_replace(["\r\n", "\r"], "\n", $data);
         $this->valueLexers = $fieldLexers;
         $this->end = mb_strlen($this->data, '8bit');
+
         $this->lineno = 1;
+        $this->col = 0;
         $this->cursor = 0;
         $this->char = 0;
+
+        $this->linenoSnapshot = null;
+        $this->colSnapshot = null;
+        $this->cursorSnapshot = null;
+        $this->charSnapshot = null;
 
         $this->skipEmptyLines();
     }
@@ -61,8 +69,7 @@ final class StringLexer
     public function skipWhitespace(): void
     {
         if (preg_match('/\h+/A', $this->data, $match, 0, $this->cursor)) {
-            $this->char += mb_strlen($match[0]);
-            $this->cursor += mb_strlen($match[0], '8bit');
+            $this->moveCursor($match[0]);
         }
     }
 
@@ -81,6 +88,13 @@ final class StringLexer
         $this->lineno += mb_substr_count($text, "\n");
         $this->char += mb_strlen($text);
         $this->cursor += mb_strlen($text, '8bit');
+
+        if (str_contains($text, "\n")) {
+            // Find the last newline, start counting the characters from there as our new position.
+            $this->col = mb_strlen(mb_substr($text, mb_strrpos($text, "\n")));
+        } else {
+            $this->col += mb_strlen($text);
+        }
     }
 
     public function snapshot($force = false): void
@@ -90,6 +104,7 @@ final class StringLexer
         }
 
         $this->linenoSnapshot = $this->lineno;
+        $this->colSnapshot = $this->col;
         $this->cursorSnapshot = $this->cursor;
         $this->charSnapshot = $this->char;
     }
@@ -101,10 +116,12 @@ final class StringLexer
         }
 
         $this->lineno = $this->linenoSnapshot;
+        $this->col = $this->colSnapshot;
         $this->cursor = $this->cursorSnapshot;
         $this->char = $this->charSnapshot;
 
         $this->linenoSnapshot = null;
+        $this->colSnapshot = null;
         $this->cursorSnapshot = null;
         $this->charSnapshot = null;
     }
@@ -175,7 +192,7 @@ final class StringLexer
 
         if ($this->isEnd()) {
             return StringLexerException::syntaxErrorUnexpectedEnd(
-                $this->cursor,
+                $this->col,
                 $this->lineno,
                 $expected,
                 'end of string'
@@ -184,7 +201,7 @@ final class StringLexer
 
         if ($this->data[$this->cursor] === "\n") {
             return StringLexerException::syntaxErrorUnexpectedEnd(
-                $this->cursor,
+                $this->col,
                 $this->lineno,
                 $expected,
                 'line end'
@@ -192,7 +209,7 @@ final class StringLexer
         }
 
         return StringLexerException::syntaxError(
-            $this->cursor,
+            $this->col,
             $this->lineno,
             $expected,
             mb_substr($this->data, $this->cursor, min(10, $this->end))
@@ -202,7 +219,7 @@ final class StringLexer
     public function createFormatException($string): StringLexerException
     {
         return StringLexerException::formatError(
-            $this->cursor,
+            $this->col,
             $this->lineno,
             $string
         );

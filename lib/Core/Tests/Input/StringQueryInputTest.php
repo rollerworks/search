@@ -256,7 +256,7 @@ final class StringQueryInputTest extends InputProcessorTestCase
             ],
             [
                 "(field1: value, value2, value3, value4, value5; ); \n&",
-                StringLexerException::formatError(52, 2, 'A group logical operator can only be used at the start of the input or before a group opening'),
+                StringLexerException::formatError(1, 2, 'A group logical operator can only be used at the start of the input or before a group opening'),
             ],
             [
                 'field1: value value2)',

@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Rollerworks\Component\Search\Tests\Input;
 
 use PHPUnit\Framework\TestCase;
+use Rollerworks\Component\Search\Exception\StringLexerException;
 use Rollerworks\Component\Search\Input\StringLexer;
 
 /**
@@ -47,5 +48,42 @@ final class StringLexerTest extends TestCase
         $this->lexer->skipWhitespace();
 
         self::assertTrue($this->lexer->isGlimpse("/\n/A"));
+    }
+
+    /** @test */
+    public function it_reports_the_correct_col(): void
+    {
+        $this->lexer->parse("he:");
+        $this->lexer->fieldIdentification();
+
+        $this->expectExceptionObject(StringLexerException::syntaxErrorUnexpectedEnd(3, 1, 'StringValue', 'end of string'));
+
+        $this->lexer->stringValue();
+    }
+
+    /** @test */
+    public function it_reports_the_correct_col_with_multiline(): void
+    {
+        $this->lexer->parse("he:\nid:");
+        $this->lexer->fieldIdentification();
+        $this->lexer->skipEmptyLines();
+
+        $this->lexer->fieldIdentification();
+
+        $this->expectExceptionObject(StringLexerException::syntaxErrorUnexpectedEnd(4, 2, 'StringValue', 'end of string'));
+
+        $this->lexer->stringValue();
+    }
+
+    /** @test */
+    public function it_reports_the_correct_col_when_start_at_newline(): void
+    {
+        $this->lexer->parse("he:\n");
+        $this->lexer->fieldIdentification();
+        $this->lexer->skipEmptyLines();
+
+        $this->expectExceptionObject(StringLexerException::syntaxErrorUnexpectedEnd(1, 2, 'StringValue', 'end of string'));
+
+        $this->lexer->stringValue();
     }
 }
