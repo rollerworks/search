@@ -1,0 +1,1 @@
+{"schema":1,"id":316,"category":"bug","title":"[Core] Fix wrong col pos in StringLexer exception","flags":[],"authors":["sstok"]}
