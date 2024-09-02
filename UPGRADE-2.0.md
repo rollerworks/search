@@ -1,3 +1,9 @@
+UPGRADE FROM 2.0-BETA4 to 2.0-BETA5
+===================================
+
+ * Translation ids have been changed to better fit there context, see translation in
+   "lib/Core/Resources/translations" for new ids.
+
 UPGRADE FROM 2.0-BETA2 to 2.0-BETA3
 ===================================
 
