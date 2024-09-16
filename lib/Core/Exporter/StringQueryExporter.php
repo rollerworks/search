@@ -33,7 +33,7 @@ final class StringQueryExporter extends StringExporter
      */
     public function __construct(?callable $labelResolver = null)
     {
-        $this->labelResolver = $labelResolver ?? static fn (FieldConfig $field) => $field->getOption('label', $field->getName());
+        $this->labelResolver = $labelResolver ?? static fn (FieldConfig $field) => $field->getOption('label') ?? $field->getName();
     }
 
     protected function resolveLabels(FieldSet $fieldSet): array

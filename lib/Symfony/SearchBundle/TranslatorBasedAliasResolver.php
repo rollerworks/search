@@ -14,14 +14,12 @@ declare(strict_types=1);
 namespace Rollerworks\Bundle\SearchBundle;
 
 use Rollerworks\Component\Search\Field\FieldConfig;
+use Symfony\Contracts\Translation\TranslatableInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 final class TranslatorBasedAliasResolver
 {
-    /**
-     * @var TranslatorInterface
-     */
-    private $translator;
+    private TranslatorInterface $translator;
 
     public function __construct(TranslatorInterface $translator)
     {
@@ -30,14 +28,16 @@ final class TranslatorBasedAliasResolver
 
     public function __invoke(FieldConfig $field)
     {
-        if (null !== $label = $field->getOption('label')) {
-            return $label;
+        $label = $field->getOption('label');
+
+        if ($label === null) {
+            return $field->getName();
         }
 
-        return $this->translator->trans(
-            $field->getOption('label_template', $field->getName()),
-            $field->getOption('label_parameters', []),
-            $field->getOption('label_domain', 'search')
-        );
+        if ($label instanceof TranslatableInterface) {
+            return $label->trans($this->translator);
+        }
+
+        return $label;
     }
 }

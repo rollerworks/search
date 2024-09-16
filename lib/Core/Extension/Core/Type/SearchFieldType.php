@@ -46,6 +46,7 @@ final class SearchFieldType extends AbstractFieldType
     {
         $resolver->setDefaults(
             [
+                'label' => null,
                 'translation_domain' => 'messages',
                 'invalid_message' => 'This value is not valid.',
                 'invalid_message_parameters' => [],
@@ -56,6 +57,7 @@ final class SearchFieldType extends AbstractFieldType
             ]
         );
 
+        $resolver->setAllowedTypes('label', ['null', 'string']);
         $resolver->setAllowedTypes('invalid_message', ['string']);
         $resolver->setAllowedTypes('invalid_message_parameters', ['array']);
         $resolver->setAllowedTypes(StringQueryInput::FIELD_LEXER_OPTION_NAME, ['null', \Closure::class]);
