@@ -72,7 +72,7 @@ class ConversionHints
             trigger_deprecation(
                 'rollerworks/search-doctrine-dbal',
                 'v2.0.0-BETA2',
-                sprintf(
+                \sprintf(
                     'passing a %s object is deprecated and will no longer be accepted in v3.0.0, pass the type actual name "%s" instead.',
                     Type::class,
                     $type

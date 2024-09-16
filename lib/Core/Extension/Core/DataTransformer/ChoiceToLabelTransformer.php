@@ -42,7 +42,7 @@ final class ChoiceToLabelTransformer implements DataTransformer
         $value = current($value);
 
         if (! \array_key_exists($value, $this->choiceListView->labelsByValue)) {
-            throw new TransformationFailedException(sprintf('The choice "%s" does not exist or is not unique', $choice));
+            throw new TransformationFailedException(\sprintf('The choice "%s" does not exist or is not unique', $choice));
         }
 
         return $this->choiceListView->labelsByValue[$value];
@@ -63,7 +63,7 @@ final class ChoiceToLabelTransformer implements DataTransformer
         }
 
         if (! \array_key_exists($value, $this->choiceListView->choicesByLabel)) {
-            throw new TransformationFailedException(sprintf('The choice "%s" does not exist or is not unique', $value));
+            throw new TransformationFailedException(\sprintf('The choice "%s" does not exist or is not unique', $value));
         }
 
         return $this->choiceListView->choicesByLabel[$value]->data;

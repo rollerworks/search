@@ -47,7 +47,7 @@ final class SchemaRecord
     {
         if (\count($values) != \count($this->columns)) {
             throw new \InvalidArgumentException(
-                sprintf(
+                \sprintf(
                     'Values count mismatch, expected %d got %d on table "%s" with record: %s',
                     \count($this->columns),
                     \count($values),

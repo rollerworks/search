@@ -17,8 +17,6 @@ use Rollerworks\Component\Search\ConditionErrorMessage;
 use Rollerworks\Component\Search\DataTransformer;
 use Rollerworks\Component\Search\Exception\GroupsNestingException;
 use Rollerworks\Component\Search\Exception\GroupsOverflowException;
-use Rollerworks\Component\Search\Exception\InvalidSearchConditionException;
-use Rollerworks\Component\Search\Exception\OrderStructureException;
 use Rollerworks\Component\Search\Exception\TransformationFailedException;
 use Rollerworks\Component\Search\Exception\UnknownFieldException;
 use Rollerworks\Component\Search\Exception\UnsupportedValueTypeException;
@@ -606,7 +604,7 @@ abstract class InputProcessorTestCase extends SearchIntegrationTestCase
      */
     public function it_errors_with_invalid_message_when_transformation_fails($input, array $errors): void
     {
-        $alwaysFailTransformer = new class() implements DataTransformer {
+        $alwaysFailTransformer = new class implements DataTransformer {
             public function transform($value): void
             {
                 // No-op

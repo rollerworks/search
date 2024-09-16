@@ -40,13 +40,13 @@ abstract class FunctionalElasticsearchTestCase extends ElasticsearchTestCase
 
             foreach ($mappings as $name => $properties) {
                 if (\array_key_exists($name, $documents) === false) {
-                    throw new \RuntimeException(sprintf('No documents for mapping "%1$s" defined', $name));
+                    throw new \RuntimeException(\sprintf('No documents for mapping "%1$s" defined', $name));
                 }
                 $data = $documents[$name];
                 $this->createDocuments($name, $properties, $data);
             }
         } catch (ResponseException $exception) {
-            self::fail(sprintf(
+            self::fail(\sprintf(
                 "%s\nWith path: %s\nWith query: ---------------------\n%s\n---------------------------------\n",
                 $exception->getMessage(),
                 $exception->getRequest()->getPath(),
@@ -190,7 +190,7 @@ abstract class FunctionalElasticsearchTestCase extends ElasticsearchTestCase
                 $index->refresh();
             }
         } catch (ResponseException $exception) {
-            self::fail(sprintf(
+            self::fail(\sprintf(
                 "%s\nWith path: %s\nWith query: ---------------------\n%s\n---------------------------------\n",
                 $exception->getMessage(),
                 $exception->getRequest()->getPath(),
@@ -307,7 +307,7 @@ abstract class FunctionalElasticsearchTestCase extends ElasticsearchTestCase
                 $documents
             );
         } catch (ResponseException $exception) {
-            self::fail(sprintf(
+            self::fail(\sprintf(
                 "%s\nWith path: %s\nWith query: ---------------------\n%s\n---------------------------------\n",
                 $exception->getMessage(),
                 $search->getPath(),
@@ -318,7 +318,7 @@ abstract class FunctionalElasticsearchTestCase extends ElasticsearchTestCase
         self::assertSame(
             array_map('strval', $expectedIds),
             $foundIds,
-            sprintf(
+            \sprintf(
                 "Found these records instead: \n%s\n"
                 . "With query: ---------------------\n%s\n---------------------------------\n",
                 var_export($documents, true),

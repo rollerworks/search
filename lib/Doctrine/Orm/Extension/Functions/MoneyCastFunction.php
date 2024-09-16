@@ -43,7 +43,7 @@ final class MoneyCastFunction extends FunctionNode
             );
         }
 
-        return sprintf('CAST(%s AS %s)', $expression, $castType);
+        return \sprintf('CAST(%s AS %s)', $expression, $castType);
     }
 
     public function parse(Parser $parser): void

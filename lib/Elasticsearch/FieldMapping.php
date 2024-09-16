@@ -149,13 +149,13 @@ final class FieldMapping implements \Serializable
             // sorting by has_child query is special
             // https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-has-child-query.html#_sorting
             $property = $this->indexName . ($this->typeName ? '/' . $this->typeName : '') . '#' . $this->join['type'] . '>';
-            $queryScript = sprintf('doc["%s"].value', $this->propertyName);
+            $queryScript = \sprintf('doc["%s"].value', $this->propertyName);
 
             if ($this->childOrderConversion !== null) {
                 $queryScript = $this->childOrderConversion->convert($property, $queryScript);
             }
 
-            $queryScript = sprintf('%1$s * %2$s', QueryConditionGenerator::SORT_SCORE, $queryScript);
+            $queryScript = \sprintf('%1$s * %2$s', QueryConditionGenerator::SORT_SCORE, $queryScript);
 
             $scoreQuery = new self('_', $property, $fieldConfig, [], ['score_mode' => 'max']);
             $scoreQuery->propertyQuery = [

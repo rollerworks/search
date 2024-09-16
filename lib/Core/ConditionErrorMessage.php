@@ -138,11 +138,11 @@ final class ConditionErrorMessage implements TranslatableInterface
         $parameters = $this->messageParameters;
 
         // Note that when the input is less than 3 (0 index) characters we don't translate.
-        $nestedTranslator = static fn(string $v): string => isset($v[2]) ? $translator->trans($v, [], 'RollerworksSearch', $locale) : $v;
+        $nestedTranslator = static fn (string $v): string => isset($v[2]) ? $translator->trans($v, [], 'RollerworksSearch', $locale) : $v;
 
         foreach ($this->translatedParameters as $name) {
             $value = $parameters[$name];
-            $parameters[$name] = is_array($value) ? array_map($nestedTranslator, $value) : $nestedTranslator($value);
+            $parameters[$name] = \is_array($value) ? array_map($nestedTranslator, $value) : $nestedTranslator($value);
         }
 
         // Because of the formatting we need to pre-translate the parameters.

@@ -53,7 +53,7 @@ final class StringLexerTest extends TestCase
     /** @test */
     public function it_reports_the_correct_col(): void
     {
-        $this->lexer->parse("he:");
+        $this->lexer->parse('he:');
         $this->lexer->fieldIdentification();
 
         $this->expectExceptionObject(StringLexerException::syntaxErrorUnexpectedEnd(3, 1, 'StringValue', 'end of string'));

@@ -37,11 +37,11 @@ final class AgeDateConversion implements ColumnConversion, ValueConversion
         $convertMap['mock'] = 'search_conversion_age(%1$s)';
 
         if (isset($convertMap[$platform])) {
-            return sprintf($convertMap[$platform], $column);
+            return \sprintf($convertMap[$platform], $column);
         }
 
         throw new \RuntimeException(
-            sprintf('Unsupported platform "%s" for AgeDateConversion.', $platform)
+            \sprintf('Unsupported platform "%s" for AgeDateConversion.', $platform)
         );
     }
 

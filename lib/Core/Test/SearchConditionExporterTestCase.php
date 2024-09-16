@@ -36,7 +36,7 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
  *
- * @internal This class is not covered by the BC promise.
+ * @internal this class is not covered by the BC promise
  */
 abstract class SearchConditionExporterTestCase extends SearchIntegrationTestCase
 {

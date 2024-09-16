@@ -47,7 +47,7 @@ abstract class BaseDateTimeType extends AbstractFieldType
             && (mb_strpos($format, 'y') === false || mb_strpos($format, 'M') === false || mb_strpos($format, 'd') === false)
         ) {
             throw new InvalidConfigurationException(
-                sprintf(
+                \sprintf(
                     'The "%s" option should contain the letters "y", "M" and "d". Its current value is "%s".',
                     $name,
                     $format

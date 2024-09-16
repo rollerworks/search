@@ -68,7 +68,7 @@ final class InputProcessorLoader
     {
         if (! isset($this->serviceIds[$name])) {
             throw new InvalidArgumentException(
-                sprintf('Enable to load input-processor, "%s" is not registered as processor.', $name)
+                \sprintf('Enable to load input-processor, "%s" is not registered as processor.', $name)
             );
         }
 

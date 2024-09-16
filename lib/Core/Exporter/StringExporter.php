@@ -205,7 +205,7 @@ abstract class StringExporter extends AbstractExporter
 
             default:
                 throw new \RuntimeException(
-                    sprintf(
+                    \sprintf(
                         'Unsupported pattern-match type "%s" found. Please report this bug.',
                         $patternMatch->getType()
                     )

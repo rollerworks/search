@@ -68,7 +68,7 @@ final class ConditionExporterLoader
     {
         if (! isset($this->serviceIds[$format])) {
             throw new InvalidArgumentException(
-                sprintf('Enable to load exporter, format "%s" has no registered exporter.', $format)
+                \sprintf('Enable to load exporter, format "%s" has no registered exporter.', $format)
             );
         }
 

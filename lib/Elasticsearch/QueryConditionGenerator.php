@@ -561,7 +561,7 @@ use Rollerworks\Component\Search\Value\ValuesGroup;
                 break;
 
             default:
-                $message = sprintf('Not supported PatternMatch type "%s"', $patternMatch->getType());
+                $message = \sprintf('Not supported PatternMatch type "%s"', $patternMatch->getType());
 
                 throw new BadMethodCallException($message);
         }

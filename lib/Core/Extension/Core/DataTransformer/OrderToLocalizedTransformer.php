@@ -52,7 +52,7 @@ final class OrderToLocalizedTransformer implements DataTransformer
         }
 
         if (! isset($this->viewLabel[$value])) {
-            throw new TransformationFailedException(sprintf('No localized label configured for "%s".', $value));
+            throw new TransformationFailedException(\sprintf('No localized label configured for "%s".', $value));
         }
 
         return $this->viewLabel[$value];
@@ -82,7 +82,7 @@ final class OrderToLocalizedTransformer implements DataTransformer
 
         if (! isset($this->alias[$value])) {
             throw new TransformationFailedException(
-                sprintf(
+                \sprintf(
                     'Invalid sort direction "%1$s" specified, expected one of: "%2$s"',
                     $value,
                     implode('", "', array_keys($this->alias))

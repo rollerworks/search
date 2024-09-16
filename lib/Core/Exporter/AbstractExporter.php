@@ -45,7 +45,7 @@ abstract class AbstractExporter implements ConditionExporter
         if ($value === null || ! $transformer) {
             if ($value !== null && ! \is_scalar($value)) {
                 throw new \RuntimeException(
-                    sprintf(
+                    \sprintf(
                         'Model value of type %s is not a scalar value or null and not cannot be ' .
                         'converted to a string. You must set a viewTransformer for field "%s" with type "%s".',
                         \gettype($value),
@@ -73,7 +73,7 @@ abstract class AbstractExporter implements ConditionExporter
         if ($value === null || ! $transformer) {
             if ($value !== null && ! \is_scalar($value)) {
                 throw new \RuntimeException(
-                    sprintf(
+                    \sprintf(
                         'Model value of type %s is not a scalar value or null and not cannot be ' .
                         'converted to a string. You must set a normTransformer for field "%s" with type "%s".',
                         \gettype($value),

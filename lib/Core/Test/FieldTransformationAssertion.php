@@ -80,7 +80,7 @@ final class FieldTransformationAssertion
         return $this;
     }
 
-    public function failsToTransforms(TransformationFailedException $exceptionForView = null, TransformationFailedException $exceptionForModel = null): void
+    public function failsToTransforms(?TransformationFailedException $exceptionForView = null, ?TransformationFailedException $exceptionForModel = null): void
     {
         if ($this->inputView === null) {
             throw new \LogicException('withInput() must be called first.');
@@ -93,7 +93,7 @@ final class FieldTransformationAssertion
         try {
             $this->viewToModel($this->inputView);
 
-            Assert::fail(sprintf('Expected view-input "%s" to be invalid', $this->inputView));
+            Assert::fail(\sprintf('Expected view-input "%s" to be invalid', $this->inputView));
         } catch (TransformationFailedException $e) {
             if ($exceptionForView) {
                 self::assertTransformationFailedExceptionEquals($exceptionForView, $e);
@@ -105,7 +105,7 @@ final class FieldTransformationAssertion
         try {
             $this->normToModel($this->inputNorm);
 
-            Assert::fail(sprintf('Expected norm-input "%s" to be invalid', $this->inputNorm));
+            Assert::fail(\sprintf('Expected norm-input "%s" to be invalid', $this->inputNorm));
         } catch (TransformationFailedException $e) {
             if ($exceptionForModel) {
                 self::assertTransformationFailedExceptionEquals($exceptionForModel, $e);

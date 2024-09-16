@@ -279,7 +279,7 @@ abstract class StringInput extends AbstractInput
                 $fieldName = $this->config->getDefaultField(true);
             }
 
-            if (OrderField::isOrder($fieldName) && $inGroup ) {
+            if (OrderField::isOrder($fieldName) && $inGroup) {
                 throw OrderStructureException::noGrouping();
             }
 

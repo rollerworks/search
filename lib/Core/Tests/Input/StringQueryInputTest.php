@@ -63,7 +63,7 @@ final class StringQueryInputTest extends InputProcessorTestCase
         $field->setValueTypeSupport(Compare::class, true);
         $field->setValueTypeSupport(Range::class, true);
         $field->setValueTypeSupport(PatternMatch::class, false);
-        $field->setValueComparator(new class() implements ValueComparator {
+        $field->setValueComparator(new class implements ValueComparator {
             public function isHigher($higher, $lower, array $options): bool
             {
                 return false;

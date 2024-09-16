@@ -41,7 +41,7 @@ final class PatternMatch implements ValueHolder
         $typeConst = __CLASS__ . '::PATTERN_' . mb_strtoupper($patternType);
 
         if (! \defined($typeConst)) {
-            throw new InvalidArgumentException(sprintf('Unknown PatternMatch type "%s".', $patternType));
+            throw new InvalidArgumentException(\sprintf('Unknown PatternMatch type "%s".', $patternType));
         }
 
         $this->value = $value;

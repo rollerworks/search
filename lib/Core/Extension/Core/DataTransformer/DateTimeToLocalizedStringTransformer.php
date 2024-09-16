@@ -136,7 +136,7 @@ final class DateTimeToLocalizedStringTransformer extends BaseDateTimeTransformer
             }
 
             // read timestamp into DateTime object - the formatter delivers a timestamp
-            $dateTime = new \DateTimeImmutable(sprintf('@%s', $timestamp));
+            $dateTime = new \DateTimeImmutable(\sprintf('@%s', $timestamp));
             // set timezone separately, as it would be ignored if set via the constructor,
             // see http://php.net/manual/en/datetime.construct.php
             $dateTime = $dateTime->setTimezone(new \DateTimeZone($this->outputTimezone));

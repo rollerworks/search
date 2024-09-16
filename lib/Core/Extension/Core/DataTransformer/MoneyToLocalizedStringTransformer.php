@@ -173,12 +173,12 @@ final class MoneyToLocalizedStringTransformer extends NumberToLocalizedStringTra
                 self::$patterns[$locale][$currency] = ['%2$s' . $matches[3] . '%1$s', $matches[4]];
             } else {
                 throw new \InvalidArgumentException(
-                    sprintf('Locale "%s" with currency "%s" does not provide a currency position.', $locale, $currency)
+                    \sprintf('Locale "%s" with currency "%s" does not provide a currency position.', $locale, $currency)
                 );
             }
         }
 
-        return sprintf(self::$patterns[$locale][$currency][0], self::$patterns[$locale][$currency][1], $value);
+        return \sprintf(self::$patterns[$locale][$currency][0], self::$patterns[$locale][$currency][1], $value);
     }
 
     /**

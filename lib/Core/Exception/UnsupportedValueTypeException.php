@@ -27,7 +27,7 @@ final class UnsupportedValueTypeException extends InputProcessorException
             'The field {{ field }} does not accept {{ type }} values.',
             [
                 '{{ field }}' => $fieldName,
-                '{{ type }}' => str_contains($valueType, '\\') ? mb_substr($valueType, mb_strrpos($valueType, '\\')+1) : $valueType,
+                '{{ type }}' => str_contains($valueType, '\\') ? mb_substr($valueType, mb_strrpos($valueType, '\\') + 1) : $valueType,
             ]
         );
 

@@ -75,7 +75,7 @@ final class QueryGenerator
             }
 
             if (\count($fields[$fieldName]) > 1) {
-                throw new BadMethodCallException(sprintf('Field "%s" is registered as multiple mapping and cannot be used for sorting.', $fieldName));
+                throw new BadMethodCallException(\sprintf('Field "%s" is registered as multiple mapping and cannot be used for sorting.', $fieldName));
             }
 
             $qb->addOrderBy($fields[$fieldName][null]->column, mb_strtoupper($direction));
@@ -159,7 +159,7 @@ final class QueryGenerator
             $hints->originalValue = $value;
             $column = $this->queryPlatform->getFieldColumn($mappingConfig, $mappingConfig->column, $hints);
 
-            $query[] = sprintf(
+            $query[] = \sprintf(
                 $patterns[(int) $exclude],
                 $column,
                 $this->queryPlatform->getValueAsSql($value, $mappingConfig, $hints)
@@ -182,7 +182,7 @@ final class QueryGenerator
             $hints->context = ConversionHints::CONTEXT_RANGE_UPPER_BOUND;
             $upperBound = $this->queryPlatform->getValueAsSql($range->getUpper(), $mappingConfig, $hints);
 
-            $query[] = sprintf(
+            $query[] = \sprintf(
                 $this->getRangePattern($range, $exclude),
                 $column,
                 $lowerBound,
@@ -232,7 +232,7 @@ final class QueryGenerator
             $hints->originalValue = $comparison;
             $column = $this->queryPlatform->getFieldColumn($mappingConfig, $mappingConfig->column, $hints);
 
-            $valuesQuery[] = sprintf(
+            $valuesQuery[] = \sprintf(
                 '%s %s %s',
                 $column,
                 $comparison->getOperator(),

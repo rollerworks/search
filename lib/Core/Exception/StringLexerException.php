@@ -100,7 +100,6 @@ final class StringLexerException extends InputProcessorException
         return $exp;
     }
 
-
     public function toErrorMessageObj(): ConditionErrorMessage
     {
         $message = parent::toErrorMessageObj();

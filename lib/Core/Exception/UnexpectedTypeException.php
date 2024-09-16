@@ -28,7 +28,7 @@ class UnexpectedTypeException extends \InvalidArgumentException implements Searc
         }
 
         parent::__construct(
-            sprintf(
+            \sprintf(
                 'Expected argument of type "%s", "%s" given',
                 $expectedType,
                 \is_object($value) ? $value::class : \gettype($value)

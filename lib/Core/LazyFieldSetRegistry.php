@@ -84,11 +84,11 @@ final class LazyFieldSetRegistry implements FieldSetRegistry
                 // Support fully-qualified class names.
                 $configurator = new $name();
             } else {
-                throw new InvalidArgumentException(sprintf('Could not load FieldSet configurator "%s".', $name));
+                throw new InvalidArgumentException(\sprintf('Could not load FieldSet configurator "%s".', $name));
             }
 
             if (! $configurator instanceof FieldSetConfigurator) {
-                throw new InvalidArgumentException(sprintf('Configurator class "%s" is expected to be an instance of ' . FieldSetConfigurator::class, $name));
+                throw new InvalidArgumentException(\sprintf('Configurator class "%s" is expected to be an instance of ' . FieldSetConfigurator::class, $name));
             }
 
             $this->configurators[$name] = $configurator;

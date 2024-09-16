@@ -105,7 +105,7 @@ final class LazyExtensionTest extends TestCase
 
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(
-            sprintf(
+            \sprintf(
                 'The extended type specified for the service "%s" does not match the actual extended type. Expected "%s", given "%s".',
                 'extension_1',
                 IntegerType::class,

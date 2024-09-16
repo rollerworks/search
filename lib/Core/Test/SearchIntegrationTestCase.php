@@ -219,7 +219,7 @@ abstract class SearchIntegrationTestCase extends TestCase
     }
 
     /**
-     * @deprecated Use a proper catch type instead.
+     * @deprecated use a proper catch type instead
      */
     protected static function detectSystemException(\Exception $exception): void
     {

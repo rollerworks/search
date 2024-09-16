@@ -217,7 +217,7 @@ abstract class FunctionalDbalTestCase extends DbalTestCase
                 $type = Type::lookupName($type);
             }
 
-            $paramsString .= sprintf("%s = '%s'\n", $name, Type::getType($type)->convertToDatabaseValue($value, $platform));
+            $paramsString .= \sprintf("%s = '%s'\n", $name, Type::getType($type)->convertToDatabaseValue($value, $platform));
         }
 
         $rows = $result->fetchAllAssociative();
@@ -232,7 +232,7 @@ abstract class FunctionalDbalTestCase extends DbalTestCase
         self::assertEquals(
             $ids,
             array_merge([], array_unique($idRows)),
-            sprintf("Found these records instead: \n%s\nWith Query: %s\nAnd params: %s", print_r($rows, true), $qb->getSQL(), $paramsString)
+            \sprintf("Found these records instead: \n%s\nWith Query: %s\nAnd params: %s", print_r($rows, true), $qb->getSQL(), $paramsString)
         );
     }
 

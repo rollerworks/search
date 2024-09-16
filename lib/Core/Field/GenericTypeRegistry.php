@@ -68,7 +68,7 @@ final class GenericTypeRegistry implements TypeRegistry
             if (! $type) {
                 // Support fully-qualified class names.
                 if (! class_exists($name) || ! \in_array(FieldType::class, class_implements($name), true)) {
-                    throw new InvalidArgumentException(sprintf('Could not load type "%s"', $name));
+                    throw new InvalidArgumentException(\sprintf('Could not load type "%s"', $name));
                 }
 
                 $type = new $name();

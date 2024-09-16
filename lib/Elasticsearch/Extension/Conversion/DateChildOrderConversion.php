@@ -19,6 +19,6 @@ final class DateChildOrderConversion implements ChildOrderConversion
 {
     public function convert(string $property, string $script): string
     {
-        return sprintf('%s.millis', $script);
+        return \sprintf('%s.millis', $script);
     }
 }

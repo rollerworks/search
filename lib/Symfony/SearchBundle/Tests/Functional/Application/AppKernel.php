@@ -37,7 +37,7 @@ class AppKernel extends Kernel
         }
 
         if (! file_exists($config)) {
-            throw new \RuntimeException(sprintf('The config file "%s" does not exist.', $config));
+            throw new \RuntimeException(\sprintf('The config file "%s" does not exist.', $config));
         }
 
         $this->config = $config;
@@ -56,7 +56,7 @@ class AppKernel extends Kernel
         $class = str_replace('\\', '_', $class) . ucfirst($this->environment) . ($this->debug ? 'Debug' : '') . 'Container';
 
         if (! preg_match('/^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$/', $class)) {
-            throw new \InvalidArgumentException(sprintf('The environment "%s" contains invalid characters, it can only contain characters allowed in PHP class names.', $this->environment));
+            throw new \InvalidArgumentException(\sprintf('The environment "%s" contains invalid characters, it can only contain characters allowed in PHP class names.', $this->environment));
         }
 
         return $class;

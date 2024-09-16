@@ -208,12 +208,14 @@ final class OrderFieldTypeTest extends SearchIntegrationTestCase
         FieldTransformationAssertion::assertThat($field)
             ->withInput('NEER')
             ->successfullyTransformsTo('DESC')
-            ->andReverseTransformsTo('down', 'DESC');
+            ->andReverseTransformsTo('down', 'DESC')
+        ;
 
         FieldTransformationAssertion::assertThat($field)
             ->withInput('desc')
             ->successfullyTransformsTo('DESC')
-            ->andReverseTransformsTo('down', 'DESC');
+            ->andReverseTransformsTo('down', 'DESC')
+        ;
     }
 
     /** @test */

@@ -27,7 +27,7 @@ final class Compare implements RequiresComparatorValueHolder
     {
         if (! \in_array($operator, self::OPERATORS, true)) {
             throw new \InvalidArgumentException(
-                sprintf('Unknown operator "%s".', $operator)
+                \sprintf('Unknown operator "%s".', $operator)
             );
         }
 

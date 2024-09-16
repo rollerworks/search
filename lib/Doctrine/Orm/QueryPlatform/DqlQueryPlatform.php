@@ -41,7 +41,7 @@ final class DqlQueryPlatform extends AbstractQueryPlatform
         ];
 
         $value = addcslashes($patternMatch->getValue(), $this->getLikeEscapeChars());
-        $value = sprintf($patternMap[$patternMatch->getType()], $this->createParamReferenceFor($value, 'text'));
+        $value = \sprintf($patternMap[$patternMatch->getType()], $this->createParamReferenceFor($value, 'text'));
 
         if ($patternMatch->isCaseInsensitive()) {
             $column = "LOWER({$column})";

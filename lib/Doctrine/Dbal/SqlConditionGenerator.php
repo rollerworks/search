@@ -107,7 +107,7 @@ final class SqlConditionGenerator implements ConditionGenerator
     public static function getQueryPlatform(Connection $connection): AbstractQueryPlatform
     {
         $dbPlatform = ucfirst($connection->getDatabasePlatform()->getName());
-        $platformClass = 'Rollerworks\\Component\\Search\\Doctrine\\Dbal\\QueryPlatform\\' . $dbPlatform . 'QueryPlatform';
+        $platformClass = 'Rollerworks\Component\Search\Doctrine\Dbal\QueryPlatform\\' . $dbPlatform . 'QueryPlatform';
 
         if (! class_exists($platformClass)) {
             $platformClass = SqlQueryPlatform::class;

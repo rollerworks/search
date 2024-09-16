@@ -21,7 +21,7 @@ final class ArrayKeysValidator
     {
         if ([] !== $missing = array_diff_key(array_flip($required), $input)) {
             throw new RuntimeException(
-                sprintf(
+                \sprintf(
                     'Config "%s" is missing "%s", got "%s".',
                     $path,
                     implode('", "', array_flip($missing)),
@@ -35,7 +35,7 @@ final class ArrayKeysValidator
     {
         if (array_diff(array_keys($input), $accepted) !== []) {
             throw new RuntimeException(
-                sprintf(
+                \sprintf(
                     'Config "%s" accepts only "%s", got "%s".',
                     $path,
                     implode('", "', $accepted),

@@ -205,7 +205,7 @@ abstract class OrmTestCase extends DbalTestCase
         $platform = $this->conn->getDatabasePlatform();
 
         foreach ($conditionGenerator->getParameters() as $name => [$value, $type]) {
-            $paramsString .= sprintf("%s = '%s'\n", $name, $type === null ? (\is_scalar($value) ? (string) $value : get_debug_type($value)) : Type::getType($type)->convertToDatabaseValue($value, $platform));
+            $paramsString .= \sprintf("%s = '%s'\n", $name, $type === null ? (\is_scalar($value) ? (string) $value : get_debug_type($value)) : Type::getType($type)->convertToDatabaseValue($value, $platform));
         }
 
         $query = $qb->getQuery();
@@ -218,7 +218,7 @@ abstract class OrmTestCase extends DbalTestCase
         self::assertSame(
             $ids,
             array_merge([], array_unique($idRows)),
-            sprintf(
+            \sprintf(
                 "With condition: `%s`\nFound these records instead: \n%s\nWith WHERE-clause: %s\nSQL: %s\nAnd params: %s",
                 $input,
                 print_r($rows, true),

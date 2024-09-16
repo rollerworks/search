@@ -102,7 +102,7 @@ abstract class AbstractQueryPlatform
         ];
 
         $value = addcslashes($patternMatch->getValue(), $this->getLikeEscapeChars());
-        $value = sprintf($this->connection->getDatabasePlatform()->getConcatExpression(...$patternMap[$patternMatch->getType()]), $this->createParamReferenceFor($value, 'text'));
+        $value = \sprintf($this->connection->getDatabasePlatform()->getConcatExpression(...$patternMap[$patternMatch->getType()]), $this->createParamReferenceFor($value, 'text'));
 
         if ($patternMatch->isCaseInsensitive()) {
             $column = "LOWER({$column})";

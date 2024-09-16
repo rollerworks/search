@@ -81,7 +81,7 @@ final class OrderTransformer implements DataTransformer
 
         if (! isset($this->alias[$value])) {
             throw new TransformationFailedException(
-                sprintf(
+                \sprintf(
                     'Invalid sort direction "%1$s" specified, expected one of: "%2$s"',
                     $value,
                     implode('", "', array_keys($this->alias))

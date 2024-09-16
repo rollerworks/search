@@ -46,7 +46,7 @@ final class MultiTypeDataTransformer implements DataTransformer
         $type = get_debug_type($value);
 
         if (! isset($this->transformers[$type])) {
-            throw new TransformationFailedException(sprintf('Unsupported type "%s".', $type));
+            throw new TransformationFailedException(\sprintf('Unsupported type "%s".', $type));
         }
 
         return $this->transformers[$type]->transform($value);

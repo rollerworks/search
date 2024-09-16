@@ -102,7 +102,7 @@ final class BirthdayTransformer implements DataTransformer
 
         if ($value > $currentDate) {
             throw new TransformationFailedException(
-                sprintf(
+                \sprintf(
                     'Date "%s" is higher then current date "%s". Are you a time traveler?',
                     $value->format('Y-m-d'),
                     $currentDate->format('Y-m-d')

@@ -174,12 +174,12 @@ class SearchExtension implements QueryCollectionExtensionInterface
         $last = 0;
 
         foreach ($ids as $idx => $id) {
-            $alias = sprintf('id%1$s', $idx);
+            $alias = \sprintf('id%1$s', $idx);
             $queryBuilder->setParameter($alias, $id);
-            $clause[] = sprintf('WHEN %1$s = :%2$s THEN %3$d', $identifier, $alias, $idx);
+            $clause[] = \sprintf('WHEN %1$s = :%2$s THEN %3$d', $identifier, $alias, $idx);
             ++$last;
         }
-        $clause[] = sprintf('ELSE %1$d', $last);
+        $clause[] = \sprintf('ELSE %1$d', $last);
         $clause[] = 'END';
         $clause[] = 'AS HIDDEN order_by';
 

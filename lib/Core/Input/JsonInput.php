@@ -258,7 +258,7 @@ final class JsonInput extends AbstractInput
     {
         if (! \is_array($array)) {
             throw new InputProcessorException(implode('', $this->structureBuilder->getCurrentPath()) . $path,
-                sprintf('Expected value-structure to be an array, got %s instead.', \gettype($array))
+                \sprintf('Expected value-structure to be an array, got %s instead.', \gettype($array))
             );
         }
 
@@ -272,7 +272,7 @@ final class JsonInput extends AbstractInput
 
         if ($missingKeys) {
             throw new InputProcessorException(implode('', $this->structureBuilder->getCurrentPath()) . $path,
-                sprintf(
+                \sprintf(
                     'Expected value-structure to contain the following keys: %s. ' .
                     'But the following keys are missing: %s.',
                     implode(', ', $requiredKeys),

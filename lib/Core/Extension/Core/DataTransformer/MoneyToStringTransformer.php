@@ -94,7 +94,7 @@ final class MoneyToStringTransformer implements DataTransformer
 
             if (mb_strlen($currency) !== 3) {
                 throw new TransformationFailedException(
-                    sprintf('Value does not contain a valid 3 character currency code, got "%s".', $currency)
+                    \sprintf('Value does not contain a valid 3 character currency code, got "%s".', $currency)
                 );
             }
 

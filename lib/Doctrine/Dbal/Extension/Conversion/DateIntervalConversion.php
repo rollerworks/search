@@ -41,7 +41,7 @@ final class DateIntervalConversion implements ValueConversion
             $intervalString = self::convertForMysql($value);
         } else {
             throw new \RuntimeException(
-                sprintf('Unsupported platform "%s" for DateIntervalConversion.', $platform)
+                \sprintf('Unsupported platform "%s" for DateIntervalConversion.', $platform)
             );
         }
 

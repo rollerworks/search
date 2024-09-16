@@ -113,14 +113,14 @@ final class SearchConditionBuilder
         }
 
         if (! OrderField::isOrder($name)) {
-            throw new InvalidArgumentException(sprintf('Field "%s" is not a valid ordering field. Expected either "@%1$s".', $name));
+            throw new InvalidArgumentException(\sprintf('Field "%s" is not a valid ordering field. Expected either "@%1$s".', $name));
         }
 
         $this->fieldSet->get($name);
         $direction = mb_strtoupper($direction);
 
         if ($direction !== 'ASC' && $direction !== 'DESC') {
-            throw new InvalidArgumentException(sprintf('Invalid direction provided "%s" for field "%s", must be either "ASC" or "DESC" (case insensitive).', $direction, $name));
+            throw new InvalidArgumentException(\sprintf('Invalid direction provided "%s" for field "%s", must be either "ASC" or "DESC" (case insensitive).', $direction, $name));
         }
 
         if ($this->order === null) {
@@ -192,7 +192,7 @@ final class SearchConditionBuilder
     public function field(string $name): ValuesBagBuilder
     {
         if (OrderField::isOrder($name)) {
-            throw new InvalidArgumentException(sprintf('Unable to configure ordering of "%s" with field(), use the order() method instead.', $name));
+            throw new InvalidArgumentException(\sprintf('Unable to configure ordering of "%s" with field(), use the order() method instead.', $name));
         }
 
         if ($this->valuesGroup->hasField($name)) {
@@ -227,7 +227,7 @@ final class SearchConditionBuilder
     public function overwriteField(string $name): ValuesBagBuilder
     {
         if (OrderField::isOrder($name)) {
-            throw new InvalidArgumentException(sprintf('Unable to configure ordering of "%s" with overwriteField(), use the order() method instead. Call clearOrder() if you need to remove previously set orderings.', $name));
+            throw new InvalidArgumentException(\sprintf('Unable to configure ordering of "%s" with overwriteField(), use the order() method instead. Call clearOrder() if you need to remove previously set orderings.', $name));
         }
 
         $this->fieldSet->get($name);
