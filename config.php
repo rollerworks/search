@@ -19,4 +19,7 @@ return [
             ],
         ],
     ],
+    'pull_request' => [
+        'split' => 'changed-only',
+    ],
 ];
