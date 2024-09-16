@@ -74,6 +74,37 @@ final class InputValidatorTest extends SearchIntegrationTestCase
     }
 
     /** @test */
+    public function it_works_without_constraints(): void
+    {
+        $fieldSet = $this->getFactory()->createFieldSetBuilder()
+            ->add('id', IntegerType::class)
+            ->add('date', DateType::class)
+            ->add('type', TextType::class)
+            ->getFieldSet()
+        ;
+
+        $errorList = new ErrorList();
+        $this->validator->initializeContext($fieldSet->get('id'), $errorList);
+        $this->validator->validate(10, 'simple', 10, 'simpleValues[0]');
+        $this->validator->validate(3, 'simple', 3, 'simpleValues[1]');
+        $this->validator->validate(4, 'simple', 4, 'simpleValues[2]');
+
+        $errorList2 = new ErrorList();
+        $this->validator->initializeContext($fieldSet->get('date'), $errorList2);
+        $this->validator->validate(new \DateTimeImmutable('2014-12-13 14:35:05 UTC'), 'simple', '2014-12-13 14:35:05', 'simpleValues[0]');
+        $this->validator->validate(new \DateTimeImmutable('2014-12-21 14:35:05 UTC'), 'simple', '2014-12-17 14:35:05', 'simpleValues[1]');
+        $this->validator->validate(new \DateTimeImmutable('2014-12-10 14:35:05 UTC'), 'simple', '2014-12-10 14:35:05', 'simpleValues[2]');
+
+        $errorList3 = new ErrorList();
+        $this->validator->initializeContext($fieldSet->get('type'), $errorList3);
+        $this->validator->validate('something', PatternMatch::class, 'something', 'simpleValues[0]');
+
+        self::assertEmpty($errorList);
+        self::assertEmpty($errorList2);
+        self::assertEmpty($errorList3);
+    }
+
+    /** @test */
     public function it_validates_fields_with_constraints(): void
     {
         $fieldSet = $this->getFieldSet();
@@ -94,7 +125,6 @@ final class InputValidatorTest extends SearchIntegrationTestCase
 
         $errorList3 = new ErrorList();
         $this->validator->initializeContext($fieldSet->get('type'), $errorList3);
-
         $this->validator->validate('something', 'simple', 'something', 'simpleValues[0]');
 
         $this->assertContainsErrors(
@@ -122,7 +152,7 @@ final class InputValidatorTest extends SearchIntegrationTestCase
     public function it_validates_matchers(): void
     {
         $fieldSet = $this->getFieldSet(false);
-        $fieldSet->add('username', TextType::class, ['constraints' => new Assert\NotBlank()]);
+        $fieldSet->add('username', TextType::class, ['constraints' => new Assert\Url(), 'pattern_match_constraints' => new Assert\NotBlank()]);
         $fieldSet = $fieldSet->getFieldSet();
 
         $errorList = new ErrorList();
