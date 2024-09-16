@@ -18,6 +18,7 @@ use Rollerworks\Component\Search\FieldSetView;
 use Rollerworks\Component\Search\Value\Compare;
 use Rollerworks\Component\Search\Value\PatternMatch;
 use Rollerworks\Component\Search\Value\Range;
+use Symfony\Component\OptionsResolver\Exception\ExceptionInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -70,7 +71,11 @@ class GenericResolvedFieldType implements ResolvedFieldType
 
     public function createField(string $name, array $options = []): FieldConfig
     {
-        $options = $this->getOptionsResolver()->resolve($options);
+        try {
+            $options = $this->getOptionsResolver()->resolve($options);
+        } catch (ExceptionInterface $e) {
+            throw new $e(\sprintf('An error has occurred resolving the options of the field "%s" with type "%s": ', $name, get_debug_type($this->getInnerType())) . $e->getMessage(), $e->getCode(), $e);
+        }
 
         return $this->newField($name, $options);
     }

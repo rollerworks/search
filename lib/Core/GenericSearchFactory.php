@@ -16,6 +16,7 @@ namespace Rollerworks\Component\Search;
 use Rollerworks\Component\Search\Field\FieldConfig;
 use Rollerworks\Component\Search\Field\OrderField;
 use Rollerworks\Component\Search\Field\TypeRegistry;
+use Symfony\Component\OptionsResolver\Exception\ExceptionInterface;
 
 /**
  * @author Sebastiaan Stok <s.stok@rollerscapes.net>
@@ -64,7 +65,12 @@ final class GenericSearchFactory implements SearchFactory
     private function createOptionsForOrderField(string $name, array $options): array
     {
         $type = $this->registry->getType($options['type']);
-        $options['type_options'] = $type->getOptionsResolver()->resolve($options['type_options'] ?? []);
+
+        try {
+            $options['type_options'] = $type->getOptionsResolver()->resolve($options['type_options'] ?? []);
+        } catch (ExceptionInterface $e) {
+            throw new $e(\sprintf('An error has occurred resolving the type-options of the order-field "%s"": ', $name) . $e->getMessage(), $e->getCode(), $e);
+        }
 
         return $options;
     }
