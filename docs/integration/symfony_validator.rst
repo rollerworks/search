@@ -78,4 +78,13 @@ part of the field type using the ``configureOptions`` method of the field type. 
         );
     }
 
+.. note::
+
+    For a field that expects an email it's not possible to use a ``PatternMatch``
+    with a constraint that enforces a valid email address.
+
+    Since RollerworksSearch v2.0-BETA6 the ``PatternMatch`` is no longer validated as
+    part of the the ``constraints`` option, use the ``pattern_match_constraints`` for
+    this specific type.
+
 .. _`Symfony Validator component`: http://symfony.com/doc/current/validation.html

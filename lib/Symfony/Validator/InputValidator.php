@@ -17,6 +17,8 @@ use Rollerworks\Component\Search\ConditionErrorMessage;
 use Rollerworks\Component\Search\ErrorList;
 use Rollerworks\Component\Search\Field\FieldConfig;
 use Rollerworks\Component\Search\Input\Validator;
+use Rollerworks\Component\Search\Value\PatternMatch;
+use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
@@ -29,17 +31,14 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
  */
 final class InputValidator implements Validator
 {
-    /** @var ValidatorInterface */
-    private $validator;
+    private ValidatorInterface $validator;
 
-    /** @var FieldConfig */
-    private $field;
-
-    /** @var ErrorList */
-    private $errorList;
-
-    /** @var array */
-    private $constraints = [];
+    private FieldConfig $field;
+    private ErrorList $errorList;
+    /** @var Constraint[]|null */
+    private ?array $constraints = [];
+    /** @var Constraint[]|null */
+    private ?array $patternMatchConstraints;
 
     public function __construct(ValidatorInterface $validator)
     {
@@ -51,16 +50,19 @@ final class InputValidator implements Validator
         $this->field = $field;
         $this->errorList = $errorList;
 
-        $this->constraints = $field->getOption('constraints', null);
+        $this->constraints = $field->getOption('constraints');
+        $this->patternMatchConstraints = $field->getOption('pattern_match_constraints');
     }
 
     public function validate($value, string $type, $originalValue, string $path): bool
     {
-        if ($this->constraints === null) {
+        $constraints = $type === PatternMatch::class ? $this->patternMatchConstraints : $this->constraints;
+
+        if ($constraints === null) {
             return true;
         }
 
-        $violations = $this->validator->validate($value, $this->constraints);
+        $violations = $this->validator->validate($value, $constraints);
 
         foreach ($violations as $violation) {
             $this->errorList[] = new ConditionErrorMessage(

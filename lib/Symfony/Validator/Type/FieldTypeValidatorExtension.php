@@ -34,6 +34,8 @@ final class FieldTypeValidatorExtension extends AbstractFieldTypeExtension
         $constraintsNormalizer = static fn (Options $options, $constraints) => \is_object($constraints) ? [$constraints] : (array) $constraints;
 
         $resolver->setDefault('constraints', []);
+        $resolver->setDefault('pattern_match_constraints', []);
         $resolver->setNormalizer('constraints', $constraintsNormalizer);
+        $resolver->setNormalizer('pattern_match_constraints', $constraintsNormalizer);
     }
 }

@@ -1,3 +1,13 @@
+UPGRADE FROM 2.0-BETA5 to 2.0-BETA6
+===================================
+
+ * The Symfony Input Validator no longer validates a `PatternMatch` value type.
+   Set the `pattern_match_constraints` option to validate this specific type, with
+   it's own constraints.
+
+   **Note:** A PatternMatch will likely not contain a full value, for more advanced
+   validating it's best to create your own input validator.
+
 UPGRADE FROM 2.0-BETA4 to 2.0-BETA5
 ===================================
 
