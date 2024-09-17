@@ -459,8 +459,8 @@ final class StringQueryInputTest extends InputProcessorTestCase
     public static function provideGroupsOverflowTests(): iterable
     {
         return [
-            ['(name: value, value2;); (name: value, value2;); (name: value, value2;); (name: value, value2;)', ''],
-            ['( ((name: value, value2)); ((name: value, value2;); (name: value, value2;); (name: value, value2;); (name: value, value2;)) )', '[0][1]'],
+            ['(name: value, value2;); (name: value, value2;); (name: value, value2;); (name: value, value2;)', '[3]'],
+            ['( ((name: value, value2)); ((name: value, value2;); (name: value, value2;); (name: value, value2;); (name: value, value2;)) )', '[0][1][3]'],
         ];
     }
 

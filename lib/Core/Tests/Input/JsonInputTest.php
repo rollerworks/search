@@ -450,7 +450,7 @@ final class JsonInputTest extends InputProcessorTestCase
                         ],
                     ]
                 ),
-                '',
+                '[groups][3]',
             ],
             [
                 json_encode(
@@ -506,7 +506,7 @@ final class JsonInputTest extends InputProcessorTestCase
                         ],
                     ]
                 ),
-                '[groups][0][groups][1]',
+                '[groups][0][groups][1][groups][3]',
             ],
         ];
     }
