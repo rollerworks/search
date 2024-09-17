@@ -54,6 +54,11 @@
                 <source>This value is not a valid sorting direction. Accepted directions are: {{ directions }}.</source>
                 <target>This value is not a valid sorting direction. Accepted directions are: {{ directions }}.</target>
             </trans-unit>
+
+            <trans-unit id="ORDER_CLAUSE_NOT_IN_GROUP">
+                <source>Order clauses cannot be placed in a group.</source>
+                <target>Order clauses cannot be placed in a group.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
