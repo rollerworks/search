@@ -37,6 +37,7 @@ final class OrderFieldType implements FieldType
             'view_label' => ['ASC' => 'asc', 'DESC' => 'desc'],
             'type' => null,
             'type_options' => [],
+            'label' => null,
         ]);
 
         $resolver->setAllowedValues('case', [
@@ -48,6 +49,7 @@ final class OrderFieldType implements FieldType
         $resolver->setAllowedTypes('default', ['null', 'string']);
         $resolver->setAllowedTypes('type', ['string', 'null']);
         $resolver->setAllowedTypes('type_options', ['array']);
+        $resolver->setAllowedTypes('label', ['null', 'string']);
 
         // Ensure view-labels are part of the alias list.
         $resolver->addNormalizer('alias', static function (Options $options, array $value): mixed {

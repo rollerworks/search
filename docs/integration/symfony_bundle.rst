@@ -150,6 +150,27 @@ Search Query
 That's it. You can now process search requests! See the reference section
 below to learn more about application wide cache configuring.
 
+Translating labels (StringQuery only)
+-------------------------------------
+
+The :class:`Rollerworks\\Component\\Search\\Input\\StringQueryInput`
+allows to use localized names by setting a :class:`Symfony\\Contracts\\Translation\\TranslatableInterface`
+as the fields label.
+
+.. code-block:: php
+    :linenos:
+
+    use Symfony\Component\Translation\TranslatableMessage;
+
+    $userFieldSet = $searchFactory->createFieldSetBuilder()
+        ->add('id', IntegerType::class, ['label' => new TranslatableMessage('label.id', [], 'search')]
+        ->add('username', TextType::class, ['label' => new TranslatableMessage('label.username', [], 'search'))
+        ->getFieldSet('users')
+    ;
+
+Now in the StringQuery can use a localized label like 'gebruikersnaam' (in Dutch)
+instead of username. This option works the same for order fields.
+
 Registering types and type extensions
 -------------------------------------
 

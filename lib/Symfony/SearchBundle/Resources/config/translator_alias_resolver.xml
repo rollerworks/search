@@ -9,5 +9,13 @@
             <argument id="translator" type="service" />
         </service>
 
+        <service id="Rollerworks\Bundle\SearchBundle\Type\TranslatableFieldTypeExtension">
+            <tag name="rollerworks_search.type_extension" extended-type="Rollerworks\Component\Search\Extension\Core\Type\SearchFieldType" />
+        </service>
+
+        <service id="Rollerworks\Bundle\SearchBundle\Type\TranslatableOrderFieldTypeExtension">
+            <tag name="rollerworks_search.type_extension" extended-type="Rollerworks\Component\Search\Field\OrderFieldType" />
+        </service>
+
     </services>
 </container>
