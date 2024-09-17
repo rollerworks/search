@@ -20,6 +20,6 @@ final class GroupsOverflowException extends InputProcessorException
 {
     public function __construct(int $max, string $path)
     {
-        parent::__construct($path, 'Group exceeds maximum number of groups {{ max }}.', ['{{ max }}' => $max]);
+        parent::__construct($path, 'This group exceeds maximum number of groups {{ max }}.', ['{{ max }}' => $max]);
     }
 }
