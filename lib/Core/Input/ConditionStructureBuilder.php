@@ -131,12 +131,12 @@ class ConditionStructureBuilder implements StructureBuilder
 
         $groupCount = $this->groupsCount[$this->nestingLevel];
 
+        // The new group is relative to it's current level (the group is declared at level x); and zero-indexed
+        $this->path[] = \sprintf($path, $groupCount - 1);
+
         if ($groupCount > $this->maxGroups) {
             throw new GroupsOverflowException($this->maxGroups, implode('', $this->path));
         }
-
-        // The new group is relative to it's current level (the group is declared at level x); and zero-indexed
-        $this->path[] = \sprintf($path, $groupCount - 1);
 
         ++$this->nestingLevel;
 

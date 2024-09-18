@@ -20,6 +20,6 @@ final class GroupsNestingException extends InputProcessorException
 {
     public function __construct(int $max, string $path)
     {
-        parent::__construct($path, 'Group exceeds maximum nesting level of {{ max }}.', ['{{ max }}' => $max]);
+        parent::__construct($path, 'This group exceeds maximum nesting level of {{ max }}.', ['{{ max }}' => $max]);
     }
 }

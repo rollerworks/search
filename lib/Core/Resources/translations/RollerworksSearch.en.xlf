@@ -45,10 +45,6 @@
             </trans-unit>
             <!-- // -->
 
-            <trans-unit id="ORDER_CLAUSE_NOT_IN_GROUP">
-                <source>Order clauses cannot be placed in a group.</source>
-                <target>Order clauses cannot be placed in a group.</target>
-            </trans-unit>
             <trans-unit id="STRING_SYNTAX_ERROR_EXPECTED">
                 <source>[Syntax Error] line {{ line }} col {{ column }}: Expected {{ expected }}, got {{ got }}.</source>
                 <target>[Syntax Error] line {{ line }} col {{ column }}: Expected {{ expected }}, got {{ got }}.</target>
