@@ -43,6 +43,65 @@
                 <source>line end</source>
                 <target>lijn einde</target>
             </trans-unit>
+            <trans-unit id="11">
+                <source>lower</source>
+                <target>onderste</target>
+            </trans-unit>
+            <trans-unit id="12">
+                <source>upper</source>
+                <target>bovenste</target>
+            </trans-unit>
+            <!-- // -->
+
+            <!-- ErrorPathTranslator -->
+            <trans-unit id="13">
+                <source>At root level, group {{ group }}:</source>
+                <target>Op hoofdniveau, groep {{ group }}:</target>
+            </trans-unit>
+            <trans-unit id="14">
+                <source>At root level, field {{ field }}:</source>
+                <target>Op hoofdniveau, veld {{ field }}:</target>
+            </trans-unit>
+            <trans-unit id="15">
+                <source>At root level, field {{ field }} value position {{ position }} {{ type }}:</source>
+                <target>Op hoofdniveau, veld {{ field }} waarde positie {{ position }} {{ type }}:</target>
+            </trans-unit>
+            <trans-unit id="16">
+                <source>At root level, field {{ field }} value position {{ position }}:</source>
+                <target>Op hoofdniveau, veld {{ field }} waarde positie {{ position }}:</target>
+            </trans-unit>
+            <trans-unit id="17">
+                <source>In nested group {{ group }}, field {{ field }} value position {{ position }} {{ type }}:</source>
+                <target>In geneste groep {{ group }}, veld {{ field }} waarde positie {{ position }} {{ type }}:</target>
+            </trans-unit>
+            <trans-unit id="18">
+                <source>In nested group {{ group }}, field {{ field }} value position {{ position }}:</source>
+                <target>In geneste groep {{ group }}, veld {{ field }} waarde positie {{ position }}:</target>
+            </trans-unit>
+            <trans-unit id="19">
+                <source>In nested group {{ group }}, field {{ field }}:</source>
+                <target>In geneste groep {{ group }}, veld {{ field }}:</target>
+            </trans-unit>
+            <trans-unit id="20">
+                <source>In group {{ group }}, field {{ field }} value position {{ position }} {{ type }}:</source>
+                <target>In groep {{ group }}, veld {{ field }} waarde positie {{ position }} {{ type }}:</target>
+            </trans-unit>
+            <trans-unit id="21">
+                <source>In group {{ group }}, field {{ field }} value position {{ position }}:</source>
+                <target>In groep {{ group }}, veld {{ field }} waarde positie {{ position }}:</target>
+            </trans-unit>
+            <trans-unit id="22">
+                <source>In group {{ group }}, field {{ field }}:</source>
+                <target>In groep {{ group }}, veld {{ field }}:</target>
+            </trans-unit>
+            <trans-unit id="23">
+                <source>Nested group {{ group }}:</source>
+                <target>Geneste groep {{ group }}:</target>
+            </trans-unit>
+            <trans-unit id="24">
+                <source>Group {{ group }}:</source>
+                <target>Groep {{ group }}:</target>
+            </trans-unit>
             <!-- // -->
 
             <trans-unit id="STRING_SYNTAX_ERROR_EXPECTED">

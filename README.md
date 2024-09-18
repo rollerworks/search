@@ -67,6 +67,7 @@ use Rollerworks\Component\Search\Exception\InvalidSearchConditionException;
 use Rollerworks\Component\Search\Extension\Core\Type\TextType;
 use Rollerworks\Component\Search\Extension\Core\Type\IntegerType;
 use Rollerworks\Component\Search\Extension\Core\Type\ChoiceType;
+use Rollerworks\Component\Search\Input\ErrorPathHumanizer;
 use Rollerworks\Component\Search\Input\StringQueryInput;
 use Rollerworks\Component\Search\Input\ProcessorConfig;
 
@@ -103,8 +104,11 @@ try {
     
     $translator = ...; // \Symfony\Contracts\Translation\TranslatorInterface
     
+    // Note: The ErrorPathHumanizer only works for the `StringQueryInput` input processor.
+    $errorPathHumanizer = new ErrorPathHumanizer($translator);
+    
     foreach ($e->getErrors() as $error) {
-       echo $error->trans($translator) . PHP_EOL;
+       echo '<span>' $errorPathHumanizer->humanize($error->path) .  ' </span><span>' . htmlentities($error->trans($translator), ENT_COMPAT | ENT_IGNORE, 'UTF-8') '</span>' . PHP_EOL;
     }
 }
 ```
