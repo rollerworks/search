@@ -14,19 +14,17 @@ declare(strict_types=1);
 namespace Rollerworks\Bundle\SearchBundle;
 
 use Rollerworks\Component\Search\Field\FieldConfig;
+use Rollerworks\Component\Search\Field\OrderField;
 use Symfony\Contracts\Translation\TranslatableInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 final class TranslatorBasedAliasResolver
 {
-    private TranslatorInterface $translator;
-
-    public function __construct(TranslatorInterface $translator)
+    public function __construct(private TranslatorInterface $translator)
     {
-        $this->translator = $translator;
     }
 
-    public function __invoke(FieldConfig $field)
+    public function __invoke(FieldConfig $field): string
     {
         $label = $field->getOption('label');
 
@@ -35,7 +33,11 @@ final class TranslatorBasedAliasResolver
         }
 
         if ($label instanceof TranslatableInterface) {
-            return $label->trans($this->translator);
+            $label = $label->trans($this->translator);
+        }
+
+        if ($field instanceof OrderField && $label[0] !== '@') {
+            $label = '@' . $label;
         }
 
         return $label;
