@@ -22,6 +22,21 @@ use Rollerworks\Component\Search\Field\FieldConfig;
  */
 final class OrmQueryField extends QueryField
 {
+    public string $entity;
+
+    public function __construct(string $mappingName, FieldConfig $fieldConfig, string $dbType, string $column, string $alias, string $entity)
+    {
+        parent::__construct(
+            $mappingName,
+            $fieldConfig,
+            $dbType,
+            $column,
+            $alias
+        );
+
+        $this->entity = $entity;
+    }
+
     protected function initConversions(FieldConfig $fieldConfig): void
     {
         $converter = $fieldConfig->getOption('doctrine_orm_conversion');

@@ -71,7 +71,8 @@ final class FieldConfigBuilder
             $this->fieldSet->get($fieldName),
             $this->getMappingType($mappingName, $entity, $property, $type),
             $property,
-            $alias ?? $this->defaultAlias
+            $alias ?? $this->defaultAlias,
+            $entity
         );
     }
 
