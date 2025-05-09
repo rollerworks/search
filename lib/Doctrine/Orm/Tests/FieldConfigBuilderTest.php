@@ -127,13 +127,13 @@ final class FieldConfigBuilderTest extends TestCase
         $fields = $fieldConfigBuilder->getFields();
 
         // Invoice
-        self::assertEquals(new QueryField('id', $fieldSet->get('id'), 'smallint', 'id', 'I'), $fields['id'][null]);
-        self::assertEquals(new QueryField('credit_parent#0', $fieldSet->get('credit_parent'), 'integer', 'parent', 'I'), $fields['credit_parent'][0]);
+        self::assertEquals(new QueryField('id', $fieldSet->get('id'), 'smallint', 'id', 'I', self::INVOICE_CLASS), $fields['id'][null]);
+        self::assertEquals(new QueryField('credit_parent#0', $fieldSet->get('credit_parent'), 'integer', 'parent', 'I', self::INVOICE_CLASS), $fields['credit_parent'][0]);
 
         // Customer
-        self::assertEquals(new QueryField('customer', $fieldSet->get('customer'), 'integer', 'id', 'C'), $fields['customer'][null]);
-        self::assertEquals(new QueryField('customer_name#first_name', $fieldSet->get('customer_name'), 'string', 'first_name', 'C'), $fields['customer_name']['first_name']);
-        self::assertEquals(new QueryField('customer_name#last_name', $fieldSet->get('customer_name'), 'string', 'last_name', 'C'), $fields['customer_name']['last_name']);
+        self::assertEquals(new QueryField('customer', $fieldSet->get('customer'), 'integer', 'id', 'C', self::CUSTOMER_CLASS), $fields['customer'][null]);
+        self::assertEquals(new QueryField('customer_name#first_name', $fieldSet->get('customer_name'), 'string', 'first_name', 'C', self::CUSTOMER_CLASS), $fields['customer_name']['first_name']);
+        self::assertEquals(new QueryField('customer_name#last_name', $fieldSet->get('customer_name'), 'string', 'last_name', 'C', self::CUSTOMER_CLASS), $fields['customer_name']['last_name']);
     }
 
     /** @test */
@@ -159,8 +159,8 @@ final class FieldConfigBuilderTest extends TestCase
         $fields = $fieldConfigBuilder->getFields();
 
         // Invoice
-        self::assertEquals(new QueryField('id', $fieldSet->get('id'), 'smallint', 'id', 'I'), $fields['id'][null]);
-        self::assertEquals(new QueryField('credit_parent#0', $fieldSet->get('credit_parent'), 'integer', 'parent', 'I'), $fields['credit_parent'][0]);
+        self::assertEquals(new QueryField('id', $fieldSet->get('id'), 'smallint', 'id', 'I', self::INVOICE_CLASS), $fields['id'][null]);
+        self::assertEquals(new QueryField('credit_parent#0', $fieldSet->get('credit_parent'), 'integer', 'parent', 'I', self::INVOICE_CLASS), $fields['credit_parent'][0]);
     }
 
     /** @test */
