@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace Rollerworks\Component\Search\Tests\Doctrine\Dbal;
 
 use Doctrine\DBAL\Query\QueryBuilder;
-use Doctrine\DBAL\Types\Type;
 use Rollerworks\Component\Search\Doctrine\Dbal\ColumnConversion;
 use Rollerworks\Component\Search\Doctrine\Dbal\ConversionHints;
 use Rollerworks\Component\Search\Doctrine\Dbal\Test\QueryBuilderAssertion;
@@ -729,10 +728,10 @@ final class SqlConditionGeneratorTest extends DbalTestCase
                 self::assertEquals('dd-MM-yy', $passedOptions['pattern']);
 
                 if ($value instanceof \DateTimeImmutable) {
-                    return 'CAST(' . $hints->createParamReferenceFor($value->format('Y-m-d'), Type::getType('string')) . ' AS AGE)';
+                    return 'CAST(' . $hints->createParamReferenceFor($value->format('Y-m-d'), 'string') . ' AS AGE)';
                 }
 
-                return $hints->createParamReferenceFor($value, Type::getType('integer'));
+                return $hints->createParamReferenceFor($value, 'integer');
             })
         ;
 

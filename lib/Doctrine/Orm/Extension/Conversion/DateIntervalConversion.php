@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace Rollerworks\Component\Search\Extension\Doctrine\Orm\Conversion;
 
 use Carbon\CarbonInterval;
-use Doctrine\DBAL\Types\Type;
 use Doctrine\DBAL\Types\Types;
 use Rollerworks\Component\Search\Doctrine\Dbal\ConversionHints;
 use Rollerworks\Component\Search\Doctrine\Orm\ValueConversion;
@@ -27,7 +26,7 @@ final class DateIntervalConversion implements ValueConversion
     public function convertValue($value, array $options, ConversionHints $hints): string
     {
         if ($value instanceof \DateTimeImmutable) {
-            return $hints->createParamReferenceFor($value, Type::getType(Types::DATETIME_IMMUTABLE));
+            return $hints->createParamReferenceFor($value, Types::DATETIME_IMMUTABLE);
         }
 
         $value = clone $value;

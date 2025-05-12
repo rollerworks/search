@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Extension\Doctrine\Orm\Conversion;
 
-use Doctrine\DBAL\Types\Type as DBALType;
 use Rollerworks\Component\Search\Doctrine\Dbal\ConversionHints;
 use Rollerworks\Component\Search\Doctrine\Orm\ColumnConversion;
 use Rollerworks\Component\Search\Doctrine\Orm\ValueConversion;
@@ -32,9 +31,9 @@ final class AgeDateConversion implements ColumnConversion, ValueConversion
     public function convertValue($value, array $options, ConversionHints $hints): string
     {
         if ($value instanceof \DateTimeImmutable) {
-            return $hints->createParamReferenceFor($value, DBALType::getType('date'));
+            return $hints->createParamReferenceFor($value, 'date');
         }
 
-        return $hints->createParamReferenceFor($value, DBALType::getType('integer'));
+        return $hints->createParamReferenceFor($value, 'integer');
     }
 }
