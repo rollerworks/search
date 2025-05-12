@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Tests;
 
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Rollerworks\Component\Search\Field\FieldConfig;
 use Rollerworks\Component\Search\Field\SearchFieldView;
@@ -92,9 +93,9 @@ final class GenericFieldSetTest extends TestCase
     }
 
     /**
-     * @return \PHPUnit_Framework_MockObject_MockObject
+     * @return MockObject&FieldConfig
      */
-    private function createFieldMock(string $name, bool $withView = false)
+    private function createFieldMock(string $name, bool $withView = false): object
     {
         $field = $this->createMock(FieldConfig::class);
         $field->expects(self::any())->method('getName')->willReturn($name);

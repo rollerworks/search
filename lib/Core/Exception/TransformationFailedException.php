@@ -17,12 +17,14 @@ final class TransformationFailedException extends \RuntimeException implements S
 {
     private $invalidMessage;
     private $invalidMessageParameters;
+    private mixed $value;
 
-    public function __construct(string $message = '', int $code = 0, ?\Throwable $previous = null, ?string $invalidMessage = null, array $invalidMessageParameters = [])
+    public function __construct(string $message = '', int $code = 0, ?\Throwable $previous = null, ?string $invalidMessage = null, array $invalidMessageParameters = [], mixed $value = null)
     {
         parent::__construct($message, $code, $previous);
 
         $this->setInvalidMessage($invalidMessage, $invalidMessageParameters);
+        $this->value = $value;
     }
 
     /**
@@ -45,5 +47,10 @@ final class TransformationFailedException extends \RuntimeException implements S
     public function getInvalidMessageParameters(): array
     {
         return $this->invalidMessageParameters;
+    }
+
+    public function getInvalidValue(): mixed
+    {
+        return $this->value;
     }
 }

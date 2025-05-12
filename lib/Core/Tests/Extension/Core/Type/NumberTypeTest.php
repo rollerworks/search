@@ -86,7 +86,7 @@ final class NumberTypeTest extends SearchIntegrationTestCase
     /** @test */
     public function non_western_formatting(): void
     {
-        \Locale::setDefault('ar');
+        \Locale::setDefault('ar_BH');
 
         $field = $this->getFactory()->createField('number', NumberType::class);
 

@@ -62,13 +62,13 @@ final class FieldTransformationAssertion
         try {
             $viewValue = $this->viewToModel($this->inputView);
         } catch (TransformationFailedException $e) {
-            Assert::fail('View->model: ' . $e->getMessage() . "\n" . $e->getTraceAsString());
+            Assert::fail('View->model: With input ' . var_export($this->inputView, true) . '. Message ' . $e->getMessage() . "\n" . $e->getTraceAsString());
         }
 
         try {
             $normValue = $this->normToModel($this->inputNorm);
         } catch (TransformationFailedException $e) {
-            Assert::fail('Norm->model: ' . $e->getMessage() . "\n" . $e->getTraceAsString());
+            Assert::fail('Norm->model: With input ' . var_export($this->inputNorm, true) . '. Message ' . $e->getMessage() . "\n" . $e->getTraceAsString());
         }
 
         Assert::assertEquals($model, $viewValue, 'View->model value does not equal');
@@ -126,13 +126,13 @@ final class FieldTransformationAssertion
         try {
             $viewValue = $this->modelToView($this->model);
         } catch (TransformationFailedException $e) {
-            Assert::fail('Model->view: ' . $e->getMessage() . "\n" . $e->getTraceAsString());
+            Assert::fail('Model->view: With value ' . var_export($this->model, true) . '. Message ' . $e->getMessage() . "\n" . $e->getTraceAsString());
         }
 
         try {
             $normValue = $this->modelToNorm($this->model);
         } catch (TransformationFailedException $e) {
-            Assert::fail('Model->norm: ' . $e->getMessage() . "\n" . $e->getTraceAsString());
+            Assert::fail('Model->norm: With value ' . var_export($this->model, true) . '. Message ' . $e->getMessage() . "\n" . $e->getTraceAsString());
         }
 
         Assert::assertEquals($expectedView, $viewValue, 'View value does not equal');
@@ -198,6 +198,10 @@ final class FieldTransformationAssertion
             Assert::assertEquals($expected->getCode(), $actual->getCode(), 'Code does not equal.');
             Assert::assertEquals($expected->getInvalidMessage(), $actual->getInvalidMessage(), 'Invalid message does not equal.');
             Assert::assertEquals($expected->getInvalidMessageParameters(), $actual->getInvalidMessageParameters(), 'Invalid-messages parameters does not equal.');
+
+            if ($expected->getInvalidValue() !== null) {
+                Assert::assertEquals($expected->getInvalidValue(), $actual->getInvalidValue(), 'Invalid value does not equal.');
+            }
         } catch (ExpectationFailedException $e) {
             Assert::assertEquals($expected, $actual, $e->getMessage());
         }

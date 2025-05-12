@@ -17,6 +17,8 @@ use Rollerworks\Component\Search\Extension\Core\Type\IntegerType;
 use Rollerworks\Component\Search\FieldSetView;
 use Rollerworks\Component\Search\Test\FieldTransformationAssertion;
 use Rollerworks\Component\Search\Test\SearchIntegrationTestCase;
+use Symfony\Component\Intl\Intl;
+use Symfony\Component\Intl\Util\IcuVersion;
 use Symfony\Component\Intl\Util\IntlTestHelper;
 
 /**
@@ -59,7 +61,7 @@ final class IntegerTypeTest extends SearchIntegrationTestCase
     /** @test */
     public function non_western_formatting(): void
     {
-        \Locale::setDefault('ar');
+        \Locale::setDefault('ar_BH');
 
         $field = $this->getFactory()->createField('number', IntegerType::class);
 

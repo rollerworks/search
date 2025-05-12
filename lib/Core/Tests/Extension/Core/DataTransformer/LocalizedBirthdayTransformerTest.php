@@ -57,7 +57,7 @@ final class LocalizedBirthdayTransformerTest extends TestCase
         // Since we test against other locales, we need the full implementation
         IntlTestHelper::requireFullIntl($this, '70.1');
 
-        \Locale::setDefault('ar');
+        \Locale::setDefault('ar_BH');
 
         $dateTransformer = $this->prophesize(DataTransformer::class);
         $dateTransformer->reverseTransform(Argument::any())->shouldNotBeCalled();

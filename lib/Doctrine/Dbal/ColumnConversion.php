@@ -29,9 +29,9 @@ interface ColumnConversion
      * The returned result must a be a platform specific SQL statement
      * that can be used as a column in query.
      *
-     * @param string          $column  The column name and table alias, eg. i.id
-     * @param array           $options Options of the Field configuration
-     * @param ConversionHints $hints   Special information for the conversion process
+     * @param string               $column  The column name and table alias, eg. i.id
+     * @param array<string, mixed> $options Options of the Field configuration
+     * @param ConversionHints      $hints   Special information for the conversion process
      */
     public function convertColumn(string $column, array $options, ConversionHints $hints): string;
 }

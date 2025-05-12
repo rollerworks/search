@@ -197,11 +197,25 @@ final class DateTimeTypeTest extends SearchIntegrationTestCase
 
         $outputTime = new \DateTimeImmutable('2010-06-02 03:04:00 UTC');
 
-        FieldTransformationAssertion::assertThat($field)
-            ->withInput('2 Juni 2010 3:04', '2010-06-02T03:04:00Z')
-            ->successfullyTransformsTo($outputTime)
-            ->andReverseTransformsTo(IcuVersion::compare(Intl::getIcuVersion(), '73.2', '>=', 1) ? '2 jun 2010 03:04' : '2 jun. 2010 03:04', '2010-06-02T03:04:00Z')
-        ;
+        if (IcuVersion::compare(Intl::getIcuVersion(), '73.2', '>=', 1)) {
+            FieldTransformationAssertion::assertThat($field)
+                ->withInput('2 Juni 2010, 03:04', '2010-06-02T03:04:00Z')
+                ->successfullyTransformsTo($outputTime)
+                ->andReverseTransformsTo('2 jun 2010, 03:04', '2010-06-02T03:04:00Z')
+            ;
+
+            FieldTransformationAssertion::assertThat($field)
+                ->withInput('2 Juni 2010 03:04', '2010-06-02T03:04:00Z')
+                ->successfullyTransformsTo($outputTime)
+                ->andReverseTransformsTo('2 jun 2010, 03:04', '2010-06-02T03:04:00Z')
+            ;
+        } else {
+            FieldTransformationAssertion::assertThat($field)
+                ->withInput('2 Juni 2010 03:04', '2010-06-02T03:04:00Z')
+                ->successfullyTransformsTo($outputTime)
+                ->andReverseTransformsTo('2 jun. 2010 03:04', '2010-06-02T03:04:00Z')
+            ;
+        }
 
         FieldTransformationAssertion::assertThat($field)
             ->withInput('1 week + 2 jaar', '2Y1W')
