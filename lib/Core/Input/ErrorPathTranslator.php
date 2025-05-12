@@ -44,6 +44,8 @@ class ErrorPathTranslator
          * @var array<int, array<int, mixed>> $parts each root-index holds a path-chunk '[part]'
          *                                    [index] => ['matched', 'chunk']
          */
+        $parts = [];
+
         if ($path === '' || preg_match_all('/\[([^]]+)]/', $path, $parts, \PREG_SET_ORDER) === 0) {
             return '';
         }
