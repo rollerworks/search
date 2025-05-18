@@ -64,7 +64,7 @@ class ConversionHints
     /**
      * Returns a parameter-name to reference a value.
      */
-    public function createParamReferenceFor($value, string|Type|null $type = null): string
+    public function createParamReferenceFor($value, string|Type|null $type = 'string'): string
     {
         if (\is_object($type)) {
             $type = Type::lookupName($type);
@@ -80,7 +80,15 @@ class ConversionHints
             );
         }
 
-        return $this->queryPlatform->createParamReferenceFor($value, $type);
+        if ($type === null) {
+            trigger_deprecation(
+                'rollerworks/search-doctrine-dbal',
+                'v2.0.0-BETA9',
+                'passing null as type is deprecated and will no longer be accepted in v3.0.0, pass a type name instead, defaults to "string" for now.".'
+            );
+        }
+
+        return $this->queryPlatform->createParamReferenceFor($value, $type ?? 'string');
     }
 
     /**
@@ -104,5 +112,10 @@ class ConversionHints
             case self::CONTEXT_RANGE_UPPER_BOUND:
                 return $this->originalValue->getUpper();
         }
+    }
+
+    public function getPlatformName(): string
+    {
+        return $this->queryPlatform->platformName;
     }
 }

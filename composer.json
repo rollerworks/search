@@ -39,7 +39,8 @@
     "require-dev": {
         "api-platform/core": "^3.2",
         "doctrine/doctrine-bundle": "^1.9.1 || ^2.2.3",
-        "doctrine/orm": "^2.7.3",
+        "doctrine/dbal": "^3.4 || ^4.2",
+        "doctrine/orm": "^2.7.3 || ^3.0",
         "jangregor/phpstan-prophecy": "^1.0.0",
         "matthiasnoback/symfony-dependency-injection-test": "^4.1.1 || ^5.1",
         "moneyphp/money": "^3.2.0 || ^4.0",

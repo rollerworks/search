@@ -13,8 +13,14 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Tests\Doctrine\Dbal\Mocks;
 
+use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception as DBALException;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
+use Doctrine\DBAL\Platforms\DateIntervalUnit;
+use Doctrine\DBAL\Platforms\Keywords\KeywordList;
+use Doctrine\DBAL\Schema\AbstractSchemaManager;
+use Doctrine\DBAL\Schema\TableDiff;
+use Doctrine\DBAL\TransactionIsolationLevel;
 
 class DatabasePlatformMock extends AbstractPlatform
 {
@@ -47,49 +53,49 @@ class DatabasePlatformMock extends AbstractPlatform
     /** @override */
     public function getBooleanTypeDeclarationSQL(array $column): string
     {
-        throw DBALException::notSupported(__METHOD__);
+        throw new \LogicException(\sprintf('Method %s implemented', __METHOD__));
     }
 
     /** @override */
     public function getIntegerTypeDeclarationSQL(array $column): string
     {
-        throw DBALException::notSupported(__METHOD__);
+        throw new \LogicException(\sprintf('Method %s implemented', __METHOD__));
     }
 
     /** @override */
     public function getBigIntTypeDeclarationSQL(array $column): string
     {
-        throw DBALException::notSupported(__METHOD__);
+        throw new \LogicException(\sprintf('Method %s implemented', __METHOD__));
     }
 
     /** @override */
     public function getSmallIntTypeDeclarationSQL(array $column): string
     {
-        throw DBALException::notSupported(__METHOD__);
+        throw new \LogicException(\sprintf('Method %s implemented', __METHOD__));
     }
 
     /** @override */
     protected function _getCommonIntegerTypeDeclarationSQL(array $column): string
     {
-        throw DBALException::notSupported(__METHOD__);
+        throw new \LogicException(\sprintf('Method %s implemented', __METHOD__));
     }
 
     /** @override */
     public function getVarcharTypeDeclarationSQL(array $column): string
     {
-        throw DBALException::notSupported(__METHOD__);
+        throw new \LogicException(\sprintf('Method %s implemented', __METHOD__));
     }
 
     /** @override */
     public function getClobTypeDeclarationSQL(array $column): string
     {
-        throw DBALException::notSupported(__METHOD__);
+        throw new \LogicException(\sprintf('Method %s implemented', __METHOD__));
     }
 
     /** @override */
     public function getCurrentDatabaseExpression(): string
     {
-        throw DBALException::notSupported(__METHOD__);
+        throw new \LogicException(\sprintf('Method %s implemented', __METHOD__));
     }
 
     /* MOCK API */
@@ -118,9 +124,9 @@ class DatabasePlatformMock extends AbstractPlatform
     {
     }
 
-    protected function getVarcharTypeDeclarationSQLSnippet($length, $fixed): string
+    protected function getVarcharTypeDeclarationSQLSnippet($length): string
     {
-        throw DBALException::notSupported(__METHOD__);
+        throw new \LogicException(\sprintf('Method %s implemented', __METHOD__));
     }
 
     /**
@@ -128,8 +134,63 @@ class DatabasePlatformMock extends AbstractPlatform
      *
      * @throws DBALException
      */
-    public function getBlobTypeDeclarationSQL(array $column): void
+    public function getBlobTypeDeclarationSQL(array $column): string
     {
-        throw DBALException::notSupported(__METHOD__);
+        throw new \LogicException(\sprintf('Method %s implemented', __METHOD__));
+    }
+
+    public function getLocateExpression(string $string, string $substring, ?string $start = null): string
+    {
+        throw new \LogicException(\sprintf('Method %s implemented', __METHOD__));
+    }
+
+    public function getDateDiffExpression(string $date1, string $date2): string
+    {
+        throw new \LogicException(\sprintf('Method %s implemented', __METHOD__));
+    }
+
+    protected function getDateArithmeticIntervalExpression(string $date, string $operator, string $interval, DateIntervalUnit $unit): string
+    {
+        throw new \LogicException(\sprintf('Method %s implemented', __METHOD__));
+    }
+
+    public function getAlterTableSQL(TableDiff $diff): array
+    {
+        throw new \LogicException(\sprintf('Method %s implemented', __METHOD__));
+    }
+
+    public function getListViewsSQL(string $database): string
+    {
+        throw new \LogicException(\sprintf('Method %s implemented', __METHOD__));
+    }
+
+    public function getSetTransactionIsolationSQL(TransactionIsolationLevel $level): string
+    {
+        throw new \LogicException(\sprintf('Method %s implemented', __METHOD__));
+    }
+
+    public function getDateTimeTypeDeclarationSQL(array $column): string
+    {
+        throw new \LogicException(\sprintf('Method %s implemented', __METHOD__));
+    }
+
+    public function getDateTypeDeclarationSQL(array $column): string
+    {
+        throw new \LogicException(\sprintf('Method %s implemented', __METHOD__));
+    }
+
+    public function getTimeTypeDeclarationSQL(array $column): string
+    {
+        throw new \LogicException(\sprintf('Method %s implemented', __METHOD__));
+    }
+
+    protected function createReservedKeywordsList(): KeywordList
+    {
+        throw new \LogicException(\sprintf('Method %s implemented', __METHOD__));
+    }
+
+    public function createSchemaManager(Connection $connection): AbstractSchemaManager
+    {
+        throw new \LogicException(\sprintf('Method %s implemented', __METHOD__));
     }
 }

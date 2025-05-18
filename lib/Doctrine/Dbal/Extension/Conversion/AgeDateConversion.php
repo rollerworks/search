@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Extension\Doctrine\Dbal\Conversion;
 
+use Doctrine\DBAL\Types\Types;
 use Rollerworks\Component\Search\Doctrine\Dbal\ColumnConversion;
 use Rollerworks\Component\Search\Doctrine\Dbal\ConversionHints;
 use Rollerworks\Component\Search\Doctrine\Dbal\ValueConversion;
@@ -21,14 +22,14 @@ final class AgeDateConversion implements ColumnConversion, ValueConversion
 {
     public function convertColumn(string $column, array $options, ConversionHints $hints): string
     {
-        if ($hints->getProcessingValue() instanceof \DateTimeImmutable) {
+        if ($hints->getProcessingValue() instanceof \DateTimeInterface) {
             return "CAST({$column} AS DATE)";
         }
 
-        $platform = $hints->connection->getDatabasePlatform()->getName();
+        $platform = $hints->getPlatformName();
 
         $convertMap = [];
-        $convertMap['postgresql'] = "to_char(age(%1\$s), 'YYYY'::text)::integer";
+        $convertMap['pgsql'] = "to_char(age(%1\$s), 'YYYY'::text)::integer";
         $convertMap['mysql'] = "(DATE_FORMAT(NOW(), '%%Y') - DATE_FORMAT(%1\$s, '%%Y') - (DATE_FORMAT(NOW(), '00-%%m-%%d') < DATE_FORMAT(%1\$s, '00-%%m-%%d')))";
         $convertMap['drizzle'] = $convertMap['mysql'];
         $convertMap['mssql'] = 'DATEDIFF(hour, %1$s, GETDATE())/8766';
@@ -47,7 +48,11 @@ final class AgeDateConversion implements ColumnConversion, ValueConversion
     public function convertValue($value, array $options, ConversionHints $hints): string
     {
         if ($value instanceof \DateTimeImmutable) {
-            return $hints->createParamReferenceFor($value, 'date');
+            return $hints->createParamReferenceFor($value, Types::DATETIME_IMMUTABLE);
+        }
+
+        if ($value instanceof \DateTime) {
+            return $hints->createParamReferenceFor($value, Types::DATETIME_MUTABLE);
         }
 
         return $hints->createParamReferenceFor($value, 'integer');

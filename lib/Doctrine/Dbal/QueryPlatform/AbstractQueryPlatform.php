@@ -39,10 +39,13 @@ abstract class AbstractQueryPlatform
     /** @var int */
     private $parameterIdx = -1;
 
-    public function __construct(Connection $connection)
+    public string $platformName;
+
+    public function __construct(Connection $connection, string $platformName)
     {
         $this->connection = $connection;
         $this->parameters = new ArrayCollection();
+        $this->platformName = $platformName;
     }
 
     public function getValueAsSql($value, QueryField $mappingConfig, ConversionHints $hints): string

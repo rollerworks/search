@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Tests\Doctrine\Dbal\Functional;
 
+use Doctrine\DBAL\ArrayParameterType;
 use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\Logging\DebugStack;
 use Doctrine\DBAL\ParameterType;
 use Doctrine\DBAL\Query\QueryBuilder;
 use Doctrine\DBAL\Schema\Schema as DbSchema;
@@ -43,11 +43,6 @@ abstract class FunctionalDbalTestCase extends DbalTestCase
      * @var Connection|null
      */
     protected $conn;
-
-    /**
-     * @var DebugStack|null
-     */
-    protected $sqlLoggerStack;
 
     /**
      * @var string|null
@@ -98,8 +93,6 @@ abstract class FunctionalDbalTestCase extends DbalTestCase
         }
 
         $this->conn = self::$sharedConn;
-        $this->sqlLoggerStack = new DebugStack();
-        $this->conn->getConfiguration()->setSQLLogger($this->sqlLoggerStack);
     }
 
     private function updateSchema(Connection $connection, DbSchema $providedSchema): void
@@ -140,6 +133,11 @@ abstract class FunctionalDbalTestCase extends DbalTestCase
 
     public static function tearDownAfterClass(): void
     {
+        // There are errors recorded so don't reset the connection.
+        if (\count(self::$sharedConn->queryLog->queries) > 0) {
+            return;
+        }
+
         // Ensure the connection is reset between class-runs
         self::resetSharedConn();
     }
@@ -147,18 +145,18 @@ abstract class FunctionalDbalTestCase extends DbalTestCase
     protected function setUpDbSchema(DbSchema $schema): void
     {
         $invoiceTable = $schema->createTable('invoice');
-        $invoiceTable->addOption('collate', 'utf8_bin');
+        $invoiceTable->addOption('collation', 'utf8_bin');
         $invoiceTable->addColumn('id', 'integer', ['notNull' => false]);
         $invoiceTable->addColumn('status', 'integer', ['notNull' => false]);
-        $invoiceTable->addColumn('label', 'string', ['notNull' => false]);
+        $invoiceTable->addColumn('label', 'string', ['notNull' => false, 'length' => 255]);
         $invoiceTable->addColumn('customer', 'integer', ['notNull' => false]);
         $invoiceTable->setPrimaryKey(['id']);
 
         $customerTable = $schema->createTable('customer');
-        $customerTable->addOption('collate', 'utf8_bin');
+        $customerTable->addOption('collation', 'utf8_bin');
         $customerTable->addColumn('id', 'integer', ['notNull' => false]);
-        $customerTable->addColumn('name', 'string', ['notNull' => false]);
-        $customerTable->addColumn('birthday', 'date', ['notNull' => false]);
+        $customerTable->addColumn('name', 'string', ['notNull' => false, 'length' => 255]);
+        $customerTable->addColumn('birthday', 'date_immutable', ['notNull' => false]);
         $customerTable->setPrimaryKey(['id']);
     }
 
@@ -193,31 +191,59 @@ abstract class FunctionalDbalTestCase extends DbalTestCase
         $qb = $conditionGenerator->getQueryBuilder();
 
         $conditionGenerator->apply();
-        $result = $qb->execute();
+        $result = $qb->executeQuery();
 
         $paramsString = '';
         $platform = $this->conn->getDatabasePlatform();
 
-        static $bindingToType = [
-            ParameterType::NULL => 'string',
-            ParameterType::STRING => 'string',
-            ParameterType::INTEGER => 'integer',
-            ParameterType::BINARY => 'binary',
-            ParameterType::BOOLEAN => 'boolean',
-            ParameterType::ASCII => 'string',
-            ParameterType::LARGE_OBJECT => 'blob',
-        ];
+        // Doctrine DBAL 4.0 introduced a new ParameterType class
+        if (is_a(ParameterType::class, \UnitEnum::class, true)) {
+            foreach ($qb->getParameters() as $name => $value) {
+                $type = $qb->getParameterType($name);
 
-        foreach ($qb->getParameters() as $name => $value) {
-            $type = $qb->getParameterType($name) ?? 'string';
+                if ($type instanceof \UnitEnum) {
+                    $type = match ($type) {
+                        ParameterType::NULL => 'string',
+                        ParameterType::STRING => 'string',
+                        ParameterType::INTEGER => 'integer',
+                        ParameterType::BINARY => 'binary',
+                        ParameterType::BOOLEAN => 'boolean',
+                        ParameterType::ASCII => 'string',
+                        ParameterType::LARGE_OBJECT => 'blob',
+                        ArrayParameterType::INTEGER => 'integer',
+                        ArrayParameterType::STRING => 'string',
+                        ArrayParameterType::BINARY => 'binary',
+                        ArrayParameterType::ASCII => 'string',
+                        default => 'string'
+                    };
+                } elseif (\is_object($type)) {
+                    $type = Type::lookupName($type);
+                }
 
-            if (\is_int($type)) {
-                $type = $bindingToType[$type];
-            } elseif (\is_object($type)) {
-                $type = Type::lookupName($type);
+                $paramsString .= \sprintf("%s = '%s'\n", $name, Type::getType($type)->convertToDatabaseValue($value, $platform));
             }
+        } else {
+            static $bindingToType = [
+                ParameterType::NULL => 'string',
+                ParameterType::STRING => 'string',
+                ParameterType::INTEGER => 'integer',
+                ParameterType::BINARY => 'binary',
+                ParameterType::BOOLEAN => 'boolean',
+                ParameterType::ASCII => 'string',
+                ParameterType::LARGE_OBJECT => 'blob',
+            ];
 
-            $paramsString .= \sprintf("%s = '%s'\n", $name, Type::getType($type)->convertToDatabaseValue($value, $platform));
+            foreach ($qb->getParameters() as $name => $value) {
+                $type = $qb->getParameterType($name) ?? 'string';
+
+                if (\is_int($type)) {
+                    $type = $bindingToType[$type];
+                } elseif (\is_object($type)) {
+                    $type = Type::lookupName($type);
+                }
+
+                $paramsString .= \sprintf("%s = '%s'\n", $name, Type::getType($type)->convertToDatabaseValue($value, $platform));
+            }
         }
 
         $rows = $result->fetchAllAssociative();
@@ -262,7 +288,7 @@ abstract class FunctionalDbalTestCase extends DbalTestCase
             $this->addToAssertionCount(1);
         }
 
-        $qb->execute();
+        $qb->executeQuery();
     }
 
     protected function onNotSuccessfulTest(\Throwable $e): void
@@ -272,11 +298,12 @@ abstract class FunctionalDbalTestCase extends DbalTestCase
             throw $e;
         }
 
-        if (isset($this->sqlLoggerStack->queries) && \count($this->sqlLoggerStack->queries)) {
-            $queries = '';
-            $i = \count($this->sqlLoggerStack->queries);
+        $i = \count(self::$sharedConn->queryLog->queries);
 
-            foreach (array_reverse($this->sqlLoggerStack->queries) as $query) {
+        if ($i) {
+            $queries = '';
+
+            foreach (array_reverse(self::$sharedConn->queryLog->queries) as $query) {
                 $params = array_map(
                     static function ($p) {
                         if (\is_object($p)) {

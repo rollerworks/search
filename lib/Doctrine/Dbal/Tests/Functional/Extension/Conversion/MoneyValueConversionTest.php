@@ -36,8 +36,8 @@ final class MoneyValueConversionTest extends FunctionalDbalTestCase
     {
         $invoiceTable = $schema->createTable('product');
         $invoiceTable->addColumn('id', 'integer');
-        $invoiceTable->addColumn('price', 'string');
-        $invoiceTable->addColumn('total', 'decimal', ['scale' => 2]);
+        $invoiceTable->addColumn('price', 'string', ['length' => 255]);
+        $invoiceTable->addColumn('total', 'decimal', ['scale' => 2, 'precision' => 10]);
     }
 
     /**

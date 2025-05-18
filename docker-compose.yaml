@@ -12,7 +12,7 @@ services:
 
     # Storage services
     pgsql:
-        image: postgres:9.6
+        image: postgres:12.21
         environment:
             - POSTGRES_DB=search_tests
             - POSTGRES_USER=postgres

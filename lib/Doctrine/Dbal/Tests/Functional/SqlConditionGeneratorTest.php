@@ -14,7 +14,8 @@ declare(strict_types=1);
 namespace Rollerworks\Component\Search\Tests\Doctrine\Dbal\Functional;
 
 use Carbon\CarbonInterval;
-use Doctrine\DBAL\ParameterType;
+use Doctrine\DBAL\Platforms\AbstractMySQLPlatform;
+use Doctrine\DBAL\Platforms\PostgreSQLPlatform;
 use Doctrine\DBAL\Query\QueryBuilder;
 use Doctrine\DBAL\Schema\Schema as DbSchema;
 use Doctrine\DBAL\Types\Types;
@@ -47,14 +48,14 @@ final class SqlConditionGeneratorTest extends FunctionalDbalTestCase
         $invoiceTable = $schema->createTable('invoice');
         $invoiceTable->addColumn('id', 'integer', ['notNull' => false]);
         $invoiceTable->addColumn('status', 'integer', ['notNull' => false]);
-        $invoiceTable->addColumn('label', 'string', ['notNull' => false]);
+        $invoiceTable->addColumn('label', 'string', ['notNull' => false, 'length' => 255]);
         $invoiceTable->addColumn('customer', 'integer', ['notNull' => false]);
         $invoiceTable->setPrimaryKey(['id']);
 
         $customerTable = $schema->createTable('customer');
-        $customerTable->addColumn('id', 'integer', ['notNull' => false]);
-        $customerTable->addColumn('name', 'string', ['notNull' => false]);
-        $customerTable->addColumn('birthday', 'date', ['notNull' => false]);
+        $customerTable->addColumn('id', 'integer', ['notNull' => false, 'length' => 255]);
+        $customerTable->addColumn('name', 'string', ['notNull' => false, 'length' => 255]);
+        $customerTable->addColumn('birthday', 'date_immutable', ['notNull' => false]);
         $customerTable->setPrimaryKey(['id']);
     }
 
@@ -334,7 +335,7 @@ final class SqlConditionGeneratorTest extends FunctionalDbalTestCase
     /** @test */
     public function column_conversion(): void
     {
-        $type = $this->conn->getDatabasePlatform()->getName() === 'mysql' ? 'SIGNED' : 'INTEGER';
+        $type = $this->conn->getDatabasePlatform() instanceof AbstractMySQLPlatform ? 'SIGNED' : 'INTEGER';
         $converter = $this->createMock(ColumnConversion::class);
         $converter
             ->expects(self::atLeastOnce())
@@ -359,7 +360,7 @@ final class SqlConditionGeneratorTest extends FunctionalDbalTestCase
     /** @test */
     public function value_conversion(): void
     {
-        $type = $this->conn->getDatabasePlatform()->getName() === 'mysql' ? 'SIGNED' : 'INTEGER';
+        $type = $this->conn->getDatabasePlatform() instanceof AbstractMySQLPlatform ? 'SIGNED' : 'INTEGER';
         $converter = $this->createMock(ValueConversion::class);
         $converter
             ->expects(self::atLeastOnce())
@@ -422,19 +423,19 @@ final class SqlConditionGeneratorTest extends FunctionalDbalTestCase
         ->getSearchCondition()
         ;
 
-        if ($this->conn->getDatabasePlatform()->getName() === 'postgresql') {
+        if ($this->conn->getDatabasePlatform() instanceof PostgreSQLPlatform) {
             $this->assertQueryIsExecutable(
                 $condition,
                 ' WHERE (((c.birthday = NOW() + CAST(:search_0 AS interval) OR c.birthday = NOW() - CAST(:search_1 AS interval) OR c.birthday = :search_2 OR (c.birthday >= NOW() + CAST(:search_3 AS interval) AND c.birthday <= NOW() + CAST(:search_4 AS interval)))))',
                 [
-                    'search_0' => ['1 year 2 weeks 8 seconds', ParameterType::STRING],
-                    'search_1' => ['1 year 2 weeks 8 seconds', ParameterType::STRING],
+                    'search_0' => ['1 year 2 weeks 8 seconds', 'string'],
+                    'search_1' => ['1 year 2 weeks 8 seconds', 'string'],
                     'search_2' => [$date, Types::DATETIME_IMMUTABLE],
-                    'search_3' => ['1 year', ParameterType::STRING],
-                    'search_4' => ['10 years', ParameterType::STRING],
+                    'search_3' => ['1 year', 'string'],
+                    'search_4' => ['10 years', 'string'],
                 ]
             );
-        } elseif (\in_array($this->conn->getDatabasePlatform()->getName(), ['mysql', 'drizzle'], true)) {
+        } elseif ($this->conn->getDatabasePlatform() instanceof AbstractMySQLPlatform) {
             $this->assertQueryIsExecutable(
                 $condition,
                 ' WHERE (((c.birthday = NOW() + INTERVAL 1 YEAR + INTERVAL 2 WEEK + INTERVAL 8 SECOND OR c.birthday = NOW() - INTERVAL 1 YEAR - INTERVAL 2 WEEK - INTERVAL 8 SECOND OR c.birthday = :search_0 OR (c.birthday >= NOW() + INTERVAL 1 YEAR AND c.birthday <= NOW() + INTERVAL 10 YEAR))))',
