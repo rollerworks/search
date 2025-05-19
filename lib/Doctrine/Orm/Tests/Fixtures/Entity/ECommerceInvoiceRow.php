@@ -16,7 +16,7 @@ namespace Rollerworks\Component\Search\Tests\Doctrine\Orm\Fixtures\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
-#[ORM\Table(name: 'invoice_rows', options: ['collate' => 'utf8_bin'])]
+#[ORM\Table(name: 'invoice_rows', options: ['collation' => 'utf8_bin'])]
 class ECommerceInvoiceRow
 {
     #[ORM\Id]
@@ -34,9 +34,9 @@ class ECommerceInvoiceRow
     #[ORM\Column(type: 'integer')]
     public $quantity;
 
-    #[ORM\Column(name: 'price', type: 'decimal', precision: 0, scale: 2)]
+    #[ORM\Column(name: 'price', type: 'decimal', precision: 10, scale: 2)]
     public $price;
 
-    #[ORM\Column(name: 'total', type: 'decimal', precision: 0, scale: 2)]
+    #[ORM\Column(name: 'total', type: 'decimal', precision: 10, scale: 2)]
     public $total;
 }

@@ -39,6 +39,9 @@ abstract class AbstractQueryPlatform
     /** @var int */
     private $parameterIdx = -1;
 
+    /**
+     * @var 'mysql'|'sqlite'|'pgsql'|'oci'|'sqlsrv'|'mock'|string
+     */
     public string $platformName;
 
     public function __construct(Connection $connection, string $platformName)

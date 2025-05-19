@@ -1,3 +1,13 @@
+UPGRADE FROM 2.0-BETA6 to 2.0-BETA9
+===================================
+
+### Doctrine DBAL/ORM
+
+ * Passing `null` as type to `ConversionHints::createParamReferenceFor()` is deprecated 
+   and will no longer be accepted in v3.0.0, pass a type name instead. 
+
+   For now passing `null` defaults to "string", and might fail under specific conditions.
+
 UPGRADE FROM 2.0-BETA5 to 2.0-BETA6
 ===================================
 

@@ -134,7 +134,7 @@ abstract class FunctionalDbalTestCase extends DbalTestCase
     public static function tearDownAfterClass(): void
     {
         // There are errors recorded so don't reset the connection.
-        if (\count(self::$sharedConn->queryLog->queries) > 0) {
+        if (\count(self::$sharedConn->queryLog->queries ?? []) > 0) {
             return;
         }
 
@@ -298,7 +298,7 @@ abstract class FunctionalDbalTestCase extends DbalTestCase
             throw $e;
         }
 
-        $i = \count(self::$sharedConn->queryLog->queries);
+        $i = \count(self::$sharedConn->queryLog->queries ?? []);
 
         if ($i) {
             $queries = '';

@@ -114,6 +114,11 @@ class ConversionHints
         }
     }
 
+    /**
+     * Returns the platform name, returns a class-name if the platform could not be detected.
+     *
+     * @return 'mysql'|'sqlite'|'pgsql'|'oci'|'sqlsrv'|'mock'|string
+     */
     public function getPlatformName(): string
     {
         return $this->queryPlatform->platformName;

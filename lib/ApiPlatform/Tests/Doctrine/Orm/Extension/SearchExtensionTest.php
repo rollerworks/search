@@ -76,8 +76,8 @@ final class SearchExtensionTest extends TestCase
         $searchCondition = $this->createCondition();
 
         $queryBuilderProphecy = $this->prophesize(QueryBuilder::class);
-        $queryBuilderProphecy->leftJoin('o.relatedToDummyFriend', 'r', null, null, null)->shouldBeCalled();
-        $queryBuilderProphecy->leftJoin('o.thirdLevel', 't', 'WITH', 't.id = o.id', 'o.id')->shouldBeCalled();
+        $queryBuilderProphecy->leftJoin('o.relatedToDummyFriend', 'r', null, null, null)->willReturn($queryBuilderProphecy)->shouldBeCalled();
+        $queryBuilderProphecy->leftJoin('o.thirdLevel', 't', 'WITH', 't.id = o.id', 'o.id')->willReturn($queryBuilderProphecy)->shouldBeCalled();
         $queryBuilder = $queryBuilderProphecy->reveal();
 
         $cachedConditionGeneratorProphecy = $this->prophesize(CachedDqlConditionGenerator::class);
@@ -132,9 +132,7 @@ final class SearchExtensionTest extends TestCase
     {
         $searchCondition = $this->createCondition();
 
-        $queryBuilderProphecy = $this->prophesize(QueryBuilder::class);
-        $queryBuilder = $queryBuilderProphecy->reveal();
-
+        $queryBuilder = $this->createMock(QueryBuilder::class);
         $cachedConditionGeneratorProphecy = $this->prophesize(CachedDqlConditionGenerator::class);
 
         $ormFactoryProphecy = $this->prophesize(DoctrineOrmFactory::class);

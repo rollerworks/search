@@ -16,7 +16,7 @@ namespace Rollerworks\Component\Search\Tests\Doctrine\Orm\Fixtures\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
-#[ORM\Table(name: 'customers', options: ['collate' => 'utf8_bin'])]
+#[ORM\Table(name: 'customers', options: ['collation' => 'utf8_bin'])]
 class ECommerceCustomer
 {
     #[ORM\Id]
@@ -30,9 +30,9 @@ class ECommerceCustomer
     #[ORM\Column(name: 'last_name', type: 'string')]
     public $lastName;
 
-    #[ORM\Column(type: 'date')]
+    #[ORM\Column(type: 'date_immutable')]
     public $birthday;
 
-    #[ORM\Column(type: 'datetime')]
+    #[ORM\Column(type: 'datetime_immutable')]
     public $regdate;
 }

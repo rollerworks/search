@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Rollerworks\Component\Search\Doctrine\Orm;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
 use Rollerworks\Component\Search\Doctrine\Dbal\Query\QueryGenerator;
@@ -68,7 +69,7 @@ final class DqlConditionGenerator
     {
         $fields = $this->fieldsConfig->getFields();
         $connection = $this->entityManager->getConnection();
-        $platform = new DqlQueryPlatform($connection);
+        $platform = new DqlQueryPlatform($connection, self::getPlatformName($connection));
         $queryGenerator = new QueryGenerator($connection, $platform, $fields);
 
         $this->whereClause = $queryGenerator->getWhereClause($this->searchCondition);
@@ -105,5 +106,20 @@ final class DqlConditionGenerator
 
             $qb->addOrderBy($fields[$fieldName][null]->column, mb_strtoupper($direction));
         }
+    }
+
+    private static function getPlatformName(Connection $connection): string
+    {
+        $platform = $connection->getDatabasePlatform();
+
+        return match (true) {
+            $platform instanceof \Doctrine\DBAL\Platforms\AbstractMySQLPlatform => 'mysql',
+            $platform instanceof \Doctrine\DBAL\Platforms\SQLitePlatform => 'sqlite',
+            $platform instanceof \Doctrine\DBAL\Platforms\PostgreSQLPlatform => 'pgsql',
+            $platform instanceof \Doctrine\DBAL\Platforms\OraclePlatform => 'oci',
+            $platform instanceof \Doctrine\DBAL\Platforms\SQLServerPlatform => 'sqlsrv',
+            $platform instanceof \Rollerworks\Component\Search\Tests\Doctrine\Dbal\Mocks\DatabasePlatformMock => 'mock',
+            default => $platform::class,
+        };
     }
 }

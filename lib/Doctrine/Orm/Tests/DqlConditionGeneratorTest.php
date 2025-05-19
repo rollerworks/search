@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Tests\Doctrine\Orm;
 
+use Doctrine\DBAL\Platforms\PostgreSQLPlatform;
 use Doctrine\ORM\Query\QueryException;
 use Doctrine\ORM\QueryBuilder;
 use Rollerworks\Component\Search\Doctrine\Dbal\ConversionHints;
@@ -681,7 +682,7 @@ final class DqlConditionGeneratorTest extends OrmTestCase
 
         $conditionGenerator = $this->getConditionGenerator($condition);
 
-        if ($this->conn->getDatabasePlatform()->getName() === 'postgresql') {
+        if ($this->conn->getDatabasePlatform() instanceof PostgreSQLPlatform) {
             $this->assertDqlCompiles(
                 $conditionGenerator,
                 "WHERE (((C.firstName LIKE CONCAT(:search_0, '%') OR C.firstName LIKE CONCAT(:search_1, '%') OR C.firstName LIKE CONCAT(:search_2, '%') OR C.firstName LIKE CONCAT(:search_3, '%') OR C.firstName LIKE CONCAT('%', :search_4, '%') OR C.firstName LIKE CONCAT('%', :search_5)) AND (LOWER(C.firstName) NOT LIKE LOWER(CONCAT('%', :search_6)) AND C.firstName NOT LIKE CONCAT('%', :search_7, '%') AND C.firstName NOT LIKE CONCAT('%', :search_8))))",

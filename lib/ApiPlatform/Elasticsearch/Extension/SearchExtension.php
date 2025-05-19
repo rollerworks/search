@@ -106,12 +106,16 @@ class SearchExtension implements QueryCollectionExtensionInterface
         $query = $conditionGenerator->getQuery();
 
         // move limit/offset from QueryBuilder to Elasticsearch query
-        if (null !== $firstResult = $queryBuilder->getFirstResult()) {
+        $firstResult = ($queryBuilder->getFirstResult() ?? 1);
+
+        if ($firstResult !== 1) {
             $query->setFrom($firstResult);
             $queryBuilder->setFirstResult(null);
         }
 
-        if (null !== $maxResults = $queryBuilder->getMaxResults()) {
+        $maxResults = $queryBuilder->getMaxResults();
+
+        if ($maxResults !== null) {
             $query->setSize($maxResults);
             $queryBuilder->setMaxResults(null);
         }

@@ -61,15 +61,15 @@ final class SearchExtensionTest extends TestCase
         $queryBuilderProphecy = $this->prophesize(QueryBuilder::class);
         $queryBuilderProphecy->andWhere($queryFunction)->willReturn($queryBuilderProphecy);
         $queryBuilderProphecy->expr()->willReturn($queryExpression);
-        $queryBuilderProphecy->setParameter('ids', $ids)->shouldBeCalled();
-        $queryBuilderProphecy->getFirstResult()->shouldBeCalled();
-        $queryBuilderProphecy->getMaxResults()->shouldBeCalled();
+        $queryBuilderProphecy->setParameter('ids', $ids)->willReturn($queryBuilderProphecy)->shouldBeCalled();
+        $queryBuilderProphecy->getFirstResult()->willReturn(1)->shouldBeCalled();
+        $queryBuilderProphecy->getMaxResults()->willReturn(null)->shouldBeCalled();
         $queryBuilderProphecy->getRootAliases()->willReturn(['o']);
-        $queryBuilderProphecy->setParameter('id0', 3)->shouldBeCalled();
-        $queryBuilderProphecy->setParameter('id1', 1)->shouldBeCalled();
-        $queryBuilderProphecy->setParameter('id2', 5)->shouldBeCalled();
+        $queryBuilderProphecy->setParameter('id0', 3)->willReturn($queryBuilderProphecy)->shouldBeCalled();
+        $queryBuilderProphecy->setParameter('id1', 1)->willReturn($queryBuilderProphecy)->shouldBeCalled();
+        $queryBuilderProphecy->setParameter('id2', 5)->willReturn($queryBuilderProphecy)->shouldBeCalled();
         $queryBuilderProphecy->addSelect('CASE WHEN o.id = :id0 THEN 0 WHEN o.id = :id1 THEN 1 WHEN o.id = :id2 THEN 2 ELSE 3 END AS HIDDEN order_by')->willReturn($queryBuilderProphecy);
-        $queryBuilderProphecy->orderBy('order_by', 'ASC')->shouldBeCalled();
+        $queryBuilderProphecy->orderBy('order_by', 'ASC')->willReturn($queryBuilderProphecy)->shouldBeCalled();
         $queryBuilder = $queryBuilderProphecy->reveal();
 
         $classMetadataProphecy = $this->prophesize(ClassMetadata::class);
