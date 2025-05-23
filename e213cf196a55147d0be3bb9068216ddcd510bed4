@@ -1,0 +1,51 @@
+---------------------------------------------------------------------------
+
+by sstok at 2025-05-22T19:59:37Z
+
+I can't fix the Elastica failures for the ApiPlatform at this moment.
+
+```
+
+Some predictions failed:
+Double\Doctrine\ORM\QueryBuilder\P4:
+  No calls have been made that match:
+      Double\Doctrine\ORM\QueryBuilder\P4->setParameter(exact("ids"), exact([3, 1, 5]))
+    but expected at least one.
+    Recorded `setParameter(...)` calls:
+      - setParameter("ids", []) @ lib/ApiPlatform/Elasticsearch/Extension/SearchExtension.php:149
+  No calls have been made that match:
+      Double\Doctrine\ORM\QueryBuilder\P4->setParameter(exact("id0"), exact(3))
+    but expected at least one.
+    Recorded `setParameter(...)` calls:
+      - setParameter("ids", []) @ lib/ApiPlatform/Elasticsearch/Extension/SearchExtension.php:149
+  No calls have been made that match:
+      Double\Doctrine\ORM\QueryBuilder\P4->setParameter(exact("id1"), exact(1))
+    but expected at least one.
+    Recorded `setParameter(...)` calls:
+      - setParameter("ids", []) @ lib/ApiPlatform/Elasticsearch/Extension/SearchExtension.php:149
+  No calls have been made that match:
+      Double\Doctrine\ORM\QueryBuilder\P4->setParameter(exact("id2"), exact(5))
+    but expected at least one.
+    Recorded `setParameter(...)` calls:
+      - setParameter("ids", []) @ lib/ApiPlatform/Elasticsearch/Extension/SearchExtension.php:149
+  No calls have been made that match:
+      Double\Doctrine\ORM\QueryBuilder\P4->orderBy(exact("order_by"), exact("ASC"))
+    but expected at least one.
+Double\Elastica\Client\P8:
+  No calls expected that match:
+      Double\Elastica\Client\P8->request(* [, ...])
+    but 1 was made:
+      - request("/_search", "POST", ["query" => ["bool" => ["must" => "foo"]], "from" => 1], []) @ vendor/ruflin/elastica/src/Search.php:352
+  No calls have been made that match:
+      Double\Elastica\Client\P8->request(exact("/_search"), [POST, GET], exact(["query" => ["bool" => ["must" => "foo"]]]), exact([]))
+    but expected at least one.
+    Recorded `request(...)` calls:
+      - request("/_search", "POST", ["query" => ["bool" => ["must" => "foo"]], "from" => 1], []) @ vendor/ruflin/elastica/src/Search.php:352
+```
+
+---------------------------------------------------------------------------
+
+by sstok at 2025-05-23T07:51:54Z
+
+Ah bingo, `QueryBuilder::getFirstResult()` no longer returns `null`, but must return an integer. And because of this `setFrom()` is called internally, which is different then the expected query.
+
