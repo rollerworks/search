@@ -52,20 +52,23 @@ final class MoneyValueConversion implements ValueConversion, ColumnConversion
             return $column;
         }
 
-        $substr = $hints->connection->getDatabasePlatform()->getSubstringExpression($column, 5);
-        $castType = $this->getCastType($this->currencies->subunitFor($hints->getProcessingValue()->value->getCurrency()), $hints);
+        $processingValue = $hints->getProcessingValue();
+        \assert($processingValue instanceof MoneyValue);
+
+        $substr = $hints->connection->getDatabasePlatform()->getSubstringExpression($column, '5');
+        $castType = $this->getCastType($this->currencies->subunitFor($processingValue->value->getCurrency()), $hints);
 
         return "CAST({$substr} AS {$castType})";
     }
 
     private function getCastType(int $scale, ConversionHints $hints): string
     {
-        if (mb_strpos($hints->connection->getDatabasePlatform()->getName(), 'mysql') !== false) {
+        if ($hints->getPlatformName() === 'mysql') {
             return "DECIMAL(10, {$scale})";
         }
 
         return $hints->connection->getDatabasePlatform()->getDecimalTypeDeclarationSQL(
-            ['scale' => $scale]
+            ['scale' => $scale, 'precision' => 10, 'name' => $hints->field->mappingName]
         );
     }
 }

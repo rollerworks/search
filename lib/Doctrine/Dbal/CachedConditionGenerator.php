@@ -74,7 +74,16 @@ final class CachedConditionGenerator extends AbstractCachedConditionGenerator im
         if ($cached !== null) {
             [$whereClause, $parameters] = $cached;
         } else {
-            $connection = $this->qb->getConnection();
+            if (method_exists($this->qb, 'getConnection')) {
+                $connection = $this->qb->getConnection();
+            } else {
+                // XXX This is the only way to get the connection from a QueryBuilder, unless this method is restored.
+                //
+                // The DBAL generator is executed multiple levels deep, passing this with the constructor requires
+                // too much for now. This is a workaround until the DBAL generator is refactored, or the method is restored.
+                $connection = (new \ReflectionClass(QueryBuilder::class))->getProperty('connection')->getValue($this->qb);
+            }
+
             $generator = new QueryGenerator($connection, SqlConditionGenerator::getQueryPlatform($connection), $fields);
 
             $whereClause = $generator->getWhereClause($this->searchCondition);

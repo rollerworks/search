@@ -39,10 +39,16 @@ abstract class AbstractQueryPlatform
     /** @var int */
     private $parameterIdx = -1;
 
-    public function __construct(Connection $connection)
+    /**
+     * @var 'mysql'|'sqlite'|'pgsql'|'oci'|'sqlsrv'|'mock'|string
+     */
+    public string $platformName;
+
+    public function __construct(Connection $connection, string $platformName)
     {
         $this->connection = $connection;
         $this->parameters = new ArrayCollection();
+        $this->platformName = $platformName;
     }
 
     public function getValueAsSql($value, QueryField $mappingConfig, ConversionHints $hints): string

@@ -64,33 +64,33 @@ final class SqlConditionGeneratorResultsTest extends FunctionalDbalTestCase
     protected function setUpDbSchema(DbSchema $schema): void
     {
         $customerTable = $schema->createTable('customer');
-        $customerTable->addOption('collate', 'utf8_bin');
+        $customerTable->addOption('collation', 'utf8_bin');
         $customerTable->addColumn('id', 'integer');
-        $customerTable->addColumn('first_name', 'string');
-        $customerTable->addColumn('last_name', 'string');
-        $customerTable->addColumn('birthday', 'date');
-        $customerTable->addColumn('regdate', 'date');
+        $customerTable->addColumn('first_name', 'string', ['length' => 255]);
+        $customerTable->addColumn('last_name', 'string', ['length' => 255]);
+        $customerTable->addColumn('birthday', 'date_immutable');
+        $customerTable->addColumn('regdate', 'date_immutable');
         $customerTable->setPrimaryKey(['id']);
 
         $invoiceTable = $schema->createTable('invoice');
-        $invoiceTable->addOption('collate', 'utf8_bin');
+        $invoiceTable->addOption('collation', 'utf8_bin');
         $invoiceTable->addColumn('id', 'integer');
         $invoiceTable->addColumn('customer', 'integer');
-        $invoiceTable->addColumn('label', 'string', ['notnull' => false]);
-        $invoiceTable->addColumn('pub_date', 'date', ['notnull' => false]);
+        $invoiceTable->addColumn('label', 'string', ['notnull' => false, 'length' => 255]);
+        $invoiceTable->addColumn('pub_date', 'date_immutable', ['notnull' => false]);
         $invoiceTable->addColumn('status', 'integer');
-        $invoiceTable->addColumn('price_total', 'decimal', ['scale' => 2]);
+        $invoiceTable->addColumn('price_total', 'decimal', ['scale' => 2, 'precision' => 10]);
         $invoiceTable->setPrimaryKey(['id']);
         $invoiceTable->addUniqueIndex(['label']);
 
         $invoiceDetailsTable = $schema->createTable('invoice_details');
-        $invoiceDetailsTable->addOption('collate', 'utf8_bin');
+        $invoiceDetailsTable->addOption('collation', 'utf8_bin');
         $invoiceDetailsTable->addColumn('id', 'integer');
         $invoiceDetailsTable->addColumn('invoice', 'integer');
-        $invoiceDetailsTable->addColumn('label', 'string');
+        $invoiceDetailsTable->addColumn('label', 'string', ['length' => 255]);
         $invoiceDetailsTable->addColumn('quantity', 'integer');
-        $invoiceDetailsTable->addColumn('price', 'decimal', ['scale' => 2]);
-        $invoiceDetailsTable->addColumn('total', 'decimal', ['scale' => 2]);
+        $invoiceDetailsTable->addColumn('price', 'decimal', ['scale' => 2, 'precision' => 10]);
+        $invoiceDetailsTable->addColumn('total', 'decimal', ['scale' => 2, 'precision' => 10]);
         $invoiceDetailsTable->setPrimaryKey(['id']);
     }
 
@@ -108,8 +108,8 @@ final class SqlConditionGeneratorResultsTest extends FunctionalDbalTestCase
                     'id' => 'integer',
                     'first_name' => 'string',
                     'last_name' => 'string',
-                    'birthday' => 'date',
-                    'regdate' => 'date',
+                    'birthday' => 'date_immutable',
+                    'regdate' => 'date_immutable',
                 ]
             )
             ->records()
@@ -127,7 +127,7 @@ final class SqlConditionGeneratorResultsTest extends FunctionalDbalTestCase
                     'id' => 'integer',
                     'customer' => 'integer',
                     'label' => 'string',
-                    'pub_date' => 'date',
+                    'pub_date' => 'date_immutable',
                     'status' => 'integer',
                     'price_total' => 'decimal',
                 ]
@@ -200,8 +200,8 @@ final class SqlConditionGeneratorResultsTest extends FunctionalDbalTestCase
         // Customer (by invoice relation)
         $conditionGenerator->setField('customer-first-name', 'first_name', 'c', 'string');
         $conditionGenerator->setField('customer-last-name', 'last_name', 'c', 'string');
-        $conditionGenerator->setField('customer-birthday', 'birthday', 'c', 'date');
-        $conditionGenerator->setField('customer-regdate', 'regdate', 'c', 'date');
+        $conditionGenerator->setField('customer-birthday', 'birthday', 'c', 'date_immutable');
+        $conditionGenerator->setField('customer-regdate', 'regdate', 'c', 'date_immutable');
 
         $conditionGenerator->setField('customer-name#first_name', 'first_name', 'c', 'string');
         $conditionGenerator->setField('customer-name#last_name', 'last_name', 'c', 'string');
@@ -210,7 +210,7 @@ final class SqlConditionGeneratorResultsTest extends FunctionalDbalTestCase
         $conditionGenerator->setField('id', 'id', 'i', 'integer');
         $conditionGenerator->setField('customer', 'customer', 'i', 'integer');
         $conditionGenerator->setField('label', 'label', 'i', 'string');
-        $conditionGenerator->setField('pub-date', 'pub_date', 'i', 'date');
+        $conditionGenerator->setField('pub-date', 'pub_date', 'i', 'date_immutable');
         $conditionGenerator->setField('status', 'status', 'i', 'integer');
         $conditionGenerator->setField('total', 'price_total', 'i', 'decimal');
 

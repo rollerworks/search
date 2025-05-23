@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Rollerworks\Component\Search\Doctrine\Dbal\Test;
 
 use Doctrine\DBAL\Query\QueryBuilder;
+use Doctrine\DBAL\Types\Type;
 use PHPUnit\Framework\Assert;
 use Rollerworks\Component\Search\Doctrine\Dbal\ConditionGenerator;
 
@@ -49,8 +50,10 @@ final class QueryBuilderAssertion
         foreach ($actualParameters as $name => $value) {
             $type = $qb->getParameterType($name);
 
-            if ($type !== null) {
-                $actualParameters[$name] = [$value, \is_object($type) ? $type->getName() : $type];
+            if ($type instanceof Type) {
+                $actualParameters[$name] = [$value, Type::lookupName($type)];
+            } elseif (\is_string($type) || $type instanceof \UnitEnum) {
+                $actualParameters[$name] = [$value, $type];
             } else {
                 $actualParameters[$name] = $value;
             }

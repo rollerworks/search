@@ -1,6 +1,11 @@
 parameters:
 	ignoreErrors:
 		-
+			message: "#^Expression on left side of \\?\\? is not nullable\\.$#"
+			count: 1
+			path: lib/ApiPlatform/Elasticsearch/Extension/SearchExtension.php
+
+		-
 			message: "#^Parameter \\#3 \\$resourceClass of method Rollerworks\\\\Component\\\\Search\\\\ApiPlatform\\\\Doctrine\\\\Orm\\\\Extension\\\\SearchExtension\\:\\:applyToCollection\\(\\) expects class\\-string, string given\\.$#"
 			count: 4
 			path: lib/ApiPlatform/Tests/Doctrine/Orm/Extension/SearchExtensionTest.php
@@ -201,19 +206,99 @@ parameters:
 			path: lib/Doctrine/Dbal/Query/QueryGenerator.php
 
 		-
+			message: "#^Result of \\|\\| is always true\\.$#"
+			count: 1
+			path: lib/Doctrine/Dbal/Test/QueryBuilderAssertion.php
+
+		-
+			message: "#^Call to an undefined method Doctrine\\\\DBAL\\\\Configuration\\:\\:setSQLLogger\\(\\)\\.$#"
+			count: 1
+			path: lib/Doctrine/Dbal/Tests/DbalExtensions/Connection.php
+
+		-
+			message: "#^Method Doctrine\\\\DBAL\\\\Connection\\:\\:__construct\\(\\) invoked with 4 parameters, 2\\-3 required\\.$#"
+			count: 1
+			path: lib/Doctrine/Dbal/Tests/DbalExtensions/Connection.php
+
+		-
+			message: "#^Parameter \\$params of method Rollerworks\\\\Component\\\\Search\\\\Doctrine\\\\Dbal\\\\Tests\\\\DbalExtensions\\\\Connection\\:\\:__construct\\(\\) has invalid type Doctrine\\\\DBAL\\\\Params\\.$#"
+			count: 1
+			path: lib/Doctrine/Dbal/Tests/DbalExtensions/Connection.php
+
+		-
+			message: "#^Access to an undefined property Doctrine\\\\DBAL\\\\Connection\\:\\:\\$queryLog\\.$#"
+			count: 1
+			path: lib/Doctrine/Dbal/Tests/Functional/FunctionalDbalTestCase.php
+
+		-
+			message: "#^Invalid array key type Doctrine\\\\DBAL\\\\ParameterType\\:\\:ASCII\\.$#"
+			count: 1
+			path: lib/Doctrine/Dbal/Tests/Functional/FunctionalDbalTestCase.php
+
+		-
+			message: "#^Invalid array key type Doctrine\\\\DBAL\\\\ParameterType\\:\\:BINARY\\.$#"
+			count: 1
+			path: lib/Doctrine/Dbal/Tests/Functional/FunctionalDbalTestCase.php
+
+		-
+			message: "#^Invalid array key type Doctrine\\\\DBAL\\\\ParameterType\\:\\:BOOLEAN\\.$#"
+			count: 1
+			path: lib/Doctrine/Dbal/Tests/Functional/FunctionalDbalTestCase.php
+
+		-
+			message: "#^Invalid array key type Doctrine\\\\DBAL\\\\ParameterType\\:\\:INTEGER\\.$#"
+			count: 1
+			path: lib/Doctrine/Dbal/Tests/Functional/FunctionalDbalTestCase.php
+
+		-
+			message: "#^Invalid array key type Doctrine\\\\DBAL\\\\ParameterType\\:\\:LARGE_OBJECT\\.$#"
+			count: 1
+			path: lib/Doctrine/Dbal/Tests/Functional/FunctionalDbalTestCase.php
+
+		-
+			message: "#^Invalid array key type Doctrine\\\\DBAL\\\\ParameterType\\:\\:NULL\\.$#"
+			count: 1
+			path: lib/Doctrine/Dbal/Tests/Functional/FunctionalDbalTestCase.php
+
+		-
+			message: "#^Invalid array key type Doctrine\\\\DBAL\\\\ParameterType\\:\\:STRING\\.$#"
+			count: 1
+			path: lib/Doctrine/Dbal/Tests/Functional/FunctionalDbalTestCase.php
+
+		-
+			message: "#^Method Doctrine\\\\DBAL\\\\Connection\\:\\:__construct\\(\\) invoked with 4 parameters, 2\\-3 required\\.$#"
+			count: 1
+			path: lib/Doctrine/Dbal/Tests/Mocks/ConnectionMock.php
+
+		-
+			message: "#^Parameter \\$params of method Rollerworks\\\\Component\\\\Search\\\\Tests\\\\Doctrine\\\\Dbal\\\\Mocks\\\\ConnectionMock\\:\\:__construct\\(\\) has invalid type Doctrine\\\\DBAL\\\\Params\\.$#"
+			count: 1
+			path: lib/Doctrine/Dbal/Tests/Mocks/ConnectionMock.php
+
+		-
 			message: "#^Property Rollerworks\\\\Component\\\\Search\\\\Tests\\\\Doctrine\\\\Dbal\\\\Mocks\\\\ConnectionMock\\:\\:\\$_platform is never read, only written\\.$#"
 			count: 1
 			path: lib/Doctrine/Dbal/Tests/Mocks/ConnectionMock.php
 
 		-
-			message: "#^Return type \\(void\\) of method Rollerworks\\\\Component\\\\Search\\\\Tests\\\\Doctrine\\\\Dbal\\\\Mocks\\\\ConnectionMock\\:\\:insert\\(\\) should be compatible with return type \\(int\\|string\\) of method Doctrine\\\\DBAL\\\\Connection\\:\\:insert\\(\\)$#"
+			message: "#^Call to an undefined method Doctrine\\\\DBAL\\\\Connection\\:\\:getEventManager\\(\\)\\.$#"
 			count: 1
-			path: lib/Doctrine/Dbal/Tests/Mocks/ConnectionMock.php
+			path: lib/Doctrine/Dbal/Tests/TestUtil.php
 
 		-
-			message: "#^Return type \\(void\\) of method Rollerworks\\\\Component\\\\Search\\\\Tests\\\\Doctrine\\\\Dbal\\\\Mocks\\\\DatabasePlatformMock\\:\\:getBlobTypeDeclarationSQL\\(\\) should be compatible with return type \\(string\\) of method Doctrine\\\\DBAL\\\\Platforms\\\\AbstractPlatform\\:\\:getBlobTypeDeclarationSQL\\(\\)$#"
+			message: "#^Call to an undefined method Doctrine\\\\DBAL\\\\Connection\\:\\:getSchemaManager\\(\\)\\.$#"
 			count: 1
-			path: lib/Doctrine/Dbal/Tests/Mocks/DatabasePlatformMock.php
+			path: lib/Doctrine/Dbal/Tests/TestUtil.php
+
+		-
+			message: "#^Class Doctrine\\\\DBAL\\\\Platforms\\\\SQLitePlatform referenced with incorrect case\\: Doctrine\\\\DBAL\\\\Platforms\\\\SqlitePlatform\\.$#"
+			count: 2
+			path: lib/Doctrine/Dbal/Tests/TestUtil.php
+
+		-
+			message: "#^Parameter \\#1 \\$className of method PHPUnit\\\\Framework\\\\TestCase\\:\\:getMockBuilder\\(\\) expects class\\-string\\<Doctrine\\\\Common\\\\Cache\\\\Cache\\>, string given\\.$#"
+			count: 1
+			path: lib/Doctrine/Orm/Tests/CachedDqlConditionGeneratorTest.php
 
 		-
 			message: "#^Property Rollerworks\\\\Component\\\\Search\\\\Tests\\\\Doctrine\\\\Orm\\\\CachedDqlConditionGeneratorTest\\:\\:\\$cacheDriver \\(PHPUnit\\\\Framework\\\\MockObject\\\\MockObject&Psr\\\\SimpleCache\\\\CacheInterface\\) does not accept Doctrine\\\\Common\\\\Cache\\\\Cache&PHPUnit\\\\Framework\\\\MockObject\\\\MockObject\\.$#"
@@ -224,6 +309,11 @@ parameters:
 			message: "#^Offset 0 does not exist on array\\<string, Rollerworks\\\\Component\\\\Search\\\\Doctrine\\\\Orm\\\\OrmQueryField\\>\\.$#"
 			count: 2
 			path: lib/Doctrine/Orm/Tests/FieldConfigBuilderTest.php
+
+		-
+			message: "#^Method Doctrine\\\\ORM\\\\Tools\\\\SchemaTool\\:\\:updateSchema\\(\\) invoked with 2 parameters, 1 required\\.$#"
+			count: 1
+			path: lib/Doctrine/Orm/Tests/OrmTestCase.php
 
 		-
 			message: "#^Variable \\$nestedBool might not be defined\\.$#"
@@ -239,6 +329,11 @@ parameters:
 			message: "#^Unreachable statement \\- code above always terminates\\.$#"
 			count: 1
 			path: lib/Elasticsearch/Tests/QueryConditionGeneratorTest.php
+
+		-
+			message: "#^Method Doctrine\\\\ORM\\\\Tools\\\\SchemaTool\\:\\:updateSchema\\(\\) invoked with 2 parameters, 1 required\\.$#"
+			count: 1
+			path: lib/Symfony/SearchBundle/Tests/Functional/ApiPlatformTest.php
 
 		-
 			message: "#^Property Rollerworks\\\\Component\\\\Search\\\\Extension\\\\Symfony\\\\Validator\\\\InputValidator\\:\\:\\$errorList is never read, only written\\.$#"

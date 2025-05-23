@@ -14,16 +14,15 @@ declare(strict_types=1);
 namespace Rollerworks\Component\Search\Doctrine\Orm\Extension\Functions;
 
 use Carbon\CarbonInterval;
-use Doctrine\ORM\Query\AST\Functions\FunctionNode;
-use Doctrine\ORM\Query\Lexer;
 use Doctrine\ORM\Query\Parser;
 use Doctrine\ORM\Query\SqlWalker;
+use Doctrine\ORM\Query\TokenType;
 use Rollerworks\Component\Search\Extension\Doctrine\Dbal\Conversion\DateIntervalConversion;
 
 /**
  * "SEARCH_CAST_INTERVAL" "(" string, boolean ")".
  */
-final class CastIntervalFunction extends FunctionNode
+final class CastIntervalFunction extends PlatformSpecificFunction
 {
     public $intervalExpression;
     public $inverted;
@@ -31,10 +30,10 @@ final class CastIntervalFunction extends FunctionNode
     public function getSql(SqlWalker $sqlWalker): string
     {
         $connection = $sqlWalker->getConnection();
-        $platform = $connection->getDatabasePlatform()->getName();
+        $platform = $this->getPlatformName($connection);
         $expression = $this->intervalExpression;
 
-        if ($platform === 'postgresql' || $platform === 'mock') {
+        if ($platform === 'pgsql' || $platform === 'mock') {
             return \sprintf(
                 'NOW() %s CAST(%s AS interval)',
                 $this->inverted ? '-' : '+',
@@ -42,7 +41,7 @@ final class CastIntervalFunction extends FunctionNode
             );
         }
 
-        if ($platform === 'mysql' || $platform === 'drizzle') {
+        if ($platform === 'mysql') {
             $value = CarbonInterval::fromString($expression);
             $value->locale('en');
 
@@ -64,15 +63,15 @@ final class CastIntervalFunction extends FunctionNode
 
     public function parse(Parser $parser): void
     {
-        $parser->match(Lexer::T_IDENTIFIER);
-        $parser->match(Lexer::T_OPEN_PARENTHESIS);
+        $parser->match(TokenType::T_IDENTIFIER);
+        $parser->match(TokenType::T_OPEN_PARENTHESIS);
 
         $this->intervalExpression = (string) $parser->Literal()->value;
 
-        $parser->match(Lexer::T_COMMA);
+        $parser->match(TokenType::T_COMMA);
 
         $this->inverted = $parser->Literal()->value === 'true';
 
-        $parser->match(Lexer::T_CLOSE_PARENTHESIS);
+        $parser->match(TokenType::T_CLOSE_PARENTHESIS);
     }
 }

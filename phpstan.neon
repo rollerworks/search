@@ -20,6 +20,7 @@ parameters:
     excludePaths:
         - lib/*/Tests/Fixtures/*
         - lib/Symfony/SearchBundle/Tests/Functional/Application
+        - lib/Doctrine/Dbal/Tests/DbalExtensions/LegacySqlLogger.php
 
     ignoreErrors:
         -

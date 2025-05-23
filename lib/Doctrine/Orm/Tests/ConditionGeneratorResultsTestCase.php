@@ -73,8 +73,8 @@ abstract class ConditionGeneratorResultsTestCase extends OrmTestCase
                     'id' => 'integer',
                     'first_name' => 'string',
                     'last_name' => 'string',
-                    'birthday' => 'date',
-                    'regdate' => 'date',
+                    'birthday' => 'date_immutable',
+                    'regdate' => 'date_immutable',
                 ]
             )
             ->records()
@@ -92,7 +92,7 @@ abstract class ConditionGeneratorResultsTestCase extends OrmTestCase
                     'invoice_id' => 'integer',
                     'customer' => 'integer',
                     'label' => 'string',
-                    'pubdate' => 'date',
+                    'pubdate' => 'date_immutable',
                     'status' => 'integer',
                     'price_total' => 'decimal',
                 ]

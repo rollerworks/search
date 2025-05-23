@@ -23,6 +23,7 @@ use PHPUnit\Framework\AssertionFailedError;
 use PHPUnit\Framework\Exception;
 use PHPUnit\Framework\Warning;
 use Psr\SimpleCache\CacheInterface;
+use Rollerworks\Component\Search\Doctrine\Dbal\Tests\DbalExtensions\Connection;
 use Rollerworks\Component\Search\Doctrine\Dbal\Tests\TestUtil;
 use Rollerworks\Component\Search\Doctrine\Orm\DoctrineOrmFactory;
 use Rollerworks\Component\Search\Doctrine\Orm\DqlConditionGenerator;
@@ -57,14 +58,9 @@ abstract class OrmTestCase extends DbalTestCase
     protected $conn;
 
     /**
-     * @var \Doctrine\DBAL\Logging\DebugStack|null
-     */
-    protected $sqlLoggerStack;
-
-    /**
      * Shared connection when a TestCase is run alone (outside of it's functional suite).
      *
-     * @var \Doctrine\DBAL\Connection|null
+     * @var Connection|null
      */
     private static $sharedConn;
 
@@ -81,7 +77,7 @@ abstract class OrmTestCase extends DbalTestCase
             $config = ORMSetup::createAttributeMetadataConfiguration([__DIR__ . '/Fixtures/Entity'], true, null, null);
 
             self::$sharedConn = TestUtil::getConnection();
-            self::$sharedEm = EntityManager::create(self::$sharedConn, $config);
+            self::$sharedEm = new EntityManager(self::$sharedConn, $config);
 
             $emConfig = self::$sharedEm->getConfiguration();
 
@@ -104,16 +100,6 @@ abstract class OrmTestCase extends DbalTestCase
 
         $this->conn = self::$sharedConn;
         $this->em = self::$sharedEm;
-
-        // Clear the cache between runs (older versions)
-        $cache = $this->em->getConfiguration()->getQueryCacheImpl();
-
-        if ($cache !== null && method_exists($cache, 'flushAll')) {
-            $cache->flushAll();
-        }
-
-        $this->sqlLoggerStack = new \Doctrine\DBAL\Logging\DebugStack();
-        $this->conn->getConfiguration()->setSQLLogger($this->sqlLoggerStack);
     }
 
     protected static function resetSharedConn(): void
@@ -127,6 +113,11 @@ abstract class OrmTestCase extends DbalTestCase
 
     public static function tearDownAfterClass(): void
     {
+        // There are errors recorded so don't reset the connection.
+        if (\count(self::$sharedConn->queryLog->queries ?? []) > 0) {
+            return;
+        }
+
         // Ensure the connection is reset between class-runs
         self::resetSharedConn();
     }
@@ -256,11 +247,12 @@ abstract class OrmTestCase extends DbalTestCase
             throw $e;
         }
 
-        if (isset($this->sqlLoggerStack->queries) && \count($this->sqlLoggerStack->queries)) {
-            $queries = '';
-            $i = \count($this->sqlLoggerStack->queries);
+        $i = \count(self::$sharedConn->queryLog->queries ?? []);
 
-            foreach (array_reverse($this->sqlLoggerStack->queries) as $query) {
+        if ($i) {
+            $queries = '';
+
+            foreach (array_reverse(self::$sharedConn->queryLog->queries) as $query) {
                 $params = array_map(
                     static function ($p) {
                         if (\is_object($p)) {

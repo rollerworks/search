@@ -34,6 +34,9 @@ abstract class FunctionalTestCase extends WebTestCase
 
     protected static function newClient(array $options = [], array $server = []): KernelBrowser
     {
+        // XXX Do we really need to boot the kernel multiple times?
+        static::$booted = false;
+
         $client = static::createClient(array_merge(['config' => 'default.yml'], $options), $server);
 
         $warmer = $client->getContainer()->get('cache_warmer');

@@ -13,15 +13,14 @@ declare(strict_types=1);
 
 namespace Rollerworks\Component\Search\Doctrine\Orm\Extension\Functions;
 
-use Doctrine\ORM\Query\AST\Functions\FunctionNode;
-use Doctrine\ORM\Query\Lexer;
 use Doctrine\ORM\Query\Parser;
 use Doctrine\ORM\Query\SqlWalker;
+use Doctrine\ORM\Query\TokenType;
 
 /**
  * "SEARCH_MONEY_AS_NUMERIC" "(" StringPrimary ", " Literal ")".
  */
-final class MoneyCastFunction extends FunctionNode
+final class MoneyCastFunction extends PlatformSpecificFunction
 {
     public $stringPrimary;
 
@@ -32,14 +31,16 @@ final class MoneyCastFunction extends FunctionNode
 
     public function getSql(SqlWalker $sqlWalker): string
     {
+        $connection = $sqlWalker->getConnection();
+
         $expression = $sqlWalker->walkSimpleArithmeticExpression($this->stringPrimary);
         $scale = $this->scale;
 
-        if (mb_strpos($sqlWalker->getConnection()->getDatabasePlatform()->getName(), 'mysql') !== false) {
+        if ($this->getPlatformName($connection) === 'mysql') {
             $castType = "DECIMAL(10, {$scale})";
         } else {
-            $castType = $sqlWalker->getConnection()->getDatabasePlatform()->getDecimalTypeDeclarationSQL(
-                ['scale' => $scale]
+            $castType = $connection->getDatabasePlatform()->getDecimalTypeDeclarationSQL(
+                ['scale' => $scale, 'precision' => 10, 'name' => $expression]
             );
         }
 
@@ -48,15 +49,15 @@ final class MoneyCastFunction extends FunctionNode
 
     public function parse(Parser $parser): void
     {
-        $parser->match(Lexer::T_IDENTIFIER);
-        $parser->match(Lexer::T_OPEN_PARENTHESIS);
+        $parser->match(TokenType::T_IDENTIFIER);
+        $parser->match(TokenType::T_OPEN_PARENTHESIS);
 
         $this->stringPrimary = $parser->StringPrimary();
 
-        $parser->match(Lexer::T_COMMA);
+        $parser->match(TokenType::T_COMMA);
 
         $this->scale = (int) $parser->Literal()->value;
 
-        $parser->match(Lexer::T_CLOSE_PARENTHESIS);
+        $parser->match(TokenType::T_CLOSE_PARENTHESIS);
     }
 }

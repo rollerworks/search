@@ -33,7 +33,7 @@ final class AgeConversionTest extends FunctionalDbalTestCase
     {
         $invoiceTable = $schema->createTable('site_user');
         $invoiceTable->addColumn('id', 'integer');
-        $invoiceTable->addColumn('birthday', 'date');
+        $invoiceTable->addColumn('birthday', 'date_immutable');
     }
 
     /**
@@ -42,7 +42,7 @@ final class AgeConversionTest extends FunctionalDbalTestCase
     protected function getDbRecords()
     {
         return [
-            SchemaRecord::create('site_user', ['id' => 'integer', 'birthday' => 'date'])
+            SchemaRecord::create('site_user', ['id' => 'integer', 'birthday' => 'date_immutable'])
                 ->add([1, new \DateTimeImmutable('2001-01-15', new \DateTimeZone('UTC'))])
                 ->add([2, new \DateTimeImmutable('2001-05-15', new \DateTimeZone('UTC'))])
                 ->add([3, new \DateTimeImmutable('2001-10-15', new \DateTimeZone('UTC'))])
@@ -61,7 +61,7 @@ final class AgeConversionTest extends FunctionalDbalTestCase
 
     protected function configureConditionGenerator(ConditionGenerator $conditionGenerator): void
     {
-        $conditionGenerator->setField('birthday', 'birthday', 'u', 'date');
+        $conditionGenerator->setField('birthday', 'birthday', 'u', 'date_immutable');
     }
 
     protected function getFieldSet(bool $build = true)

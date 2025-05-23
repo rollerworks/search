@@ -21,7 +21,7 @@ final class AgeDateConversion implements ColumnConversion, ValueConversion
 {
     public function convertColumn(string $column, array $options, ConversionHints $hints): string
     {
-        if ($hints->getProcessingValue() instanceof \DateTimeImmutable) {
+        if ($hints->getProcessingValue() instanceof \DateTimeInterface) {
             return "SEARCH_CONVERSION_CAST({$column}, 'DATE')";
         }
 
@@ -31,6 +31,10 @@ final class AgeDateConversion implements ColumnConversion, ValueConversion
     public function convertValue($value, array $options, ConversionHints $hints): string
     {
         if ($value instanceof \DateTimeImmutable) {
+            return $hints->createParamReferenceFor($value, 'date_immutable');
+        }
+
+        if ($value instanceof \DateTime) {
             return $hints->createParamReferenceFor($value, 'date');
         }
 

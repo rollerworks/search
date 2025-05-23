@@ -16,7 +16,7 @@ namespace Rollerworks\Component\Search\Tests\Doctrine\Orm\Fixtures\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
-#[ORM\Table(name: 'invoices', options: ['collate' => 'utf8_bin'])]
+#[ORM\Table(name: 'invoices', options: ['collation' => 'utf8_bin'])]
 class ECommerceInvoice
 {
     #[ORM\Id]
@@ -27,7 +27,7 @@ class ECommerceInvoice
     #[ORM\Column(type: 'string', unique: true, nullable: true)]
     public $label;
 
-    #[ORM\Column(name: 'pubdate', type: 'datetime', nullable: true)]
+    #[ORM\Column(name: 'pubdate', type: 'datetime_immutable', nullable: true)]
     public $date;
 
     #[ORM\ManyToOne(targetEntity: 'ECommerceCustomer')]
@@ -37,7 +37,7 @@ class ECommerceInvoice
     #[ORM\Column(type: 'integer')]
     public $status;
 
-    #[ORM\Column(name: 'price_total', type: 'decimal', precision: 0, scale: 2)]
+    #[ORM\Column(name: 'price_total', type: 'decimal', precision: 10, scale: 2)]
     public $total;
 
     #[ORM\OneToMany(mappedBy: 'invoice', targetEntity: 'ECommerceInvoiceRow', cascade: ['persist'])]

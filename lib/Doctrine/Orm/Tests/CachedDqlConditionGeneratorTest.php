@@ -45,7 +45,7 @@ final class CachedDqlConditionGeneratorTest extends OrmTestCase
      */
     protected $cacheDriver;
 
-    public const CACHE_KEY = '49dd08f83849fefcd0b03b23e0cd8d877458275a175bc3dfb113af70e5f3da9b';
+    public const CACHE_KEY = 'df58623bc959d1cf34d360c31f4d57b21ee51ffb5179059507b90c47035075dd';
 
     /** @test */
     public function get_where_clause_no_cache(): void
@@ -136,7 +136,7 @@ final class CachedDqlConditionGeneratorTest extends OrmTestCase
         // Note: ordering doesn't change the cache-key as ordering is applied independently.
         $this->cacheDriver
             ->method('get')
-            ->with(self::matchesRegularExpression('/^' . self::CACHE_KEY . '|15a1f8831f6a382bc75d64e67057d8fb03c7e10091d2606c13a7b2262edb24c2/'))
+            ->with(self::matchesRegularExpression('/^' . self::CACHE_KEY . '|9e47d1142fc34088f14061a54fd42c6bee34e9d09c8397da3587f1cac4711cf7/'))
             ->willReturn(["me = 'foo'", ['search' => [1, 'integer']]])
         ;
 
@@ -210,7 +210,7 @@ final class CachedDqlConditionGeneratorTest extends OrmTestCase
         $this->cacheDriver
             ->expects(self::once())
             ->method('get')
-            ->with('04986d7a8b84955df831caeb6b575793a4850fa402f92c25294df1ffc7bb9dc8')
+            ->with('21d7d868aba516e1516bdefc51bad0ac19e1862d445641bb23dcdd6a6406bf3f')
             ->willReturn(null)
         ;
 
@@ -239,8 +239,8 @@ final class CachedDqlConditionGeneratorTest extends OrmTestCase
     public function with_existing_caches_and_primary_cond(): void
     {
         $cacheDriverProphecy = $this->prophesize(CacheInterface::class);
-        $cacheDriverProphecy->get('1e18a18fce837f0b3fa15099fed7b4646fa6ac893d4c27a668016776742ff7eb')->willReturn(["me = 'foo'", ['search_1' => ['duck', 'text']]])->shouldBeCalled();
-        $cacheDriverProphecy->get('f8fc5f1054baca1f1de79b109150e1edbd002dda59f65d36c14c55ebd2054121')->willReturn(["you = 'me' AND me = 'foo'", ['search_2' => ['roll', 'text']]])->shouldBeCalled();
+        $cacheDriverProphecy->get('bc4cf55a9b4956fb37ae36c4bb740c6c89196a7c29716fe37f733d91a1767331')->willReturn(["me = 'foo'", ['search_1' => ['duck', 'text']]])->shouldBeCalled();
+        $cacheDriverProphecy->get('1c4b0b7d0d8a7e21694898b730bcfffa04a05063af95a7de11b5872f61ee88c8')->willReturn(["you = 'me' AND me = 'foo'", ['search_2' => ['roll', 'text']]])->shouldBeCalled();
         $cacheDriverProphecy->set(Argument::any(), Argument::any(), Argument::any())->shouldNotBeCalled();
         $cacheDriver = $cacheDriverProphecy->reveal();
 

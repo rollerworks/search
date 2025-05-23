@@ -33,12 +33,12 @@ final class ChildCountTypeTest extends FunctionalDbalTestCase
     {
         $userTable = $schema->createTable('site_user');
         $userTable->addColumn('id', 'integer');
-        $userTable->addColumn('birthday', 'date');
+        $userTable->addColumn('birthday', 'date_immutable');
 
         $userTable = $schema->createTable('user_contact');
         $userTable->addColumn('id', 'integer');
         $userTable->addColumn('user_id', 'integer');
-        $userTable->addColumn('name', 'string');
+        $userTable->addColumn('name', 'string', ['length' => 255]);
     }
 
     /**
@@ -47,7 +47,7 @@ final class ChildCountTypeTest extends FunctionalDbalTestCase
     protected function getDbRecords()
     {
         return [
-            SchemaRecord::create('site_user', ['id' => 'integer', 'birthday' => 'date'])
+            SchemaRecord::create('site_user', ['id' => 'integer', 'birthday' => 'date_immutable'])
                 ->add([1, new \DateTimeImmutable('2001-01-15', new \DateTimeZone('UTC'))])
                 ->add([2, new \DateTimeImmutable('2001-05-15', new \DateTimeZone('UTC'))])
                 ->add([3, new \DateTimeImmutable('2001-10-15', new \DateTimeZone('UTC'))])
