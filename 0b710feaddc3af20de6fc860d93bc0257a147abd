@@ -1,0 +1,6 @@
+---------------------------------------------------------------------------
+
+by sstok at 2025-09-15T14:46:34Z
+
+Fixed PHP 8.1 compatibility, why didn't PHPStorm warn me about this syntax compatibility... 
+
