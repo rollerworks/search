@@ -19,7 +19,7 @@ return static function (ContainerConfigurator $containerConfigurator): void {
 
     $containerConfigurator->extension('doctrine', [
         'orm' => [
-            'enable_native_lazy_objects' => PHP_VERSION_ID >= 80400,
+            'enable_native_lazy_objects' => \PHP_VERSION_ID >= 80400,
         ],
     ]);
 
