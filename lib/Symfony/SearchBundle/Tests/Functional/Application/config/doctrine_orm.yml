@@ -1,5 +1,6 @@
 imports:
     - { resource: 'framework.yml' }
+    - { resource: 'doctrine_orm.php' }
 
 doctrine:
     dbal:
@@ -8,9 +9,6 @@ doctrine:
         charset: UTF8
 
     orm:
-        auto_generate_proxy_classes: '%kernel.debug%'
-        proxy_dir: '%kernel.cache_dir%/doctrine/orm/Proxies'
-
         entity_managers:
             default:
                 query_cache_driver:
