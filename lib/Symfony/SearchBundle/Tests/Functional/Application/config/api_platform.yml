@@ -1,6 +1,7 @@
 imports:
     - { resource: framework.yml }
     - { resource: elasticsearch.yml }
+    - { resource: 'doctrine_orm.php' }
 
 framework:
     router:

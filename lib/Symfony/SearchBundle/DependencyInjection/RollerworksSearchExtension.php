@@ -23,7 +23,7 @@ use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Exception\LogicException;
 use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
-use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
+use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\Translation\Translator;
 
@@ -31,10 +31,10 @@ class RollerworksSearchExtension extends Extension implements PrependExtensionIn
 {
     public function load(array $configs, ContainerBuilder $container): void
     {
-        $loader = new XmlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
-        $loader->load('services.xml');
-        $loader->load('input_processor.xml');
-        $loader->load('condition_exporter.xml');
+        $loader = new PhpFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
+        $loader->load('services.php');
+        $loader->load('input_processor.php');
+        $loader->load('condition_exporter.php');
 
         $container->registerForAutoconfiguration(FieldType::class)
             ->addTag('rollerworks_search.type')
@@ -50,10 +50,10 @@ class RollerworksSearchExtension extends Extension implements PrependExtensionIn
         $config = $this->processConfiguration($configuration, $configs);
 
         if ($this->isConfigEnabled($container, $config['doctrine']['dbal'])) {
-            $loader->load('doctrine_dbal.xml');
+            $loader->load('doctrine_dbal.php');
 
             if ($this->isConfigEnabled($container, $config['doctrine']['orm'])) {
-                $loader->load('doctrine_orm.xml');
+                $loader->load('doctrine_orm.php');
                 $container->setParameter(
                     'rollerworks_search.doctrine.orm.entity_managers',
                     $config['doctrine']['orm']['entity_managers'] ?: ['default']
@@ -62,29 +62,29 @@ class RollerworksSearchExtension extends Extension implements PrependExtensionIn
         }
 
         if ($this->isConfigEnabled($container, $config['elasticsearch'])) {
-            $loader->load('elasticsearch.xml');
+            $loader->load('elasticsearch.php');
         }
 
         if (class_exists(InputValidator::class)) {
-            $loader->load('input_validator.xml');
+            $loader->load('input_validator.php');
         }
 
         if (class_exists(Translator::class)) {
-            $loader->load('translator_alias_resolver.xml');
+            $loader->load('translator_alias_resolver.php');
         }
 
         if ($this->isConfigEnabled($container, $config['api_platform'])) {
-            $loader->load('api_platform.xml');
+            $loader->load('api_platform.php');
 
             if ($this->isConfigEnabled($container, $config['api_platform']['doctrine_orm'])) {
-                $loader->load('api_platform_doctrine_orm.xml');
+                $loader->load('api_platform_doctrine_orm.php');
             }
 
             if ($this->isConfigEnabled($container, $config['api_platform']['elasticsearch'])) {
                 if (! $this->isConfigEnabled($container, $config['elasticsearch'])) {
                     throw new LogicException('API Platform Elasticsearch support cannot be enabled as Elasticsearch is not enabled');
                 }
-                $loader->load('api_platform_elasticsearch.xml');
+                $loader->load('api_platform_elasticsearch.php');
             }
         }
     }
